@@ -1,7 +1,7 @@
 version: '3'
 services:
   frontend: 
-    build: ./frontend 
+    build: ./Frontend 
     ports: 
       - "3000:3000" 
     container_name: frontend-docker
@@ -10,7 +10,7 @@ services:
       - backend
       
   backend:
-    build: ./backend
+    build: ./Backend
     ports:
       - "5000:5000"
     container_name: backend-docker

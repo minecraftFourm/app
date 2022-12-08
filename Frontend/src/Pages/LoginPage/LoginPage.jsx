@@ -9,7 +9,7 @@ const LoginPage = () => {
                     <form className="flex flex-col p-4 gap-6 bg-white">
                         <div className="flex flex-col">
                             <label htmlFor="email" className="text-indigo-500 font-medium text-2xl">Email</label>
-                            <input className="bg-indigo-100 rounded-md p-2 border-[1px] border-slate-200 outline-slate-500" id="email" type="email" placeholder=""/>
+                            <input className="bg-indigo-100 rounded-md p-2 border-[1px] outline-slate-500" id="email" type="email" placeholder=""/>
                         </div>
                         <div className="flex flex-col">
                             <label htmlFor="password" className="text-indigo-500 font-medium text-2xl">Password</label>

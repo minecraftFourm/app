@@ -23,7 +23,6 @@ const Registerpage = () => {
 
     useEffect(() => { // Automatically prefill data, if user came from login page with prefilled form.
         if (state) {
-            console.log(state)
             setRegisterDetails(prevValue => {
                 return {
                     ...prevValue,

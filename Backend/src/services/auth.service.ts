@@ -3,6 +3,7 @@ import crypto from 'crypto'
 import * as argon from 'argon2';
 import jwt from 'jsonwebtoken'
 import { Request, Response } from "express";
+import { EMAIL_PATTERN, PASSWORD_PATTERN, USERNAME_PATTERN } from "../config";
 
 type UserBody = {
     username: string
@@ -64,6 +65,15 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
 
 export const createUser = async (user: UserBody, res: Response) => {
     let { username, password, email } = user
+
+    const validateUsername = USERNAME_PATTERN.test(username);
+	const validateEmail = EMAIL_PATTERN.test(email);
+	const validatePassword = PASSWORD_PATTERN.test(password);
+    
+	// * Checks if a real email, good password and solid username has been provided using Regex patterns I copied from the world wide web.
+	if (!validateUsername) throw new Error("Invalid Username.");
+	if (!validatePassword) throw new Error("Invalid Password.");
+	if (!validateEmail) throw new Error("Invalid Email.");
 
     const salt = crypto.randomBytes(128)
     password = await argon.hash(password, { salt })

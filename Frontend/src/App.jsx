@@ -6,8 +6,8 @@ import Forumpage from "./Pages/ForumPage/Forumpage";
 import Teamspage from "./Pages/TeamPage/Teamspage";
 import Rulespage from "./Pages/RulesPage/Rulespage";
 import Gamespage from "./Pages/GamesPage/Gamespage";
-import LoginPage from "./Pages/LoginPage/LoginPage";
-import Registerpage from "./Pages/RegisterPage/Registerpage";
+import LoginPage from "./Pages/Authentication/LoginPage";
+import Registerpage from "./Pages/Authentication/Registerpage";
 function App() {
   const [isUserLoggedIn, setisUserLoggedIn] = useState(false);
   const Layout = () => {

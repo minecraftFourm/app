@@ -1,7 +1,10 @@
 import React from "react";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom"
+import { useState, useEffect } from "react";
 
 const Registerpage = () => {
+    const { state } = useLocation();
+
     const [ registerDetails, setRegisterDetails ] = useState({
         email: "",
         password: "",
@@ -9,8 +12,7 @@ const Registerpage = () => {
         showPassword: false
     })
     
-    const handleRegisterDetails = (type, newValue) => {
-        console.log(newValue)
+    const handleRegisterDetails = (type, newValue) => { // Update user details
         setRegisterDetails(prevValue => {
             return {
                 ...prevValue,
@@ -18,6 +20,18 @@ const Registerpage = () => {
             }
         })
     }
+
+    useEffect(() => { // Automatically prefill data, if user came from login page with prefilled form.
+        if (state) {
+            console.log(state)
+            setRegisterDetails(prevValue => {
+                return {
+                    ...prevValue,
+                    ...state,
+                }
+            })
+        }
+    }, [state]);
     
     return (
         <>
@@ -55,9 +69,9 @@ const Registerpage = () => {
                         </div>
                         <div className="flex flex-col gap-4 items-center">
                             <span className="text-gray-500 cursor-default">Already have an Account?
-                                <a className="text-indigo-500 hover:text-indigo-700 duration-300" href="/login"> Login Here</a>
+                                <Link className="text-indigo-500 hover:text-indigo-700 duration-300" to="../login" state={registerDetails}> Login Here</Link>
                             </span>
-                            <a className="bg-indigo-500 hover:bg-indigo-700 duration-300 text-white py-2 px-8 text-medium rounded-md cursor-pointer">Login</a>
+                            <button className="bg-indigo-500 hover:bg-indigo-700 duration-300 text-white py-2 px-8 text-medium rounded-md cursor-pointer">Login</button>
                         </div>
                     </form>
                 </div>

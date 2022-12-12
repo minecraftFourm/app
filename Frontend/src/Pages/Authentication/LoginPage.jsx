@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const LoginPage = () => {
+    const { state } = useLocation();
+
     const [ loginDetails, setLoginDetails ] = useState({
         email: "",
         password: "",
         showPassword: false
     })
 
-    const handleLoginDetails = (type, newValue) => {
-        console.log(newValue)
+    const handleLoginDetails = (type, newValue) => { // Update user details
         setLoginDetails(prevValue => {
             return {
                 ...prevValue,
@@ -17,6 +19,17 @@ const LoginPage = () => {
             }
         })
     }
+
+    useEffect(() => {
+        if (state) {
+            setLoginDetails(prevValue => { // Automatically prefill data, if user came from register page with prefilled form.
+                return {
+                    ...prevValue,
+                    ...state
+                }
+            })
+        }}, [state])
+
     return (
         <>
             <div className="container">
@@ -47,10 +60,10 @@ const LoginPage = () => {
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 items-center">
-                            <span className="text-gray-500 cursor-default">Don't have an account?
-                                <a className="text-indigo-500 hover:text-indigo-700 duration-300" href="#"> Register Here</a>
+                            <span className="text-gray-500 cursor-default">Don't have an account? 
+                                <Link className="text-indigo-500 hover:text-indigo-700 duration-300" to="../register" state={loginDetails}> Register Here</Link>
                             </span>
-                            <a className="bg-indigo-500 hover:bg-indigo-700 duration-300 text-white py-2 px-8 text-medium rounded-md cursor-pointer">Login</a>
+                            <button className="bg-indigo-500 hover:bg-indigo-700 duration-300 text-white py-2 px-8 text-medium rounded-md cursor-pointer">Login</button>
                         </div>
                     </form>
                 </div>

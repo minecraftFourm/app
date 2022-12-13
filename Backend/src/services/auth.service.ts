@@ -4,6 +4,8 @@ import * as argon from 'argon2';
 import jwt from 'jsonwebtoken'
 import { Request, Response } from "express";
 import { EMAIL_PATTERN, PASSWORD_PATTERN, USERNAME_PATTERN } from "../config";
+import CustomError from "../middlewears/custom-error";
+import { StatusCodes } from "http-status-codes";
 
 type UserBody = {
     username: string
@@ -35,7 +37,6 @@ const jwt_generator = (id: string, res: Response) => {
 export const loginUser = async (auth: LoginBody, res: Response) => {
     const {email, password } = auth
 
-    try{
         const user = await prisma.user.findUnique({
             where: {
                 email: email
@@ -56,48 +57,41 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
             ...user,
             token
         }
-    } catch(e: any) {
-        return {
-            message: e.message
-        }
     }
-}
 
 export const createUser = async (user: UserBody, res: Response) => {
     let { username, password, email } = user
 
+    if(!username) throw new CustomError("Missing Username", StatusCodes.BAD_REQUEST)
     const validateUsername = USERNAME_PATTERN.test(username);
+    console.log(username, validateUsername)
 	const validateEmail = EMAIL_PATTERN.test(email);
+    // console.log(email, validateEmail)
 	const validatePassword = PASSWORD_PATTERN.test(password);
     
 	// * Checks if a real email, good password and solid username has been provided using Regex patterns I copied from the world wide web.
-	if (!validateUsername) throw new Error("Invalid Username.");
-	if (!validatePassword) throw new Error("Invalid Password.");
-	if (!validateEmail) throw new Error("Invalid Email.");
+	if (!validateUsername) throw new CustomError("Invalid Username.", StatusCodes.BAD_REQUEST); 
+    // TODO: A weird bug occurs here
+	if (!validatePassword) throw new CustomError("Invalid Password.", StatusCodes.BAD_REQUEST);
+	if (!validateEmail) throw new CustomError("Invalid Email.", StatusCodes.BAD_REQUEST);
 
     const salt = crypto.randomBytes(128)
     password = await argon.hash(password, { salt })
     
-    try {
-        const user = await prisma.user.create({
-            data: {
-                username,
-                password,
-                email
-            }
-        })
 
-       const token = jwt_generator(user.id, res)
-
-        return {
-            ...user,
-            token
+    const newUser = await prisma.user.create({
+        data: {
+            username,
+            password,
+            email
         }
+    })
 
-    } catch(e: any) {
-       return {
-        message: e.message
-       }
+    const token = jwt_generator(newUser.id, res)
+
+    return {
+        ...newUser,
+        token
     }
 }
 

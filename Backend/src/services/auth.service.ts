@@ -18,19 +18,29 @@ type LoginBody = {
     password: string
 }
 
-const jwt_generator = (id: string, res: Response) => {
+export const jwt_generator = (id: string, res: Response) => {
     const payload = {_id: id}
     const jwt_key =  process.env.JWT_SECRET_KEY as string
     
     const accessToken = jwt.sign(payload, jwt_key, {expiresIn: '15m'})
     const refreshToken = jwt.sign(payload, jwt_key)
 
-    res.cookie('rt', refreshToken, {
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        httpOnly: true
+    // res.cookie('rt', refreshToken, {
+        // maxAge: 1000 * 60 * 60 * 24 * 7,  
+        // * maxAge isn't supported by all browsers
+    //     httpOnly: true
+    // })
+
+    const date: Date = new Date(); // Now
+    res.cookie("RefreshToken", refreshToken, {
+        signed: true,
+        httpOnly: true,
+        expires: new Date(date.setDate(date.getDate() + 30)), // 30 days from now.
     })
 
-    return accessToken
+    res.cookie("Authorization", `Bearer ${accessToken}`, {
+        expires: new Date(date.setDate(date.getMinutes() + 15)), // 15 minutes from now.
+    })
 }
 
 
@@ -51,11 +61,10 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
             throw new Error("Password is incorrect")
         }
 
-        const token = jwt_generator(user.id, res)
+        jwt_generator(user.id, res)
 
         return {
             ...user,
-            token
         }
     }
 
@@ -78,20 +87,21 @@ export const createUser = async (user: UserBody, res: Response) => {
     const salt = crypto.randomBytes(128)
     password = await argon.hash(password, { salt })
     
+    try {
+        const newUser = await prisma.user.create({
+            data: {
+                username,
+                password,
+                email
+            }
+        })
 
-    const newUser = await prisma.user.create({
-        data: {
-            username,
-            password,
-            email
-        }
-    })
-
-    const token = jwt_generator(newUser.id, res)
-
-    return {
-        ...newUser,
-        token
+        jwt_generator(newUser.id, res)
+        
+        return { ...newUser }
+        
+    } catch (error: any) {
+        throw new CustomError(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 
@@ -123,12 +133,9 @@ export const refreshToken = async (req: Request, res: Response) => {
             throw new Error("User not found")
         }
     
-        const token = jwt_generator(user.id, res)
+        jwt_generator(user.id, res)
     
-        return {
-            ...user,
-            token
-        }
+        return { ...user }
     } catch(e: any){
         return {
             message: e.message

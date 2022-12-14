@@ -12,20 +12,20 @@ export const registerUser = Wrapper(async (req: Request, res: Response, next: Ne
 export const signInUser = async (req: Request, res: Response) => {
     const { password, email} = req.body
     const user = await loginUser({email, password}, res)
-    res.send(user)
+    res.json(user)
 }
 
 
 export const signOutUser = async (req: Request, res: Response) => {
     logoutUser(res)
-    res.send({
+    res.json({
         message: "user logged out"
     })
 }
 
 export const refresh = async (req: Request, res: Response) => {
     const user = await refreshToken(req, res)
-    res.send({
+    res.json({
         ...user
     })
 }

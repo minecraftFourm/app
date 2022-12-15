@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import * as argon from 'argon2';
 import jwt from 'jsonwebtoken'
 import { Request, Response } from "express";
-import { EMAIL_PATTERN, PASSWORD_PATTERN, USERNAME_PATTERN } from "../config";
+import { ACCESS_TOKEN_EXIPIRY, EMAIL_PATTERN, PASSWORD_PATTERN, REFRESH_TOKEN_EXIPIRY, USERNAME_PATTERN } from "../config";
 import CustomError from "../middlewears/custom-error";
 import { StatusCodes } from "http-status-codes";
 
@@ -18,19 +18,40 @@ type LoginBody = {
     password: string
 }
 
-const jwt_generator = (id: string, res: Response) => {
+export const jwt_generator = async (id: string, res: Response) => {
     const payload = {_id: id}
     const jwt_key =  process.env.JWT_SECRET_KEY as string
     
-    const accessToken = jwt.sign(payload, jwt_key, {expiresIn: '15m'})
-    const refreshToken = jwt.sign(payload, jwt_key)
+    const accessToken = jwt.sign(payload, jwt_key, {expiresIn: `${ACCESS_TOKEN_EXIPIRY}m`})
+    const refreshToken = jwt.sign(payload, jwt_key, {expiresIn: `${REFRESH_TOKEN_EXIPIRY}m`})
 
-    res.cookie('rt', refreshToken, {
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        httpOnly: true
+    await prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          refreshToken: refreshToken,
+        },
+    }) // Updates the user db with the latest refresh token.
+
+    // res.cookie('rt', refreshToken, {
+        // maxAge: 1000 * 60 * 60 * 24 * 7,  
+        // * maxAge isn't supported by all browsers
+    //     httpOnly: true
+    // })
+
+    const date: Date = new Date(); // Now
+    res.cookie("RefreshToken", refreshToken, {
+        signed: true,
+        httpOnly: true,
+        expires: new Date(date.setDate(date.getMinutes() + REFRESH_TOKEN_EXIPIRY)), // 30 days from now.
     })
 
-    return accessToken
+    res.cookie("Authorization", `Bearer ${accessToken}`, {
+        expires: new Date(date.setDate(date.getMinutes() + ACCESS_TOKEN_EXIPIRY)), // 15 minutes from now.
+    })
+
+    return
 }
 
 
@@ -44,19 +65,16 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
         })
 
         if (!user) {
-            throw new Error("Email not found")
+            throw new CustomError("Email not found", StatusCodes.BAD_REQUEST)
         }
 
         if(!await argon.verify(user.password, password)) {
-            throw new Error("Password is incorrect")
+            throw new CustomError("Invalid Password", StatusCodes.BAD_REQUEST)
         }
 
-        const token = jwt_generator(user.id, res)
+        await jwt_generator(user.id, res)
 
-        return {
-            ...user,
-            token
-        }
+        return user
     }
 
 export const createUser = async (user: UserBody, res: Response) => {
@@ -64,9 +82,7 @@ export const createUser = async (user: UserBody, res: Response) => {
 
     if(!username) throw new CustomError("Missing Username", StatusCodes.BAD_REQUEST)
     const validateUsername = USERNAME_PATTERN.test(username);
-    console.log(username, validateUsername)
 	const validateEmail = EMAIL_PATTERN.test(email);
-    // console.log(email, validateEmail)
 	const validatePassword = PASSWORD_PATTERN.test(password);
     
 	// * Checks if a real email, good password and solid username has been provided using Regex patterns I copied from the world wide web.
@@ -78,20 +94,21 @@ export const createUser = async (user: UserBody, res: Response) => {
     const salt = crypto.randomBytes(128)
     password = await argon.hash(password, { salt })
     
+    try {
+        const newUser = await prisma.user.create({
+            data: {
+                username,
+                password,
+                email
+            }
+        })
 
-    const newUser = await prisma.user.create({
-        data: {
-            username,
-            password,
-            email
-        }
-    })
-
-    const token = jwt_generator(newUser.id, res)
-
-    return {
-        ...newUser,
-        token
+        await jwt_generator(newUser.id, res)
+        
+        return { ...newUser }
+        
+    } catch (error: any) {
+        throw new CustomError(error.message, StatusCodes.BAD_REQUEST)
     }
 }
 
@@ -110,7 +127,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         const decoded = jwt.verify(oldToken, jwt_key) as { _id: string}
     
         if(!decoded){
-            throw new Error("Invalid Token")
+            throw new CustomError("Invalid Token", StatusCodes.UNAUTHORIZED)
         }
     
         const user = await prisma.user.findUnique({
@@ -120,15 +137,12 @@ export const refreshToken = async (req: Request, res: Response) => {
         })
     
         if(!user){
-            throw new Error("User not found")
+            throw new CustomError("User not found", StatusCodes.UNAUTHORIZED)
         }
     
-        const token = jwt_generator(user.id, res)
+        await jwt_generator(user.id, res)
     
-        return {
-            ...user,
-            token
-        }
+        return { ...user }
     } catch(e: any){
         return {
             message: e.message

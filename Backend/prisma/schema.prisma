@@ -62,4 +62,5 @@ model Comment {
   ownerId String
   created DateTime
   updated DateTime
+  refreshToken String @default("")
 }

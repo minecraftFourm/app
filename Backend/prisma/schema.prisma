@@ -15,4 +15,5 @@ model User {
   username String
   password String
   email String @unique()
+  refreshToken String @default("")
 }

@@ -18,12 +18,21 @@ type LoginBody = {
     password: string
 }
 
-export const jwt_generator = (id: string, res: Response) => {
+export const jwt_generator = async (id: string, res: Response) => {
     const payload = {_id: id}
     const jwt_key =  process.env.JWT_SECRET_KEY as string
     
     const accessToken = jwt.sign(payload, jwt_key, {expiresIn: '15m'})
     const refreshToken = jwt.sign(payload, jwt_key)
+
+    await prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          refreshToken: refreshToken,
+        },
+    }) // Updates the user db with the latest refresh token.
 
     // res.cookie('rt', refreshToken, {
         // maxAge: 1000 * 60 * 60 * 24 * 7,  
@@ -41,6 +50,8 @@ export const jwt_generator = (id: string, res: Response) => {
     res.cookie("Authorization", `Bearer ${accessToken}`, {
         expires: new Date(date.setDate(date.getMinutes() + 15)), // 15 minutes from now.
     })
+
+    return
 }
 
 
@@ -54,18 +65,16 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
         })
 
         if (!user) {
-            throw new Error("Email not found")
+            throw new CustomError("Email not found", StatusCodes.BAD_REQUEST)
         }
 
         if(!await argon.verify(user.password, password)) {
-            throw new Error("Password is incorrect")
+            throw new CustomError("Invalid Password", StatusCodes.BAD_REQUEST)
         }
 
-        jwt_generator(user.id, res)
+        await jwt_generator(user.id, res)
 
-        return {
-            ...user,
-        }
+        return user
     }
 
 export const createUser = async (user: UserBody, res: Response) => {
@@ -96,7 +105,7 @@ export const createUser = async (user: UserBody, res: Response) => {
             }
         })
 
-        jwt_generator(newUser.id, res)
+        await jwt_generator(newUser.id, res)
         
         return { ...newUser }
         
@@ -133,7 +142,7 @@ export const refreshToken = async (req: Request, res: Response) => {
             throw new Error("User not found")
         }
     
-        jwt_generator(user.id, res)
+        await jwt_generator(user.id, res)
     
         return { ...user }
     } catch(e: any){

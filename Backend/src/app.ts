@@ -6,13 +6,14 @@ import errorHandler from "./middlewears/error-handler";
 import auth from "./middlewears/auth";
 import { COOKIE_SECRET } from "./config";
 const morgan = require("morgan");
-
+const cors = require("cors");
 dotenv.config()
 
 const port = process.env.PORT;
 const app = express();
 
 app.use(morgan("dev"));
+app.use(cors());
 app.use(express.json())
 app.use(cookieParser(COOKIE_SECRET))
 

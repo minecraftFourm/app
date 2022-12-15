@@ -3,14 +3,17 @@ import {createUser, loginUser, logoutUser, refreshToken} from '../services/auth.
 import Wrapper from '../middlewears/async-wrapper'
 import { StatusCodes } from 'http-status-codes'
 
+
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
     const {username, password, email} = req.body
+
     const user = await createUser({username, password, email}, res)
     res.status(StatusCodes.CREATED).json(user)
 }
 
 export const signInUser = async (req: Request, res: Response) => {
-    const { password, email} = req.body
+    const { password, email } = req.body
+
     const user = await loginUser({email, password}, res)
     return res.status(StatusCodes.ACCEPTED).json(user)
 }

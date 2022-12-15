@@ -49,6 +49,8 @@ export const jwt_generator = async (id: string, res: Response) => {
 
     res.cookie("Authorization", `Bearer ${accessToken}`, {
         expires: new Date(date.setDate(date.getMinutes() + ACCESS_TOKEN_EXIPIRY)), // 15 minutes from now.
+        httpOnly: false,
+        signed: true
     })
 
     return
@@ -57,6 +59,10 @@ export const jwt_generator = async (id: string, res: Response) => {
 
 export const loginUser = async (auth: LoginBody, res: Response) => {
     const {email, password } = auth
+    
+        // Validations
+        if (!password || !email) throw new CustomError('Please input a valid email, and password.', StatusCodes.BAD_REQUEST);
+        if (!EMAIL_PATTERN.test(email)) throw new CustomError('Please input a valid email', StatusCodes.BAD_REQUEST);
 
         const user = await prisma.user.findUnique({
             where: {
@@ -74,7 +80,8 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
 
         await jwt_generator(user.id, res)
 
-        return user
+        
+        return { id: user.id, username: user.username, email: user.email }
     }
 
 export const createUser = async (user: UserBody, res: Response) => {
@@ -105,7 +112,7 @@ export const createUser = async (user: UserBody, res: Response) => {
 
         await jwt_generator(newUser.id, res)
         
-        return { ...newUser }
+        return { id: newUser.id, username: newUser.username, email: newUser.email }
         
     } catch (error: any) {
         throw new CustomError(error.message, StatusCodes.BAD_REQUEST)

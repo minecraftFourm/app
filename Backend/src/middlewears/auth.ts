@@ -15,7 +15,7 @@ interface JwtPayload {
 }
 
 const auth = wrapper(async (req: Request, res: res, next: NextFunction) => {    
-    let { signedCookies: { RefreshToken: refreshToken }, cookies: { Authorization: accessToken } } = req;
+    let { signedCookies: { RefreshToken: refreshToken, Authorization: accessToken } } = req;
 
     if ((!accessToken || !accessToken.startsWith("Bearer ") || !refreshToken )) {
         throw new CustomError(ReasonPhrases.UNAUTHORIZED, StatusCodes.UNAUTHORIZED)

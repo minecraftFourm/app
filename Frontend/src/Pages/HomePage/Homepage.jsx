@@ -46,7 +46,7 @@ const Homepage = () => {
 					</div>
 
 				</div>
-				<div className="h-[800px] w-96 bg-white p-6">
+				<div className="h-[800px] w-96 bg-white p-6 hidden md:block">
 					<div className="bg-gray-500 w-full h-full">
 
 					</div>

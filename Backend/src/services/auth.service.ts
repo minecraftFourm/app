@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import * as argon from 'argon2';
 import jwt from 'jsonwebtoken'
 import { Request, Response } from "express";
-import { EMAIL_PATTERN, PASSWORD_PATTERN, USERNAME_PATTERN } from "../config";
+import { ACCESS_TOKEN_EXIPIRY, EMAIL_PATTERN, PASSWORD_PATTERN, REFRESH_TOKEN_EXIPIRY, USERNAME_PATTERN } from "../config";
 import CustomError from "../middlewears/custom-error";
 import { StatusCodes } from "http-status-codes";
 
@@ -22,8 +22,8 @@ export const jwt_generator = async (id: string, res: Response) => {
     const payload = {_id: id}
     const jwt_key =  process.env.JWT_SECRET_KEY as string
     
-    const accessToken = jwt.sign(payload, jwt_key, {expiresIn: '15m'})
-    const refreshToken = jwt.sign(payload, jwt_key)
+    const accessToken = jwt.sign(payload, jwt_key, {expiresIn: `${ACCESS_TOKEN_EXIPIRY}m`})
+    const refreshToken = jwt.sign(payload, jwt_key, {expiresIn: `${REFRESH_TOKEN_EXIPIRY}m`})
 
     await prisma.user.update({
         where: {
@@ -44,11 +44,11 @@ export const jwt_generator = async (id: string, res: Response) => {
     res.cookie("RefreshToken", refreshToken, {
         signed: true,
         httpOnly: true,
-        expires: new Date(date.setDate(date.getDate() + 30)), // 30 days from now.
+        expires: new Date(date.setDate(date.getMinutes() + REFRESH_TOKEN_EXIPIRY)), // 30 days from now.
     })
 
     res.cookie("Authorization", `Bearer ${accessToken}`, {
-        expires: new Date(date.setDate(date.getMinutes() + 15)), // 15 minutes from now.
+        expires: new Date(date.setDate(date.getMinutes() + ACCESS_TOKEN_EXIPIRY)), // 15 minutes from now.
     })
 
     return
@@ -82,9 +82,7 @@ export const createUser = async (user: UserBody, res: Response) => {
 
     if(!username) throw new CustomError("Missing Username", StatusCodes.BAD_REQUEST)
     const validateUsername = USERNAME_PATTERN.test(username);
-    console.log(username, validateUsername)
 	const validateEmail = EMAIL_PATTERN.test(email);
-    // console.log(email, validateEmail)
 	const validatePassword = PASSWORD_PATTERN.test(password);
     
 	// * Checks if a real email, good password and solid username has been provided using Regex patterns I copied from the world wide web.
@@ -129,7 +127,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         const decoded = jwt.verify(oldToken, jwt_key) as { _id: string}
     
         if(!decoded){
-            throw new Error("Invalid Token")
+            throw new CustomError("Invalid Token", StatusCodes.UNAUTHORIZED)
         }
     
         const user = await prisma.user.findUnique({
@@ -139,7 +137,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         })
     
         if(!user){
-            throw new Error("User not found")
+            throw new CustomError("User not found", StatusCodes.UNAUTHORIZED)
         }
     
         await jwt_generator(user.id, res)

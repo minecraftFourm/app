@@ -5,4 +5,8 @@ export const PASSWORD_PATTERN =
 
 export const USERNAME_PATTERN = /^(?:[a-z][a-z0-9]{5,30}[a-z])$/gi; // Minimum 7 characters, cannot start with a word, or special characters, also cannot end with a special character. Maximum length is 32 characters.
 
+export const COOKIE_SECRET = 'secret';
 
+// Time in minutes
+export const ACCESS_TOKEN_EXIPIRY = 15
+export const REFRESH_TOKEN_EXIPIRY = 43200

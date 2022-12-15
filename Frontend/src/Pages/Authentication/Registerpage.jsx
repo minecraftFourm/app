@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom"
 import { useState, useEffect } from "react";
+import { API_URL, PASSWORD_REQUIREMENT, USERNAME_REQUIREMENT } from "../../config";
 
 const Registerpage = () => {
     const { state } = useLocation();
@@ -9,7 +10,10 @@ const Registerpage = () => {
         email: "",
         password: "",
         username: "",
-        showPassword: false
+        showPassword: false,
+        showEmailError: false,
+        showPasswordError: false,
+        showUsernameError: false
     })
     
     const handleRegisterDetails = (type, newValue) => { // Update user details
@@ -31,6 +35,25 @@ const Registerpage = () => {
             })
         }
     }, [state]);
+
+
+    const handleRegister = async (e) => {
+        e.preventDefault()
+        const response = await fetch(`${API_URL}/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: registerDetails.email,
+                password: registerDetails.password,
+                username: registerDetails.username
+            })
+        })
+
+        const data = await response.json()
+        console.log(data)
+    }
     
     return (
         <>
@@ -39,14 +62,16 @@ const Registerpage = () => {
                     <div className="bg-indigo-500 p-4 text-center text-white">
                         <h2 className="text-2xl font-bold">Register</h2>
                     </div>
-                    <form className="flex flex-col p-4 gap-6 bg-white">
+                    <form className="flex flex-col p-4 gap-2 bg-white">
                         <div className="flex flex-col">
                             <label htmlFor="email" className="text-indigo-500 font-medium text-2xl">Email</label>
                             <input className="bg-indigo-100 rounded-md p-2 border-[1px] outline-slate-500" value={registerDetails.email} onChange={(e) => handleRegisterDetails('email', e.currentTarget.value)} id="email" type="email" placeholder=""/>
+                            <span className={`text-red-700 text-sm font-normal w-full mx-1 ${registerDetails.showEmailError ? 'block' : 'hidden'}`}>Kindly please provide a valid email.</span>
                         </div>
                         <div className="flex flex-col">
                             <label htmlFor="username" className="text-indigo-500 font-medium text-2xl">Username</label>
                             <input className="bg-indigo-100 rounded-md p-2 border-[1px] outline-slate-500" value={registerDetails.username} onChange={(e) => handleRegisterDetails('username', e.currentTarget.value)} id="username" type="text"/>
+                            <span className={`text-red-700 text-sm font-normal w-full mx-1 ${registerDetails.showUsernameError ? 'block' : 'hidden'}`}>{USERNAME_REQUIREMENT}</span>
                         </div>
                         <div className="flex flex-col">
                             <label htmlFor="password" className="text-indigo-500 font-medium text-2xl">Password</label>
@@ -65,12 +90,13 @@ const Registerpage = () => {
                                 }
 
                             </div>
+                            <span className={`text-red-700 text-sm font-normal w-full mx-1 ${registerDetails.showPasswordError ? 'block' : 'hidden'}`}>{PASSWORD_REQUIREMENT}</span>
                         </div>
                         <div className="flex flex-col gap-4 items-center">
                             <span className="text-gray-500 cursor-default">Already have an Account?
                                 <Link className="text-indigo-500 hover:text-indigo-700 duration-300" to="../login" state={registerDetails}> Login Here</Link>
                             </span>
-                            <button className="bg-indigo-500 hover:bg-indigo-700 duration-300 text-white py-2 px-8 text-medium rounded-md cursor-pointer">Login</button>
+                            <button className="bg-indigo-500 hover:bg-indigo-700 duration-300 text-white py-2 px-8 text-medium rounded-md cursor-pointer" onClick={handleRegister}>Register</button>
                         </div>
                     </form>
                 </div>

@@ -21,6 +21,7 @@ model User {
   post Post[]
   comment Comment[]
   stats Stats?
+  refreshToken String @default("")
 }
 
 enum Role {
@@ -62,5 +63,4 @@ model Comment {
   ownerId String
   created DateTime
   updated DateTime
-  refreshToken String @default("")
 }

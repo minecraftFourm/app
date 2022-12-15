@@ -20,12 +20,22 @@ services:
       - db
 
   db:
-    image: postgres:11.6-alpine
+    restart: always
+    image: postgres
     ports:
-      - "5432:5432"
-    container_name: database-docker
+      - 5432:5432
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
     volumes:
-      - app-data:/var/lib/postgresql/data
+       - app-data:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - 5050:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
 
 volumes:
   app-data:

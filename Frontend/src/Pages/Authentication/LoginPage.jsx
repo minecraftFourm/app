@@ -1,18 +1,26 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { API_URL, EMAIL_PATTERN, PASSWORD_PATTERN, PASSWORD_REQUIREMENT } from "../../config";
+import { UseSetUser } from "../../Contexts/UserContext";
 
 const LoginPage = () => {
+    const setUser = UseSetUser();
+    const Navigate = useNavigate();
     const { state } = useLocation();
 
-    const [ loginDetails, setLoginDetails ] = useState({
+    const fields = {
         email: "",
         password: "",
         showPassword: false,
         showEmailError: false,
         showPasswordError: false
-    })
+    }
+
+    const [ loginDetails, setLoginDetails ] = useState(fields)
+    const resetForm = () => {
+        setLoginDetails(fields);
+    }
 
     const handleLoginDetails = (type, newValue) => { // Update user details
         setLoginDetails(prevValue => {
@@ -58,12 +66,12 @@ const LoginPage = () => {
 
         const handleLogin = async (e) => {
             e.preventDefault()
-            console.log(loginDetails)
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     email: loginDetails.email,
                     password: loginDetails.password
@@ -71,7 +79,14 @@ const LoginPage = () => {
             })
 
             const data = await response.json()
-            console.log(data)
+
+            setUser({ isAuthenticated: true, id: data.id, username: data.username })
+            // Reset login form
+            resetForm();
+            // Navigate to the main page.
+            Navigate('/', {
+                replace: true
+            })
         }
 
     return (

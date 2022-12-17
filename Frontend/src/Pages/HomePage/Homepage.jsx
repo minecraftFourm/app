@@ -1,15 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import announcemnet1 from "../../assets/announcement-1.jpg"
 import announcement2 from "../../assets/announcement-2.jpg"
 import mainBg from "../../assets/mainBg.jpg"
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
+import { API_URL } from "../../config";
+
 const Homepage = () => {
+	const f = async () => {
+		const response = await fetch(`${API_URL}/protected`, {
+			credentials: 'include',
+			headers: {
+                'Content-Type': 'application/json'
+            },
+		})
+		console.log(await response.json())
+	}
+	const [ showTitle, setShowTitle ] = useState(false);
+
+	
   return (
 	<>
 		<section className="relative">
-			<img src={mainBg} alt="" className="object-cover" />
-			<div className="absolute top-0 bottom-0 left-0 right-0 grid place-items-center text-white bg-[#00000080]">
-				<h1 className="font-extrabold text-6xl">ServerName</h1>
+			<LazyLoadImage
+				alt='Website Hero Background'
+				src={mainBg} // use normal <img> attributes as props
+				afterLoad={() => setShowTitle(true)}
+				effect="blur"
+			/>
+			<div className={`absolute top-0 bottom-0 left-0 right-0 grid place-items-center text-white bg-[#00000080] duration-1000 ${showTitle ? 'opacity-100' : 'opacity-0'}`}>
+				<h1 className={`font-extrabold text-6xl duration-700 ${showTitle ? 'opacity-100' : 'opacity-0'}`} onClick={f}>ServerName</h1>
 			</div>
+
 		</section>
 		{/* TODO: Hero Content */}
 		<div className="bg-[#1B263B] w-full h-full px-16 py-4">

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import announcemnet1 from "../../assets/announcement-1.jpg"
-import announcement2 from "../../assets/announcement-2.jpg"
-import mainBg from "../../assets/mainBg.jpg"
+import announcemnet1 from "../assets/announcement-1.jpg"
+import announcement2 from "../assets/announcement-2.jpg"
+import mainBg from "../assets/mainBg.jpg"
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
-import { API_URL } from "../../config";
+import { API_URL } from "../config";
 
 const Homepage = () => {
 	const f = async () => {

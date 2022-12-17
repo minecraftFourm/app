@@ -21,6 +21,7 @@ const auth = wrapper(async (req: Request, res: res, next: NextFunction) => {
         throw new CustomError(ReasonPhrases.UNAUTHORIZED, StatusCodes.UNAUTHORIZED)
     } // invalid tokens
 
+    
     try {
         // Tries to verify user using the access token
         accessToken = accessToken.split(" ")[1]
@@ -41,14 +42,15 @@ const auth = wrapper(async (req: Request, res: res, next: NextFunction) => {
             id: _id
         },
         select: {
-            refreshToken: true
+            refreshToken: true,
+            username: true
         }
     })
     if (user?.refreshToken !== refreshToken) {
         throw new CustomError("Invalid Token.", StatusCodes.UNAUTHORIZED)
     }
-    await jwt_generator(_id, res) // Generates new refresh and access token.
-    res.user = { _id }
+    await jwt_generator({ id: _id, username: user?.username }, res) // Generates new refresh and access token.
+    res.user = { id: _id }
     return next()
 })
 

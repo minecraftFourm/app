@@ -16,8 +16,8 @@ model User {
   password String
   email String @unique()
   role Role @default(USER)
-  bio String
-  created DateTime
+  bio String @default("")
+  created DateTime @default(now())
   post Post[]
   comment Comment[]
   stats Stats?

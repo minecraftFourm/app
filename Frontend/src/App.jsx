@@ -3,11 +3,11 @@ import Navbar from "./Components/NavBar/Navbar";
 import { createBrowserRouter, Route, Routes } from "react-router-dom";
 import CheckAuth from "./Contexts/CheckAuth";
 
-const Home = lazy(() => import("./Pages/HomePage/Homepage"))
-const Forum = lazy(() => import("./Pages/Forumpage/Forumpage"))
-const Teams = lazy(() => import("./Pages/TeamPage/Teamspage"))
-const Rules = lazy(() => import("./Pages/RulesPage/Rulespage"))
-const Games = lazy(() => import("./Pages/GamesPage/Gamespage"))
+const Home = lazy(() => import("./Pages/Homepage"))
+const Forum = lazy(() => import("./Pages/Forumpage"))
+const Teams = lazy(() => import("./Pages/Teamspage"))
+const Rules = lazy(() => import("./Pages/Rulespage"))
+const Games = lazy(() => import("./Pages/Gamespage"))
 const Login = lazy(() => import("./Pages/Authentication/LoginPage"))
 const Register = lazy(() => import("./Pages/Authentication/Registerpage"))
 const RedirectAuth = lazy(() => import("./Contexts/RedirectAuth")); 

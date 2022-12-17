@@ -18,16 +18,20 @@ type LoginBody = {
     password: string
 }
 
-export const jwt_generator = async (id: string, res: Response) => {
-    const payload = {_id: id}
+type props = {
+    id: string,
+    username?: string
+}
+
+export const jwt_generator = async (payload: props, res: Response) => {
     const jwt_key =  process.env.JWT_SECRET_KEY as string
-    
+
     const accessToken = jwt.sign(payload, jwt_key, {expiresIn: `${ACCESS_TOKEN_EXIPIRY}m`})
     const refreshToken = jwt.sign(payload, jwt_key, {expiresIn: `${REFRESH_TOKEN_EXIPIRY}m`})
 
     await prisma.user.update({
         where: {
-          id: id,
+          id: payload.id,
         },
         data: {
           refreshToken: refreshToken,
@@ -40,15 +44,14 @@ export const jwt_generator = async (id: string, res: Response) => {
     //     httpOnly: true
     // })
 
-    const date: Date = new Date(); // Now
     res.cookie("RefreshToken", refreshToken, {
         signed: true,
         httpOnly: true,
-        expires: new Date(date.setDate(date.getMinutes() + REFRESH_TOKEN_EXIPIRY)), // 30 days from now.
+        maxAge: REFRESH_TOKEN_EXIPIRY,
     })
 
     res.cookie("Authorization", `Bearer ${accessToken}`, {
-        expires: new Date(date.setDate(date.getMinutes() + ACCESS_TOKEN_EXIPIRY)), // 15 minutes from now.
+        maxAge: ACCESS_TOKEN_EXIPIRY,
         httpOnly: false,
         signed: true
     })
@@ -78,7 +81,7 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
             throw new CustomError("Invalid Password", StatusCodes.BAD_REQUEST)
         }
 
-        await jwt_generator(user.id, res)
+        await jwt_generator({ id: user.id, username: user.username }, res)
 
         
         return { id: user.id, username: user.username, email: user.email }
@@ -110,7 +113,7 @@ export const createUser = async (user: UserBody, res: Response) => {
             }
         })
 
-        await jwt_generator(newUser.id, res)
+        await jwt_generator({ id: newUser.id, username: newUser.username }, res)
         
         return { id: newUser.id, username: newUser.username, email: newUser.email }
         
@@ -120,9 +123,15 @@ export const createUser = async (user: UserBody, res: Response) => {
 }
 
 export const logoutUser = (res: Response) => {
-    res.cookie('rt', '', {
+    res.cookie('RefreshToken', '', {
         expires: new Date(0),
         httpOnly: true
+    })
+
+    res.cookie("Authorization", '', {
+        expires: new Date(0),
+        httpOnly: false,
+        signed: true
     })
 }
 
@@ -142,12 +151,12 @@ export const refreshToken = async (req: Request, res: Response) => {
                 id: decoded._id
             }
         })
-    
+
         if(!user){
             throw new CustomError("User not found", StatusCodes.UNAUTHORIZED)
         }
     
-        await jwt_generator(user.id, res)
+        await jwt_generator({ id: user.id, username: user.username }, res)
     
         return { ...user }
     } catch(e: any){

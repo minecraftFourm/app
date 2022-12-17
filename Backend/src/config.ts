@@ -7,6 +7,6 @@ export const USERNAME_PATTERN = /^(?:[a-z][a-z0-9]{5,30}[a-z])$/gi; // Minimum 7
 
 export const COOKIE_SECRET = 'secret';
 
-// Time in minutes
-export const ACCESS_TOKEN_EXIPIRY = 15
-export const REFRESH_TOKEN_EXIPIRY = 43200
+// Time in milliseconds
+export const ACCESS_TOKEN_EXIPIRY = 1000 * 60 * 15 // 15 Minutes
+export const REFRESH_TOKEN_EXIPIRY = 1000 * 60 * 60 * 24 * 30 // 30 days

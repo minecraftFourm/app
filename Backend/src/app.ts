@@ -7,13 +7,19 @@ import auth from "./middlewears/auth";
 import { COOKIE_SECRET } from "./config";
 const morgan = require("morgan");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 dotenv.config()
 
 const port = process.env.PORT;
 const app = express();
 
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }
+
 app.use(morgan("dev"));
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json())
 app.use(cookieParser(COOKIE_SECRET))
 

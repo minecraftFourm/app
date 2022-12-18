@@ -5,17 +5,15 @@ import mainBg from "../assets/mainBg.jpg"
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { API_URL } from "../config";
+import { useFetch } from "../Contexts/Fetch";
 
 const Homepage = () => {
+	const CustomFetch = useFetch();
+
 	const f = async () => {
-		const response = await fetch(`${API_URL}/protected`, {
-			credentials: 'include',
-			headers: {
-                'Content-Type': 'application/json'
-            },
-		})
-		console.log(await response.json())
+		const data = await CustomFetch({ url: 'protected' });
 	}
+
 	const [ showTitle, setShowTitle ] = useState(false);
 
 	

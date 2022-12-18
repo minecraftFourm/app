@@ -1,6 +1,5 @@
 import {Request, Response, NextFunction} from 'express'
-import {createUser, loginUser, logoutUser, refreshToken} from '../services/auth.service'
-import Wrapper from '../middlewears/async-wrapper'
+import {createUser, loginUser, logoutUser, /* refreshToken */} from '../services/auth.service'
 import { StatusCodes } from 'http-status-codes'
 
 
@@ -26,9 +25,10 @@ export const signOutUser = async (req: Request, res: Response) => {
     })
 }
 
-export const refresh = async (req: Request, res: Response) => {
-    const user = await refreshToken(req, res)
-    res.json({
-        ...user
-    })
-}
+// ! Don't think we need a specific route dedicated to refreshing tokens anymore.
+// export const refresh = async (req: Request, res: Response) => {
+//     const user = await refreshToken(req, res)
+//     res.json({
+//         ...user
+//     })
+// }

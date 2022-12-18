@@ -69,7 +69,7 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
 
         const user = await prisma.user.findUnique({
             where: {
-                email: email
+                email: email.toLowerCase()
             }
         })
 
@@ -90,16 +90,20 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
 export const createUser = async (user: UserBody, res: Response) => {
     let { username, password, email } = user
 
-    if(!username) throw new CustomError("Missing Username", StatusCodes.BAD_REQUEST)
+    if(!username) username = '' 
     const validateUsername = USERNAME_PATTERN.test(username);
 	const validateEmail = EMAIL_PATTERN.test(email);
 	const validatePassword = PASSWORD_PATTERN.test(password);
-    
+    console.log(username, email, password)
+    console.log(validateUsername, validateEmail, validatePassword)
 	// * Checks if a real email, good password and solid username has been provided using Regex patterns I copied from the world wide web.
 	if (!validateUsername) throw new CustomError("Invalid Username.", StatusCodes.BAD_REQUEST); 
-    // TODO: A weird bug occurs here
 	if (!validatePassword) throw new CustomError("Invalid Password.", StatusCodes.BAD_REQUEST);
 	if (!validateEmail) throw new CustomError("Invalid Email.", StatusCodes.BAD_REQUEST);
+
+    // * Makes it case insensitive
+    username = username.toLowerCase();
+    email = email.toLowerCase();
 
     const salt = crypto.randomBytes(128)
     password = await argon.hash(password, { salt })
@@ -135,33 +139,34 @@ export const logoutUser = (res: Response) => {
     })
 }
 
-export const refreshToken = async (req: Request, res: Response) => {
-    try {
-        const oldToken = req.cookies['rt'];
-        const jwt_key =  process.env.JWT_SECRET_KEY as string
+// ! Don't think we need a specific route dedicated to refreshing tokens anymore.
+// export const refreshToken = async (req: Request, res: Response) => {
+//     try {
+//         const oldToken = req.cookies['rt'];
+//         const jwt_key =  process.env.JWT_SECRET_KEY as string
     
-        const decoded = jwt.verify(oldToken, jwt_key) as { _id: string}
+//         const decoded = jwt.verify(oldToken, jwt_key) as { _id: string}
     
-        if(!decoded){
-            throw new CustomError("Invalid Token", StatusCodes.UNAUTHORIZED)
-        }
+//         if(!decoded){
+//             throw new CustomError("Invalid Token", StatusCodes.UNAUTHORIZED)
+//         }
     
-        const user = await prisma.user.findUnique({
-            where: {
-                id: decoded._id
-            }
-        })
+//         const user = await prisma.user.findUnique({
+//             where: {
+//                 id: decoded._id
+//             }
+//         })
 
-        if(!user){
-            throw new CustomError("User not found", StatusCodes.UNAUTHORIZED)
-        }
+//         if(!user){
+//             throw new CustomError("User not found", StatusCodes.UNAUTHORIZED)
+//         }
     
-        await jwt_generator({ id: user.id, username: user.username }, res)
+//         await jwt_generator({ id: user.id, username: user.username }, res)
     
-        return { ...user }
-    } catch(e: any){
-        return {
-            message: e.message
-        }
-    }
-}
+//         return { ...user }
+//     } catch(e: any){
+//         return {
+//             message: e.message
+//         }
+//     }
+// }

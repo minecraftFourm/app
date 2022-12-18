@@ -5,6 +5,22 @@ import { EMAIL_PATTERN, PASSWORD_PATTERN, PASSWORD_REQUIREMENT, USERNAME_PATTERN
 import { UseSetUser } from "../../Contexts/UserContext";
 import { useFetch } from "../../Contexts/Fetch";
 
+const optionFields = {
+    showPassword: false,
+    showEmailError: false,
+    showPasswordError: false,
+    showUsernameError: false,
+    validEmail: false,
+    validPassword: false,
+    validUsername: false
+}
+
+const fields = {
+    email: "",
+    password: "",
+    username: "",
+}
+
 const Registerpage = () => {
     const [ err, setErr ] = useState(null);
     const CustomFetch = useFetch();
@@ -12,34 +28,15 @@ const Registerpage = () => {
     const setUser = UseSetUser();
     const { state } = useLocation();
     const [ formSubmittable, setFormSubmittable ] = useState(false);
-    const [ options, setOptions ] = useState({
-        showPassword: false,
-        showEmailError: false,
-        showPasswordError: false,
-        showUsernameError: false
-    });
-    const fields = {
-        email: "",
-        password: "",
-        username: "",
-    }
-
+    const [ options, setOptions ] = useState(optionFields);
     const [ registerDetails, setRegisterDetails ] = useState(fields)
     
     const resetForm = () => {
         setRegisterDetails(fields);
     }
 
-    const handleRegisterDetails = (type, newValue) => { // Update user details
-        setRegisterDetails(prevValue => {
-            return {
-                ...prevValue,
-                [`${type}`]: newValue
-            }
-        })
-    }
-
-    useEffect(() => { // Automatically prefill data, if user came from login page with prefilled form.
+    // Automatically prefill data, if user came from login page with prefilled form.
+    useEffect(() => { 
         if (state) {
             setRegisterDetails(prevValue => {
                 return {
@@ -50,42 +47,37 @@ const Registerpage = () => {
         }
     }, [state]);
 
+    // Update user registration details
+    const handleRegisterDetails = (type, newValue) => { 
+        setRegisterDetails(prevValue => {
+            return {
+                ...prevValue,
+                [`${type}`]: newValue
+            }
+        })
+    }
+
+    // Update options state
+    const updateOptions = (property, value) => {
+        setOptions(prevValue => {
+            return {
+                ...prevValue,
+                [`${property}`]: value
+            }
+        })
+    }
+
+    // Runs on every render, and check if the email, username and password is valid or not, while setting the state accordingly.
     useEffect(() => {
-        if (registerDetails.email && !EMAIL_PATTERN.test(registerDetails.email)) {
-            setOptions(prevValue => {
-                return {...prevValue, showEmailError: true}
-            })
-        } else {
-            setOptions(prevValue => {
-                return {...prevValue, showEmailError: false}
-            })
-        }
-
-        if (registerDetails.username && !USERNAME_PATTERN.test(registerDetails.username)) {
-            setOptions(prevValue => {
-                return {...prevValue, showUsernameError: true}
-            })
-        } else {
-            setOptions(prevValue => {
-                return {...prevValue, showUsernameError: false}
-            })
-        }
-
-        // Check if a password has been been provided and is valid.
-        if (registerDetails.password && !PASSWORD_PATTERN.test(registerDetails.password)) {
-            setOptions(prevValue => {
-                return {...prevValue, showPasswordError: true}
-            })
-        }
-        else {
-            setOptions(prevValue => {
-                return {...prevValue, showPasswordError: false}
-            })
-        }
-        // The form becomes submittable when there are no password or email errors.
-        (!options.showPasswordError && !options.showEmailError) ? setFormSubmittable(true) : setFormSubmittable(false)
-
+        (registerDetails.email.length > 1 && EMAIL_PATTERN.test(registerDetails.email)) ? updateOptions('validEmail', true) : updateOptions('validEmail', false);
+        (registerDetails.username.length > 1 && USERNAME_PATTERN.test(registerDetails.username)) ? updateOptions('validUsername', true) : updateOptions('validUsername', false);
+        (registerDetails.password.length > 1 && PASSWORD_PATTERN.test(registerDetails.password)) ? updateOptions('validPassword', true) : updateOptions('validPassword', false);
     }, [registerDetails]);
+
+    // Updates the formSubmittable state, couldn't have this code along with the code above due to state taking time before it applies the changes.
+    useEffect(() => {
+        (options.validEmail && options.validUsername && options.validPassword) ? setFormSubmittable(true) : setFormSubmittable(false)
+    })
 
     const handleRegister = async (e) => {
         e.preventDefault()
@@ -124,12 +116,12 @@ const Registerpage = () => {
                         <div className="flex flex-col">
                             <label htmlFor="email" className="text-indigo-500 font-medium text-2xl">Email</label>
                             <input className="bg-indigo-100 rounded-md p-2 border-[1px] outline-slate-500" value={registerDetails.email} onChange={(e) => handleRegisterDetails('email', e.currentTarget.value)} id="email" type="email" placeholder=""/>
-                            <span className={`text-red-700 text-sm font-normal w-full mx-1 ${options.showEmailError ? 'block' : 'hidden'}`}>Kindly please provide a valid email.</span>
+                            <span className={`text-red-700 text-sm font-normal w-full mx-1 ${!options.validEmail && registerDetails.email.length > 1 ? 'block' : 'hidden'}`}>Kindly please provide a valid email.</span>
                         </div>
                         <div className="flex flex-col">
                             <label htmlFor="username" className="text-indigo-500 font-medium text-2xl">Username</label>
                             <input className="bg-indigo-100 rounded-md p-2 border-[1px] outline-slate-500" value={registerDetails.username} onChange={(e) => handleRegisterDetails('username', e.currentTarget.value)} id="username" type="text"/>
-                            <span className={`text-red-700 text-sm font-normal w-full mx-1 ${options.showUsernameError ? 'block' : 'hidden'}`}>{USERNAME_REQUIREMENT}</span>
+                            <span className={`text-red-700 text-sm font-normal w-full mx-1 ${!options.validUsername && registerDetails.username.length > 1 ? 'block' : 'hidden'}`}>{USERNAME_REQUIREMENT}</span>
                         </div>
                         <div className="flex flex-col">
                             <label htmlFor="password" className="text-indigo-500 font-medium text-2xl">Password</label>
@@ -148,7 +140,7 @@ const Registerpage = () => {
                                 }
 
                             </div>
-                            <span className={`text-red-700 text-sm font-normal w-full mx-1 ${options.showPasswordError ? 'block' : 'hidden'}`}>{PASSWORD_REQUIREMENT}</span>
+                            <span className={`text-red-700 text-sm font-normal w-full mx-1 ${!options.validPassword && registerDetails.password.length > 1 ? 'block' : 'hidden'}`}>{PASSWORD_REQUIREMENT}</span>
                         </div>
                         {err && <p className="w-full text-center text-red-500 underline">{err}</p>}
                         <div className="flex flex-col gap-4 items-center">

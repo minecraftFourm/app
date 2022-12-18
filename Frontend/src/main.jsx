@@ -4,13 +4,15 @@ import App from './App'
 import './index.css'
 import { BrowserRouter  } from 'react-router-dom'
 import { UserContext } from './Contexts/UserContext'
-
+import Fetch from './Contexts/Fetch'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
     <BrowserRouter>
       <UserContext>
-        <App />
+        <Fetch>
+          <App />
+        </Fetch>
       </UserContext>
     </BrowserRouter>
   // </React.StrictMode>

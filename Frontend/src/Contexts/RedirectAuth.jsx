@@ -7,13 +7,11 @@ const RedirectAuth = () => {
     const Navigate = useNavigate();
     const user = UseUser()
 
-    console.log(user)
     useEffect(() => {
         if (user.isAuthenticated) {
             Navigate('./')
         }
     });
-
 
   return (
     <>

@@ -122,7 +122,7 @@ export const createUser = async (user: UserBody, res: Response) => {
         return { id: newUser.id, username: newUser.username, email: newUser.email }
         
     } catch (error: any) {
-        throw new CustomError(error.message, StatusCodes.BAD_REQUEST)
+        throw new CustomError(error.message, error.code)
     }
 }
 

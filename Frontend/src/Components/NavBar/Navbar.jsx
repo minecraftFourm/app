@@ -5,6 +5,7 @@ import { API_URL } from "../../config";
 import { UseSetUser, UseUser } from "../../Contexts/UserContext";
 
 const Navbar = () => {
+  const Navigate = useNavigate();
   const user = UseUser()
   const setUser = UseSetUser();
 
@@ -15,6 +16,7 @@ const Navbar = () => {
     })
     if (response.ok) {
       setUser({ isAuthenticated: false, username: '', id: '' })
+      Navigate('login') // Navigate to login page
     }
   }
   return (

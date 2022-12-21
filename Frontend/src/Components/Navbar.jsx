@@ -1,8 +1,7 @@
 import React, { Suspense } from "react";
-import { useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { API_URL } from "../../config";
-import { UseSetUser, UseUser } from "../../Contexts/UserContext";
+import { API_URL } from "../config";
+import { UseSetUser, UseUser } from "../Contexts/UserContext";
 
 const Navbar = () => {
   const Navigate = useNavigate();
@@ -21,7 +20,7 @@ const Navbar = () => {
   }
   return (
     <>    
-      <div className="grid h-16 bg-white drop-shadow-lg w-full">
+      <div className="grid h-16 bg-white drop-shadow-lg w-full" id="header">
         <div className="flex justify-around items-center">
           <div>
             <h1 className="text-2xl font-bold cursor-pointer">Servername</h1>
@@ -72,7 +71,7 @@ const Navbar = () => {
       </div>
 
       {/* TODO: Change to a proper loading screen  */}
-      <Suspense fallback={<h1>Loading...</h1>}> 
+      <Suspense fallback={<h1>Loading...</h1>}>
         <Outlet />
       </Suspense>
     </>

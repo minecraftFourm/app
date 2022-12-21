@@ -1,7 +1,8 @@
 import { lazy, useState } from "react";
-import Navbar from "./Components/NavBar/Navbar";
+import Navbar from "./Components/NavBar";
 import { createBrowserRouter, Route, Routes } from "react-router-dom";
 import CheckAuth from "./Contexts/CheckAuth";
+import Footer from "./Components/Footer";
 
 const Home = lazy(() => import("./Pages/Homepage"))
 const Forum = lazy(() => import("./Pages/Forumpage"))
@@ -17,7 +18,7 @@ function App() {
       <Routes>
         <Route element={<CheckAuth />}>
           <Route element={<Navbar />}>
-            <Route>
+            <Route element={<Footer />}>
               <Route path='/' element={<Home />} />
               <Route path="/teams" element={<Teams />} />  
               <Route path="/rules" element={<Rules />} />  

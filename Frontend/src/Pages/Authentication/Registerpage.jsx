@@ -56,7 +56,7 @@ const Registerpage = () => {
                 }
             })
         }
-    }, [state]);
+    }, []);
 
     // Update user registration details
     const handleRegisterDetails = (type, newValue) => { 

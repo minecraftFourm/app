@@ -7,7 +7,7 @@ import { UserContext } from './Contexts/UserContext'
 import Fetch from './Contexts/Fetch'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  // <React.StrictMode>
+  <React.StrictMode>
     <BrowserRouter>
       <UserContext>
         <Fetch>
@@ -15,5 +15,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </Fetch>
       </UserContext>
     </BrowserRouter>
-  // </React.StrictMode>
+  </React.StrictMode>
 )

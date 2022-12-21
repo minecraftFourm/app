@@ -1,5 +1,5 @@
 import { lazy, useState } from "react";
-import Navbar from "./Components/NavBar";
+import Navbar from "./Components/Navbar";
 import { createBrowserRouter, Route, Routes } from "react-router-dom";
 import CheckAuth from "./Contexts/CheckAuth";
 import Footer from "./Components/Footer";

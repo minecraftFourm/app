@@ -20,7 +20,9 @@ type LoginBody = {
 
 type props = {
     id: string,
-    username?: string
+    username: string
+    role: string
+    email: string
 }
 
 export const jwt_generator = async (payload: props, res: Response) => {
@@ -81,7 +83,7 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
             throw new CustomError("Invalid Password", StatusCodes.BAD_REQUEST)
         }
 
-        await jwt_generator({ id: user.id, username: user.username }, res)
+        await jwt_generator({ id: user.id, username: user.username, role: user.role, email: user.email }, res)
 
         
         return { id: user.id, username: user.username, email: user.email }
@@ -114,10 +116,16 @@ export const createUser = async (user: UserBody, res: Response) => {
                 username,
                 password,
                 email
+            },
+            select: {
+                id: true,
+                username: true,
+                role: true,
+                email: true
             }
         })
 
-        await jwt_generator({ id: newUser.id, username: newUser.username }, res)
+        await jwt_generator({ id: newUser.id, username: newUser.username, role: newUser.role, email: newUser.email }, res)
         
         return { id: newUser.id, username: newUser.username, email: newUser.email }
         

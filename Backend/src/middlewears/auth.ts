@@ -6,51 +6,52 @@ import { jwt_generator } from "../services/auth.service";
 import prisma from "../db/prisma.client";
 import wrapper from "./async-wrapper";
 
-interface res extends Response {
-    user?: object;
+interface req extends Request {
+    user?: object
 }
 
 interface JwtPayload {
-    _id: string;
+    id: string;
 }
 
-const auth = wrapper(async (req: Request, res: res, next: NextFunction) => {    
+const auth = wrapper(async (req: req, res: Response, next: NextFunction) => {    
     let { signedCookies: { RefreshToken: refreshToken, Authorization: accessToken } } = req;
 
-    if ((!accessToken || !accessToken.startsWith("Bearer ") || !refreshToken )) {
+    if (!(accessToken || refreshToken) ) {
         throw new CustomError(ReasonPhrases.UNAUTHORIZED, StatusCodes.UNAUTHORIZED)
     } // invalid tokens
 
-    
     try {
         // Tries to verify user using the access token
         accessToken = accessToken.split(" ")[1]
-        const { _id } = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as JwtPayload
-        res.user = { _id }
+        const user = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as JwtPayload
+        req.user = user
         return next()
     } catch (error: any) {
-        console.log(error.name)
-        if (error.name !== "TokenExpiredError") {
-            throw new CustomError(ReasonPhrases.INTERNAL_SERVER_ERROR, StatusCodes.INTERNAL_SERVER_ERROR)
-        }
+        // Do nothing, and try using the refresh token to login.
     }
 
     // Tries to authenticate user using RefreshToken
-    const { _id } = jwt.verify(refreshToken, process.env.JWT_SECRET_KEY as string) as JwtPayload
+    console.log('refresh token')
+    const userDetails = jwt.verify(refreshToken, process.env.JWT_SECRET_KEY as string) as JwtPayload
     const user = await prisma.user.findUnique({
         where: {
-            id: _id
+            id: userDetails.id
         },
         select: {
             refreshToken: true,
-            username: true
+            username: true,
+            id: true,
+            role: true,
+            email: true
         }
     })
     if (user?.refreshToken !== refreshToken) {
         throw new CustomError("Invalid Token.", StatusCodes.UNAUTHORIZED)
     }
-    await jwt_generator({ id: _id, username: user?.username }, res) // Generates new refresh and access token.
-    res.user = { id: _id }
+    if (!user) throw new CustomError(ReasonPhrases.BAD_REQUEST, StatusCodes.BAD_REQUEST)
+    await jwt_generator({ id: userDetails.id, username: user.username, role: user.role, email: user.email }, res) // Generates new refresh and access token.
+    req.user = userDetails
     return next()
 })
 

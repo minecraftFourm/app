@@ -1,6 +1,7 @@
 import express, { Response, Request } from "express";
 import * as dotenv from 'dotenv'
 import { authRouter } from "./routes/auth.routes";
+import { router as announcementRouter } from "./routes/announcement.routes";
 import cookieParser from "cookie-parser";
 import errorHandler from "./middlewears/error-handler";
 import auth from "./middlewears/auth";
@@ -23,9 +24,14 @@ app.use(cors(corsOptions));
 app.use(express.json())
 app.use(cookieParser(COOKIE_SECRET))
 
-app.use('/', authRouter)
-app.get('/protected', auth, (req: Request, res: Response) => {
+app.use('/', authRouter);
+app.use('/announcement', announcementRouter);
+
+app.get('/protected', auth, async (req: Request, res: Response) => {
     return res.json({hey: "Howdy"})
+})
+app.use('*', (req, res) => {
+    res.json({ err: 'Invalid Request' })
 })
 
 app.use(errorHandler);

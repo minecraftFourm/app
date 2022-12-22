@@ -1,17 +1,19 @@
-/*
-  Warnings:
-
-  - Added the required column `bio` to the `User` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `created` to the `User` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER');
 
--- AlterTable
-ALTER TABLE "User" ADD COLUMN     "bio" TEXT NOT NULL,
-ADD COLUMN     "created" TIMESTAMP(3) NOT NULL,
-ADD COLUMN     "role" "Role" NOT NULL DEFAULT 'USER';
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'USER',
+    "bio" TEXT NOT NULL DEFAULT '',
+    "created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "refreshToken" TEXT NOT NULL DEFAULT '',
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Stats" (
@@ -34,9 +36,22 @@ CREATE TABLE "Post" (
 );
 
 -- CreateTable
+CREATE TABLE "Announcement" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "ownerId" TEXT NOT NULL,
+    "created" TIMESTAMP(3) NOT NULL,
+    "updated" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Announcement_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "CommentsOnPost" (
     "postId" TEXT NOT NULL,
     "commendId" TEXT NOT NULL,
+    "announcementId" TEXT,
 
     CONSTRAINT "CommentsOnPost_pkey" PRIMARY KEY ("postId","commendId")
 );
@@ -53,6 +68,9 @@ CREATE TABLE "Comment" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Stats_userId_key" ON "Stats"("userId");
 
 -- AddForeignKey
@@ -62,10 +80,16 @@ ALTER TABLE "Stats" ADD CONSTRAINT "Stats_userId_fkey" FOREIGN KEY ("userId") RE
 ALTER TABLE "Post" ADD CONSTRAINT "Post_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Announcement" ADD CONSTRAINT "Announcement_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "CommentsOnPost" ADD CONSTRAINT "CommentsOnPost_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "CommentsOnPost" ADD CONSTRAINT "CommentsOnPost_commendId_fkey" FOREIGN KEY ("commendId") REFERENCES "Comment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CommentsOnPost" ADD CONSTRAINT "CommentsOnPost_announcementId_fkey" FOREIGN KEY ("announcementId") REFERENCES "Announcement"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

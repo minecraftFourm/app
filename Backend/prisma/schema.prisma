@@ -11,17 +11,18 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  username String
-  password String
-  email String @unique()
-  role Role @default(USER)
-  bio String @default("")
-  created DateTime @default(now())
-  post Post[]
-  comment Comment[]
-  stats Stats?
-  refreshToken String @default("")
+  id            String         @id @default(uuid())
+  username      String
+  password      String
+  email         String         @unique()
+  role          Role           @default(USER)
+  bio           String         @default("")
+  created       DateTime       @default(now())
+  post          Post[]
+  comment       Comment[]
+  stats         Stats?
+  refreshToken  String         @default("")
+  Announcements Announcement[]
 }
 
 enum Role {
@@ -30,36 +31,55 @@ enum Role {
 }
 
 model Stats {
-  id String @id @default(uuid())
-  user User @relation(fields: [userId],references: [id])
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id])
   userId String @unique
 }
 
 model Post {
-  id String @id @default(uuid())
-  title String
-  content String
-  owner User @relation(fields: [ownerId], references: [id])
-  ownerId String
+  id       String           @id @default(uuid())
+  title    String
+  content  String
+  owner    User             @relation(fields: [ownerId], references: id)
+  ownerId  String
   comments CommentsOnPost[]
-  created DateTime
-  updated DateTime
+  created  DateTime
+  updated  DateTime
+}
+
+model Announcement {
+  id       String                 @id @default(uuid())
+  title    String
+  content  String
+  owner    User                   @relation(references: [id], fields: [ownerId], onDelete: Cascade)
+  comments AnnouncementComments[]
+  created  DateTime               @default(now())
+  updated  DateTime               @updatedAt
+  ownerId   String
+}
+
+model AnnouncementComments {
+  id             String       @id @default(uuid())
+  comment        String
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  announcementId String
+  created        DateTime     @default(now())
+  updated        DateTime     @updatedAt
 }
 
 model CommentsOnPost {
-  post Post @relation(fields: [postId], references: [id])
-  postId String
-  comment Comment @relation(fields: [commendId], references: [id])
+  id        String  @id @default(uuid())
+  post      Post    @relation(fields: [postId], references: [id])
+  postId    String
+  comment   Comment @relation(fields: [commendId], references: [id])
   commendId String
-
-  @@id([postId, commendId])
 }
 
 model Comment {
-  id String @id @default(uuid())
-  posts CommentsOnPost[]
+  id      String           @id @default(uuid())
+  posts   CommentsOnPost[]
   content String
-  owner User @relation(fields: [ownerId], references: [id])
+  owner   User             @relation(fields: [ownerId], references: [id])
   ownerId String
   created DateTime
   updated DateTime

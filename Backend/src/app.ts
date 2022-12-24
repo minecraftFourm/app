@@ -10,8 +10,8 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 dotenv.config()
 
-const port = process.env.PORT;
-const app = express();
+export const port = process.env.PORT;
+export const app = express();
 
 const corsOptions = {
     origin: 'http://localhost:3000',
@@ -29,6 +29,3 @@ app.get('/protected', auth, (req: Request, res: Response) => {
 })
 
 app.use(errorHandler);
-app.listen(port, () => {
-    console.log(`Server running at ${port}`);
-});

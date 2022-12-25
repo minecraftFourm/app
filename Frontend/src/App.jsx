@@ -3,6 +3,7 @@ import Navbar from "./Components/Navbar";
 import { createBrowserRouter, Route, Routes } from "react-router-dom";
 import CheckAuth from "./Contexts/CheckAuth";
 import Footer from "./Components/Footer";
+import Dashboard from "./Pages/Dashboard";
 
 const Home = lazy(() => import("./Pages/Homepage"))
 const Forum = lazy(() => import("./Pages/Forumpage"))
@@ -17,6 +18,10 @@ function App() {
   return (
       <Routes>
         <Route element={<CheckAuth />}>
+          {/* TODO: Add adminOnly middlewear */}
+          <Route path="/dashboard"> 
+            <Route element={<Dashboard />} path="" />
+          </Route>
           <Route element={<Navbar />}>
             <Route element={<Footer />}>
               <Route path='/' element={<Home />} />

@@ -69,7 +69,7 @@ const Homepage = () => {
 
 		</section>
 		{/* TODO: Hero Content */}
-		<section className="bg-[#1B263B] w-full h-full px-16 py-4 -mt-2">
+		<section className="bg-[#1B263B] w-full h-full px-16 py-4">
 			<div className="flex flex-row gap-8 justify-between w-full h-full">
 				<div className="w-full bg-white p-6 flex flex-col gap-4">
 					<div className="w-full border border-gray-400 bg-white rounded-sm overflow-hidden">

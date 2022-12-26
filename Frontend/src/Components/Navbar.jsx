@@ -13,6 +13,7 @@ const Navbar = () => {
   }
 
   const handleLogout = async () => {
+    // TODO: convert to using custom fetch, and handle errors
     const response = await fetch(`${API_URL}/logout`, {
       method: 'POST',
       credentials: 'include'
@@ -40,11 +41,6 @@ const Navbar = () => {
               <li className="mr-4 text-xl cursor-pointer hover:text-indigo-300 duration-300">
                 <NavLink to="forum" style={({isActive}) => isActive ? activeStyle : undefined }>
                   Forum
-                </NavLink>
-              </li>
-              <li className="mr-4 text-xl cursor-pointer hover:text-indigo-300 duration-300">
-                <NavLink to="teams" style={({isActive}) => isActive ? activeStyle : undefined }>
-                  Teams
                 </NavLink>
               </li>
               <li className="mr-4 text-xl cursor-pointer hover:text-indigo-300 duration-300">

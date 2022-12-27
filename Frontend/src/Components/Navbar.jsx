@@ -27,11 +27,11 @@ const Navbar = () => {
   return (
     <>    
       <div className="grid h-16 bg-white drop-shadow-lg w-full" id="header">
-        <div className="flex justify-around items-center">
+        <div className="flex justify-between px-4 items-center w-full">
           <div>
             <Link to={"/"} className="text-2xl font-bold cursor-pointer">Servername</Link>
           </div>
-          <div>
+          <div className="md:hidden">
             <ul className="flex justify-between">
               <li className="mr-4 text-xl hover:text-indigo-300 cursor-pointer">
                 <NavLink to="/" style={({isActive}) => isActive ? activeStyle : undefined }>
@@ -55,7 +55,7 @@ const Navbar = () => {
               </li>
             </ul>
           </div>
-          <div>
+          <div className="md:hidden">
             {user.isAuthenticated ? (
               <div className="flex flex-row items-center gap-2">
                 <img src="https://s3-alpha-sig.figma.com/img/2bf0/38b2/24b6fd21fbe783bc14937744f3e9a9cc?Expires=1672617600&Signature=NvublJObKVhmjMBxLObHUbRHEagUU~qUA3lyoSCgO1otPB~h5IFEU125~tAh~48DYX4LOdYFwTzVSBk724hreypVr1R1P6DOgDMpWQUiYswZ9g5V93slEbdE6aalP3d0AwrL-svT8xXmfI6EkDaEu6THoUUN3p8ZCeg5pLiR07CPvHxmU8KVONl-ssv-LqDEpXODba8-I3nHJIUf-1KTNZNvf~FuaKbTyAJzscPKeq6zypywTo-kpcoW0npW7r5y6SSsDEOzRa1-bbrzWny5lWVQMJbDbLxs65p0jJotsYBd9B70mo368I-4CjB7S9NPjFEMBYiciu7p~Sx21AwIIQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4" className="w-[48px] h-[48px] object-cover object-center rounded-full " alt="" />
@@ -69,8 +69,13 @@ const Navbar = () => {
                 </NavLink>
               </div>
             )}
-
           </div>
+           {/* Mobile Menu */}
+           <div className="hidden md:block">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </div>
         </div>
       </div>
 

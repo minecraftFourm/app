@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, Component } from 'react'
 import { useEditor, useEditorValue } from '../../Components/Editor'
 import { MAX_TITLE_LENGTH } from '../../config'
 import { useFetch } from '../../Contexts/Fetch'
 
 const NewAnnouncement = () => {
-    const Editor = useEditor();
-    const EditorValue = useEditorValue()()
     const CustomFetch = useFetch();
-
+    const Editor = useEditor();
+    const EditorValue = useEditorValue();
+    
     const [ title, setTitle ] = useState({
         count: 0,
         value: ''
@@ -16,7 +16,6 @@ const NewAnnouncement = () => {
     const updateTitle = (e) => {
         const value = e.target.value
         const count = e.target.value.length
-        console.log(EditorValue)
 
         if (count > MAX_TITLE_LENGTH) return
 
@@ -30,11 +29,12 @@ const NewAnnouncement = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        console.log(EditorValue())
         const { response, data} = await CustomFetch({url: 'announcement', options: {
             method: 'POST',
             body: JSON.stringify({
                 title: title.value,
-                content: EditorValue
+                content: EditorValue()
             })
         }, returnResponse: true})
 

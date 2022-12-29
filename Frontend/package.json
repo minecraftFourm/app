@@ -15,11 +15,11 @@
     "jwt-decode": "^3.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-froala-wysiwyg": "^4.0.16",
     "react-lazy-load-image-component": "^1.5.6",
     "react-router-dom": "^6.4.5",
     "swiper": "^8.4.5",
     "timeago.js": "^4.0.0-beta.3",
+    "tinymce": "^6.3.1",
     "usehooks-ts": "^2.9.1",
     "verbum": "^0.4.1"
   },

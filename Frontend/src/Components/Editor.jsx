@@ -24,12 +24,14 @@ export default function Editor({children}) {
           onInit={(evt, editor) => editorRef.current = editor}
           initialValue="<p>A new announcement...</p>"
           init={{
+              browser_spellcheck: true,
+              // contextmenu: false,
               selector: 'textarea#open-source-plugins',
-              plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+              plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
               editimage_cors_hosts: ['picsum.photos'],
               menubar: 'edit view insert format tools table help',
               // menubar: false,
-              toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview | insertfile image media template link anchor codesample | ltr rtl',
+              toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview | insertfile image template link anchor codesample | ltr rtl',
               toolbar_sticky: false,
               autosave_ask_before_unload: true,
               autosave_interval: '30s',
@@ -40,35 +42,6 @@ export default function Editor({children}) {
               importcss_append: true,
               icon: 'thin',
               file_picker_types: 'image',
-              file_picker_callback: (callback, value, meta) => {
-                  const input = document.createElement('input');
-                  input.setAttribute('type', 'file');
-                  input.setAttribute('accept', 'image/*');
-              
-                  input.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-              
-                    const reader = new FileReader();
-                    reader.addEventListener('load', () => {
-                      /*
-                        Note: Now we need to register the blob in TinyMCEs image blob
-                        registry. In the next release this part hopefully won't be
-                        necessary, as we are looking to handle it internally.
-                      */
-                      const id = 'blobid' + (new Date()).getTime();
-                      const blobCache =  tinymce.activeEditor.editorUpload.blobCache;
-                      const base64 = reader.result.split(',')[1];
-                      const blobInfo = blobCache.create(id, file, base64);
-                      blobCache.add(blobInfo);
-              
-                      /* call the callback and populate the Title field with the file name */
-                      callback(blobInfo.blobUri(), { title: file.name });
-                    });
-                    reader.readAsDataURL(file);
-                  });
-              
-                  input.click();
-              },
               templates: [
                 { title: 'New Table', description: 'creates a new table', content: '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>' },
                 { title: 'Starting my story', description: 'A cure for writers block', content: 'Once upon a time...' },

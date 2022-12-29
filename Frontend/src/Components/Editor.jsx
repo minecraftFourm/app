@@ -17,14 +17,20 @@ export default function Editor({children}) {
     return null;
   };
 
-  const editor = () => {
+  const editor = (props) => {
+
     return (
       <>
         <Edit
           onInit={(evt, editor) => editorRef.current = editor}
-          initialValue="<p>A new announcement...</p>"
+          initialValue={props.initialValue ? props.initialValue : null }
           init={{
               browser_spellcheck: true,
+              init_instance_callback: (editor) => {
+                // console.log(editor.initialValue)
+                // console.log(`Editor: ${editor.id} is now initialized.`);
+              },
+              placeholder: "....",
               // contextmenu: false,
               selector: 'textarea#open-source-plugins',
               plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
@@ -70,7 +76,7 @@ export default function Editor({children}) {
   return (
     <EditorContext.Provider value={editor}>
       <EditorValueContext.Provider value={editorValue}>
-        {children}
+          {children}
       </EditorValueContext.Provider>
     </EditorContext.Provider>
   );

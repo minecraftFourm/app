@@ -19,15 +19,21 @@ model User {
   bio           String         @default("")
   created       DateTime       @default(now())
   post          Post[]
-  comment       Comment[]
   stats         Stats?
   refreshToken  String         @default("")
-  Announcements Announcement[]
 }
 
 enum Role {
   ADMIN
   USER
+}
+
+model Category {
+  id String @id @default(uuid())
+  name String @unique
+  posts Post[]
+  created  DateTime               @default(now())
+  updated  DateTime               @updatedAt
 }
 
 model Stats {
@@ -40,47 +46,21 @@ model Post {
   id       String           @id @default(uuid())
   title    String
   content  String
-  owner    User             @relation(fields: [ownerId], references: id)
-  ownerId  String
-  comments CommentsOnPost[]
-  created  DateTime
-  updated  DateTime
-}
-
-model Announcement {
-  id       String                 @id @default(uuid())
-  title    String
-  content  String
-  owner    User                   @relation(references: [id], fields: [ownerId], onDelete: Cascade)
-  comments AnnouncementComments[]
+  comments Comment[]
   created  DateTime               @default(now())
   updated  DateTime               @updatedAt
-  ownerId   String
-}
-
-model AnnouncementComments {
-  id             String       @id @default(uuid())
-  comment        String
-  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
-  announcementId String
-  created        DateTime     @default(now())
-  updated        DateTime     @updatedAt
-}
-
-model CommentsOnPost {
-  id        String  @id @default(uuid())
-  post      Post    @relation(fields: [postId], references: [id])
-  postId    String
-  comment   Comment @relation(fields: [commendId], references: [id])
-  commendId String
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId String 
+  owner    User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId  String
 }
 
 model Comment {
-  id      String           @id @default(uuid())
-  posts   CommentsOnPost[]
-  content String
-  owner   User             @relation(fields: [ownerId], references: [id])
-  ownerId String
-  created DateTime
-  updated DateTime
+  id        String  @id @default(uuid())
+  post      Post    @relation(fields: [postId], references: [id])
+  postId    String
+  comment String
+  created  DateTime               @default(now())
+  updated  DateTime               @updatedAt
 }
+

@@ -11,56 +11,92 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  username      String
-  password      String
-  email         String         @unique()
-  role          Role           @default(USER)
-  bio           String         @default("")
-  created       DateTime       @default(now())
-  post          Post[]
-  stats         Stats?
-  refreshToken  String         @default("")
+  id           String      @id @default(uuid())
+  username     String
+  password     String
+  email        String      @unique()
+  role         Role?
+  followers    Follower[]
+  following    Following[]
+  bio          String      @default("")
+  created      DateTime    @default(now())
+  post         Post[]
+  refreshToken String      @default("")
 }
 
-enum Role {
-  ADMIN
-  USER
-}
+model Role {
+  id    String @id @default(uuid())
+  title String
+  color String
 
-model Category {
-  id String @id @default(uuid())
-  name String @unique
-  posts Post[]
-  created  DateTime               @default(now())
-  updated  DateTime               @updatedAt
-}
+  isAdmin      Boolean @default(false)
+  canPostAdmin Boolean @default(false)
+  canEditAdmin Boolean @default(false)
 
-model Stats {
-  id     String @id @default(uuid())
+  canManageUsers Boolean @default(false)
+  canRemoveUsers Boolean @default(false)
+  canEditUsers   Boolean @default(false)
+
+  canCreateCategory Boolean @default(false)
+  canEditCategory   Boolean @default(false)
+  canDeleteCategory Boolean @default(false)
+
+  canCreatePost Boolean @default(false)
+  canEditPost   Boolean @default(false)
+  canDeletePost Boolean @default(false)
+
+  canEditOtherPost   Boolean @default(false)
+  canDeleteOtherPost Boolean @default(false)
+
+  canCreateComment Boolean @default(false)
+  canDeleteComment Boolean @default(false)
+  canEditComment   Boolean @default(false)
+
+  canDeleteOtherComment Boolean @default(false)
+  canEditOtherComment   Boolean @default(false)
+
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique
 }
 
+model Category {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  posts   Post[]
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+}
+
+model Follower {
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model Following {
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
 model Post {
-  id       String           @id @default(uuid())
-  title    String
-  content  String
-  comments Comment[]
-  created  DateTime               @default(now())
-  updated  DateTime               @updatedAt
-  category Category @relation(fields: [categoryId], references: [id])
-  categoryId String 
-  owner    User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId  String
+  id         String    @id @default(uuid())
+  title      String
+  content    String
+  comments   Comment[]
+  created    DateTime  @default(now())
+  updated    DateTime  @updatedAt
+  category   Category  @relation(fields: [categoryId], references: [id])
+  categoryId String
+  owner      User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId    String
 }
 
 model Comment {
-  id        String  @id @default(uuid())
-  post      Post    @relation(fields: [postId], references: [id])
-  postId    String
+  id      String   @id @default(uuid())
+  post    Post     @relation(fields: [postId], references: [id])
+  postId  String
   comment String
-  created  DateTime               @default(now())
-  updated  DateTime               @updatedAt
+  created DateTime @default(now())
+  updated DateTime @updatedAt
 }
-

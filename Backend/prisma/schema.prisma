@@ -100,3 +100,12 @@ model Comment {
   created DateTime @default(now())
   updated DateTime @updatedAt
 }
+
+model Game {
+  id          String @id @default(uuid())
+  title       String
+  description String
+  previewImg  String
+  tags        Json[]
+  statsLink   String
+}

@@ -7,6 +7,7 @@ import errorHandler from "./middlewears/error-handler";
 import auth from "./middlewears/auth";
 import { COOKIE_SECRET } from "./config";
 import { categoryRouter } from "./routes/category.routes";
+import { rolesRouter } from "./routes/roles.route";
 const morgan = require("morgan");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
@@ -37,6 +38,11 @@ app.use(cookieParser(COOKIE_SECRET))
 app.use('/', authRouter);
 app.use('/post', postRouter);
 app.use('/category', categoryRouter);
+app.use('/roles', rolesRouter);
+
+app.get('/protected', auth, async (req: Request, res: Response) => {
+  return res.send("Howdy!")
+})
 
 // app.get('/protected', auth, async (req: Request, res: Response) => {
 //      // Use the uploaded file's name as the asset's public ID and 

@@ -8,8 +8,12 @@ interface Req extends Request {
         name: string | undefined,
         page: string | undefined
         limit: string | undefined
+    },
+    user: {
+        id: string | undefined
     }
 }
+
 export const createCategory = async (req: Request, res: Response) => {
     const { name } = req.body
     const newCategory = await prisma.category.create({

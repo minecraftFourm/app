@@ -32,7 +32,6 @@ const auth = wrapper(async (req: req, res: Response, next: NextFunction) => {
     }
 
     // Tries to authenticate user using RefreshToken
-    console.log('refresh token')
     const userDetails = jwt.verify(refreshToken, process.env.JWT_SECRET_KEY as string) as JwtPayload
     const user = await prisma.user.findUnique({
         where: {
@@ -50,7 +49,7 @@ const auth = wrapper(async (req: req, res: Response, next: NextFunction) => {
         throw new CustomError("Invalid Token.", StatusCodes.UNAUTHORIZED)
     }
     if (!user) throw new CustomError(ReasonPhrases.BAD_REQUEST, StatusCodes.BAD_REQUEST)
-    await jwt_generator({ id: userDetails.id, username: user.username, role: user.role, email: user.email }, res) // Generates new refresh and access token.
+    await jwt_generator({ id: userDetails.id, username: user.username, email: user.email, role: user.role }, res) // Generates new refresh and access token.
     req.user = userDetails
     return next()
 })

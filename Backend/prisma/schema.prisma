@@ -11,25 +11,26 @@ datasource db {
 }
 
 model User {
-  id           String      @id @default(uuid())
-  username     String
-  password     String
-  email        String      @unique()
-  role   Role   @relation(fields: [roleId], references: [id])
-  roleId String  
-  followers    Follower[]
-  following    Following[]
-  bio          String      @default("")
-  created      DateTime    @default(now())
-  post         Post[]
-  refreshToken String      @default("")
+  id             String      @id @default(uuid())
+  username       String
+  password       String
+  email          String      @unique()
+  profilePicture String      @default("")
+  role           Role        @relation(fields: [roleId], references: [id])
+  roleId         String
+  followers      Follower[]
+  following      Following[]
+  bio            String      @default("")
+  created        DateTime    @default(now())
+  post           Post[]
+  refreshToken   String      @default("")
 }
 
 model Role {
   id    String @id @default(uuid())
   title String @unique
   color String
-  user User[]
+  user  User[]
 
   isAdmin      Boolean @default(false)
   canPostAdmin Boolean @default(false)
@@ -58,7 +59,7 @@ model Role {
   canEditOtherComment   Boolean @default(false)
 
   created DateTime @default(now())
-  updated DateTime @updatedAt 
+  updated DateTime @updatedAt
 }
 
 model Category {

@@ -26,6 +26,32 @@ export const getRoles = async (req: Request, res: Response) => {
     return res.json({ count: role.length, data: role })
 }
 
+export const getRole = async (req: Request, res: Response) => {
+    const { id } = req.params
+
+    const role = await prisma.role.findUnique({
+        where: { id },
+        include: {
+            user: true
+        }
+    })
+
+    return res.json({ message: 'success', data: role })
+}
+
+export const editRole = async (req: Request, res: Response) => {
+    const { params: { id }, body } = req
+
+    const role = await prisma.role.update({
+        where: { id },
+        data: {
+            ...body
+        }
+    })
+
+    res.json({ message: 'success', role })
+}
+
 export const deleteRole = async (req: Request, res: Response) => {
     const { id } = req.params;
 

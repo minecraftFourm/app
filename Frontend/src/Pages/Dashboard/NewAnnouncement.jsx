@@ -1,6 +1,6 @@
 import React, { useState, Component } from 'react'
 import { useEditor, useEditorValue } from '../../Components/Editor'
-import { MAX_TITLE_LENGTH } from '../../config'
+import { ANNOUNCEMENT_CATEGORY_ID, MAX_TITLE_LENGTH } from '../../config'
 import { useFetch } from '../../Contexts/Fetch'
 
 const NewAnnouncement = () => {
@@ -30,11 +30,12 @@ const NewAnnouncement = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         console.log(EditorValue())
-        const { response, data} = await CustomFetch({url: 'announcement', options: {
+        const { response, data} = await CustomFetch({url: 'post', options: {
             method: 'POST',
             body: JSON.stringify({
                 title: title.value,
-                content: EditorValue()
+                content: EditorValue(),
+                category: ANNOUNCEMENT_CATEGORY_ID
             })
         }, returnResponse: true})
 

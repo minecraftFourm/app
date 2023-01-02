@@ -8,11 +8,16 @@ import { format } from 'timeago.js'
 const ViewAnnouncement = () => {
     const { id } = useParams()
     const CustomFetch = useFetch()
-    const [ announcementInfo, setAnnouncementInfo ] = useState({})
+    const [ announcementInfo, setAnnouncementInfo ] = useState({
+        owner: 'test',
+        title: 'test',
+        content: 'test',
+        updated: new Date()
+    })
 
     useEffect(() => {
         (async () => {
-            const { data, response } = await CustomFetch({url: `announcement/${id}`, options: {
+            const { data, response } = await CustomFetch({url: `post/${id}`, options: {
                 method: 'GET'
             }, returnResponse: true})
 
@@ -34,8 +39,6 @@ const ViewAnnouncement = () => {
 
     }, [])
 
-    console.log(announcementInfo)
-    
   return (
     <div className='bg-[#1B263B]'>
         <ForumHeader />

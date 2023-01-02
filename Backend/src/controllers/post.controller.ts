@@ -12,15 +12,16 @@ export interface Req extends Request {
         title: string | undefined
         page: string | undefined
         limit: string | undefined
-        category: string
+        category: string | undefined
     }
 }
 
 export const createPost = async (req: Req, res: Response) => {
     const { body: { title, content, category: categoryId }, user: { id } } = req
-
-    if ( !title ) throw new CustomError('Announcement title is missing', StatusCodes.BAD_REQUEST)
-    if ( !content ) throw new CustomError('Announcement content is missing', StatusCodes.BAD_REQUEST)
+    
+    if ( !title ) throw new CustomError('Post title is missing', StatusCodes.BAD_REQUEST)
+    if ( !content ) throw new CustomError('Post content is missing', StatusCodes.BAD_REQUEST)
+    if ( !categoryId ) throw new CustomError('Post category is missing', StatusCodes.BAD_REQUEST)
 
     const newPost = await prisma.post.create({
         data: {
@@ -129,7 +130,10 @@ export const getAllPosts = async (req: Req, res: Response) => {
                 mode: 'insensitive'
             },
             category: {
-                name: category
+                name: {
+                    contains: category,
+                    mode: 'insensitive'
+                },
             }
         },
         include: {

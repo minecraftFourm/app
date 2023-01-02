@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import * as argon from 'argon2';
 import jwt from 'jsonwebtoken'
 import { Request, Response } from "express";
-import { ACCESS_TOKEN_EXIPIRY, DEFAULT_ROLE_ID, EMAIL_PATTERN, PASSWORD_PATTERN, REFRESH_TOKEN_EXIPIRY, USERNAME_PATTERN } from "../config";
+import { ACCESS_TOKEN_EXIPIRY, DEFAULT_PROFILE_PICTURE, DEFAULT_ROLE_ID, EMAIL_PATTERN, PASSWORD_PATTERN, REFRESH_TOKEN_EXIPIRY, USERNAME_PATTERN } from "../config";
 import CustomError from "../middlewears/custom-error";
 import { StatusCodes } from "http-status-codes";
 
@@ -25,6 +25,7 @@ type props = {
     role?: {
 
     }
+    profilePicture: string
 }
 
 export const jwt_generator = async (payload: props, res: Response) => {
@@ -88,7 +89,7 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
             throw new CustomError("Invalid Password", StatusCodes.BAD_REQUEST)
         }
         console.log(user)
-        await jwt_generator({ id: user.id, username: user.username, role: user.role, email: user.email }, res)
+        await jwt_generator({ id: user.id, username: user.username, role: user.role, email: user.email, profilePicture: user.profilePicture }, res)
         
         return { id: user.id, username: user.username, email: user.email }
     }
@@ -119,17 +120,19 @@ export const createUser = async (user: UserBody, res: Response) => {
                 username,
                 password,
                 email,
-                roleId: DEFAULT_ROLE_ID
+                roleId: DEFAULT_ROLE_ID,
+                profilePicture: DEFAULT_PROFILE_PICTURE
             },
             select: {
                 id: true,
                 username: true,
                 role: true,
-                email: true
+                email: true,
+                profilePicture: true
             }
         })
 
-        await jwt_generator({ id: newUser.id, username: newUser.username, role: newUser.role, email: newUser.email }, res)
+        await jwt_generator({ id: newUser.id, username: newUser.username, role: newUser.role, email: newUser.email, profilePicture: newUser.profilePicture }, res)
         
         return { id: newUser.id, username: newUser.username, email: newUser.email }
         

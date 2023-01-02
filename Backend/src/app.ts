@@ -1,11 +1,13 @@
 import express, { Response, Request } from "express";
 import * as dotenv from 'dotenv'
 import { authRouter } from "./routes/auth.routes";
-import { router as announcementRouter } from "./routes/announcement.routes";
+import { router as postRouter } from "./routes/post.routes";
 import cookieParser from "cookie-parser";
 import errorHandler from "./middlewears/error-handler";
 import auth from "./middlewears/auth";
 import { COOKIE_SECRET } from "./config";
+import { categoryRouter } from "./routes/category.routes";
+import { rolesRouter } from "./routes/roles.route";
 const morgan = require("morgan");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
@@ -34,7 +36,13 @@ app.use(express.json({limit: '100mb'}))
 app.use(cookieParser(COOKIE_SECRET))
 
 app.use('/', authRouter);
-app.use('/announcement', announcementRouter);
+app.use('/post', postRouter);
+app.use('/category', categoryRouter);
+app.use('/roles', rolesRouter);
+
+app.get('/protected', auth, async (req: Request, res: Response) => {
+  return res.send("Howdy!")
+})
 
 // app.get('/protected', auth, async (req: Request, res: Response) => {
 //      // Use the uploaded file's name as the asset's public ID and 

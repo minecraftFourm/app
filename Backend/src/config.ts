@@ -10,3 +10,4 @@ export const COOKIE_SECRET = 'secret';
 // Time in milliseconds
 export const ACCESS_TOKEN_EXIPIRY = 1000 * 60 * 15 // 15 Minutes
 export const REFRESH_TOKEN_EXIPIRY = 1000 * 60 * 60 * 24 * 30 // 30 days
+export const DEFAULT_ROLE_ID = '264ed4b4-9312-4766-9c7d-47f8f0ebecd1';

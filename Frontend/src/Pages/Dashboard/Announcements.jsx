@@ -3,6 +3,7 @@ import { useFetch } from '../../Contexts/Fetch'
 import DOMPurify from 'dompurify'
 import { format } from 'timeago.js'
 import { Link } from 'react-router-dom'
+import { ANNOUNCEMENT_CATEGORY_ID, ANNOUNCEMENT_CATEGORY_NAME } from '../../config'
 
 const Announcements = () => {
     const CustomFetch = useFetch();
@@ -13,7 +14,8 @@ const Announcements = () => {
 
     useEffect(() => {
         (async () => {
-            const { data, response } = await CustomFetch({url: 'announcement', returnResponse: true})
+            // TODO: Change the category value to a variable
+            const { data, response } = await CustomFetch({url: `post?category=${ANNOUNCEMENT_CATEGORY_NAME}`, returnResponse: true})
             setAnnouncements(() => {
                 return {
                     count: data.count,
@@ -24,7 +26,7 @@ const Announcements = () => {
     }, []);
 
     const handleDelete = async (id) => {
-        const { data, response } = await CustomFetch({url: `announcement/${id}`, options: {
+        const { data, response } = await CustomFetch({url: `post/${id}`, options: {
             method: 'DELETE'
         }, returnResponse: true })
         console.log(data, response)

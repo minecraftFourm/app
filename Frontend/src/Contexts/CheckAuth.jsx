@@ -12,8 +12,8 @@ const CheckAuth = ({ children }) => {
   useEffect(() => {
     if (accessToken) { 
       let token = accessToken.match(/^s:(.*)\..*$/)[1]
-      let { id, username } = jwt_decode(token)
-      setUser({ id, username, isAuthenticated: true })
+      let { id, username, profilePicture, role } = jwt_decode(token)
+      setUser({ id, username, profilePicture, role, isAuthenticated: true })
     }
     else {
       setUser({ id: '', username: '', isAuthenticated: false })

@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import prisma from "../db/prisma.client";
 import CustomError from "../middlewears/custom-error";
 import { Role } from "@prisma/client";
+import { handleEditPost, handleGetPost } from "../services/post.service";
 
 export interface Req extends Request {
     user: {
@@ -111,46 +112,15 @@ export const deletePost = async (req: Req, res: Response) => {
 }
 
 export const editPost = async (req: Req, res: Response) => {
-    // TODO: Add roles permissions support
-    const { params: { id }, body: { title, content, category: categoryId } } = req
+    
+    const post = await handleEditPost(req)
 
-    const post = await prisma.post.update({
-        where: { id },
-        data: {
-            title,
-            content,
-            categoryId,
-        }
-    })
-    return res.json({ message: 'success', data: post})
+    return res.json({ message: 'success', data: post })
 }
 
 export const getPost = async (req: Req, res: Response) => {
     const { id } = req.params
-    const post = await prisma.post.findUnique({
-        where: { id },
-        include: {
-            owner: {
-                select: {
-                    username: true,
-                    email: true,
-                    role: true,
-                    created: true
-                }
-            },
-            comments: {
-                select: {
-                    id: true,
-                    comment: true,
-                    created: true,
-                    updated: true
-                }
-            },
-            reactions: true
-        }
-    })
-    
-    if (!post) throw new CustomError("Could not find post.", StatusCodes.BAD_REQUEST)
+    const post = await handleGetPost({ id })
 
     res.json({message: 'success', data: post})
 }

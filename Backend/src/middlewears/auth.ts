@@ -7,7 +7,7 @@ import prisma from "../db/prisma.client";
 import wrapper from "./async-wrapper";
 
 interface req extends Request {
-    user?: object
+    user?: object | null
 }
 
 interface JwtPayload {
@@ -25,7 +25,22 @@ const auth = wrapper(async (req: req, res: Response, next: NextFunction) => {
         // Tries to verify user using the access token
         accessToken = accessToken.split(" ")[1]
         const user = jwt.verify(accessToken, process.env.JWT_SECRET_KEY as string) as JwtPayload
-        req.user = user
+        const userDetails = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                profilePicture: true,
+                bio: true,
+                created: true,
+                followers: true,
+                following: true,
+                post: true,
+                role: true
+            }
+        })
+        req.user = userDetails
         return next()
     } catch (error: any) {
         // Do nothing, and try using the refresh token to login.
@@ -45,7 +60,8 @@ const auth = wrapper(async (req: req, res: Response, next: NextFunction) => {
             email: true,
             profilePicture: true
         }
-    })
+    }) 
+
     if (user?.refreshToken !== refreshToken) {
         throw new CustomError("Invalid Token.", StatusCodes.UNAUTHORIZED)
     }

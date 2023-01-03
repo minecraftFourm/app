@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import prisma from "../db/prisma.client";
 import CustomError from "../middlewears/custom-error";
+import { Role } from "@prisma/client";
 
 export interface Req extends Request {
     user: {
         id: string
-        role: string
+        role: Role
     },
     query: {
         title: string | undefined
@@ -17,11 +18,28 @@ export interface Req extends Request {
 }
 
 export const createPost = async (req: Req, res: Response) => {
-    const { body: { title, content, category: categoryId }, user: { id } } = req
-    
+    const { body: { title, content, category: categoryId }, user: { id, role: { canPostAdmin, canCreatePost } } } = req
+
+    // * If user does not have permission to create new post.
+    if (!canCreatePost) throw new CustomError('You do not have permission to create a post', StatusCodes.UNAUTHORIZED)
+
     if ( !title ) throw new CustomError('Post title is missing', StatusCodes.BAD_REQUEST)
     if ( !content ) throw new CustomError('Post content is missing', StatusCodes.BAD_REQUEST)
     if ( !categoryId ) throw new CustomError('Post category is missing', StatusCodes.BAD_REQUEST)
+
+    const category = await prisma.category.findUnique({
+        where: {
+            id: categoryId
+        },
+        select: {
+            adminOnly: true
+        }
+    })
+    
+    // * If the category is for admins only, and the user does not have permission to post in adminOnly category, an error will be thrown.
+    if (category?.adminOnly) {
+        if (!canPostAdmin) throw new CustomError('You do not have permission to post in this category', StatusCodes.UNAUTHORIZED)
+    }
 
     const newPost = await prisma.post.create({
         data: {
@@ -55,8 +73,25 @@ export const createPost = async (req: Req, res: Response) => {
 
 export const deletePost = async (req: Req, res: Response) => {
         // TODO: Add roles permissions support
-        const { id } = req.params
+        const { params: { id }, user: { id: ownerId, role: { canDeletePost, canDeleteOtherPost, isAdmin} } } = req
 
+        const post = await prisma.post.findUnique({
+            where: { id },
+            select: {
+                ownerId: true
+            }
+        })
+
+        /*  
+            Checks if the current user is the owner of the post, and has permission to delete,
+            Or if the current user can delete other post
+            Or if the current user is an admin.
+        */
+
+        if (!((post?.ownerId === ownerId && canDeletePost) || canDeleteOtherPost || isAdmin)) {
+            throw new CustomError('You do not have permission to delete this post.', StatusCodes.UNAUTHORIZED)
+        }
+            
         try {
             const post = await prisma.post.delete({
                 where: {
@@ -92,7 +127,6 @@ export const editPost = async (req: Req, res: Response) => {
 
 export const getPost = async (req: Req, res: Response) => {
     const { id } = req.params
-
     const post = await prisma.post.findUnique({
         where: { id },
         include: {
@@ -111,7 +145,8 @@ export const getPost = async (req: Req, res: Response) => {
                     created: true,
                     updated: true
                 }
-            }
+            },
+            reactions: true
         }
     })
     
@@ -163,3 +198,67 @@ export const getAllPosts = async (req: Req, res: Response) => {
 
     res.json({count: post.length, data: post})
 }
+
+// TODO: Handle this in a better way.
+export const like = async (req: Req, res: Response) => {
+    const { params: { id: postId }, user: { id: userId } } = req
+    console.log(userId)
+
+    const post = await prisma.post.update({
+        where: { id: postId },
+        data: {
+            reactions: {
+                upsert: {
+                    create: {
+                        userId: userId,
+                        type: "Like",
+                    },
+                    update: {
+                        type: "Like"
+                    },
+                    where: {
+                        userId_postId: {
+                            userId: userId,
+                            postId: postId
+                        }
+                    }
+                }
+            }
+        },
+        include: {
+            reactions: true,
+        }
+    })
+
+    res.json(post)
+}   
+
+export const unlike = async (req: Req, res: Response) => {
+    const { params: { id: postId }, user: { id: userId } } = req
+    console.log(userId)
+
+    const post = await prisma.post.update({
+        where: { id: postId },
+        data: {
+            reactions: {
+                upsert: {
+                    create: {
+                        userId: userId,
+                        type: "Unlike",
+                    },
+                    update: {
+                        type: "Unlike"
+                    },
+                    where: {
+                        userId_postId: {
+                            userId: userId,
+                            postId: postId
+                        }
+                    }
+                }
+            }
+        }
+    })
+
+    res.json(post)
+}   

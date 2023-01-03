@@ -8,6 +8,7 @@ import auth from "./middlewears/auth";
 import { COOKIE_SECRET } from "./config";
 import { categoryRouter } from "./routes/category.routes";
 import { rolesRouter } from "./routes/roles.route";
+import { userRouter } from "./routes/user.routes";
 const morgan = require("morgan");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
@@ -39,6 +40,7 @@ app.use('/', authRouter);
 app.use('/post', postRouter);
 app.use('/category', categoryRouter);
 app.use('/roles', rolesRouter);
+app.use('/user', userRouter);
 
 app.get('/protected', auth, async (req: Request, res: Response) => {
   return res.send("Howdy!")

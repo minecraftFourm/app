@@ -54,12 +54,13 @@ export const getCategory = async (req: Request, res: Response) => {
 
 export const editCategory = async (req: Req, res: Response) => {
     // TODO: Add roles permissions support
-    const { params: { id }, body: { name } } = req
+    const { params: { id }, body: { name, adminOnly } } = req
 
     const post = await prisma.category.update({
         where: { id },
         data: {
-            name
+            name,
+            adminOnly
         }
     })
 

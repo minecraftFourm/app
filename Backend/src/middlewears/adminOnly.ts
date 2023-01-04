@@ -10,7 +10,7 @@ interface Req extends Request {
 } 
 
 
-const adminOnly = (req: Req, res : Response, next: NextFunction) => {
+export const adminOnly = (req: Req, res : Response, next: NextFunction) => {
     const user = req.user;
     
     if (!user || !user.role.isAdmin) throw new CustomError(ReasonPhrases.UNAUTHORIZED, StatusCodes.UNAUTHORIZED)
@@ -18,5 +18,3 @@ const adminOnly = (req: Req, res : Response, next: NextFunction) => {
     // ! If the user's role is not admin, then they can't access the content...
     next();
 }
-
-export default adminOnly

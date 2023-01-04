@@ -32,6 +32,7 @@ const auth = wrapper(async (req: req, res: Response, next: NextFunction) => {
                 username: true,
                 email: true,
                 profilePicture: true,
+                profilePictureId: true,
                 bio: true,
                 created: true,
                 followers: true,

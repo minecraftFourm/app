@@ -6,6 +6,10 @@ import { Req } from "../services/post.service";
 import { generalUserSelect, handleDeleteUser, handleGetAllUsers } from "../services/user.service";
 const cloudinary = require('cloudinary').v2;
 
+type pictureStats = {
+    url?: string
+    public_id?: string
+}
 
 export const getUsers = async (req: Req, res: Response) => {
     const users = await handleGetAllUsers(req)
@@ -23,11 +27,11 @@ export const getUser = async (req: Req, res: Response) => {
     return res.json({ message: 'success', data: user }).status(StatusCodes.OK)
 }
 
-export const editUser = async (req: Request, res: Response) => {
-    const { params: { id }, body: { role: roleId, bio, email, profilePicture, username } } = req
+export const editUser = async (req: Req, res: Response) => {
+    const { params: { id }, body: { role: roleId, bio, email, profilePicture, username }, user: { profilePictureId } } = req
 
     // TODO: delete the previous user's profile picture if possible.
-    let profilePictureUrl;
+    let profilePictureInfo: pictureStats = {};
     if (profilePicture) {
         const options = {
             use_filename: true,
@@ -39,7 +43,16 @@ export const editUser = async (req: Request, res: Response) => {
           try {
             // * Upload the image, and get the url
             const result = await cloudinary.uploader.upload(profilePicture, options);
-            profilePictureUrl = result.secure_url;
+
+            // * Delete previous profile picture
+            if (profilePictureId) {
+                await cloudinary.api.delete_resources([profilePictureId])
+            }
+
+            profilePictureInfo = {
+                url: result.secure_url,
+                public_id: result.public_id
+            }
           } catch (error) {
             console.error(error);
             throw new CustomError("Error uploading profile picture", StatusCodes.BAD_REQUEST)
@@ -54,7 +67,8 @@ export const editUser = async (req: Request, res: Response) => {
             bio, 
             email,
             username,
-            profilePicture: profilePictureUrl,
+            profilePicture: profilePictureInfo.url,
+            profilePictureId: profilePictureInfo?.public_id,
             roleId: roleId
         },
         select: generalUserSelect

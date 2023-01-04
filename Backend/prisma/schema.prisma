@@ -16,6 +16,7 @@ model User {
   password       String
   email          String      @unique()
   profilePicture String      @default("")
+  profilePictureId String @default("")
   role           Role        @relation(fields: [roleId], references: [id])
   roleId         String
   followers      Follower[]

@@ -7,6 +7,7 @@ export interface Req extends Request {
     user: {
         id: string
         role: Role
+        profilePictureId?: string
     },
     query: {
         title: string | undefined

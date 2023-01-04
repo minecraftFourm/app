@@ -88,7 +88,7 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
         if(!await argon.verify(user.password, password)) {
             throw new CustomError("Invalid Password", StatusCodes.BAD_REQUEST)
         }
-        console.log(user)
+        
         await jwt_generator({ id: user.id, username: user.username, role: user.role, email: user.email, profilePicture: user.profilePicture }, res)
         
         return { id: user.id, username: user.username, email: user.email }

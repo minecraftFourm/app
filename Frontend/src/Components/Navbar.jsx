@@ -24,7 +24,6 @@ const Navbar = () => {
     }
   }
   
-  console.log(user)
   return (
     <>    
       <div className="grid h-16 bg-white drop-shadow-lg w-full" id="header">

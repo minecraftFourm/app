@@ -32,6 +32,7 @@ model Role {
   title String @unique
   color String
   user  User[]
+  isStaff Boolean @default(false)
 
   isAdmin      Boolean @default(false)
   canPostAdmin Boolean @default(false)

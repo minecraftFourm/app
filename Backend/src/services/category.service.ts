@@ -10,9 +10,9 @@ interface CategoryUpdateInput extends CategoryBodyInput{
 }
 
 interface CategoryParamsBody {
-    name?: string,
-    limit?: string,
-    page?: string
+    name?: string
+    limit?: string
+    jump?: string
 }
 
 export const createCategory = async (name: string) => {
@@ -27,7 +27,7 @@ export const createCategory = async (name: string) => {
 }
 
 
-export const getCategories = async ({name, limit, page}: CategoryParamsBody) => {
+export const getCategories = async ({name, limit, jump}: CategoryParamsBody) => {
 
     const category =  await prisma.category.findMany({
         where: {
@@ -39,9 +39,8 @@ export const getCategories = async ({name, limit, page}: CategoryParamsBody) => 
         include: {
             posts: true
         },
-        take: Number(limit),
-        skip: (Number(limit) * (Number(page) - 1))
-        
+        take: limit ? Number(limit) : undefined,
+        skip: jump ? Number(jump) : undefined
     })
 
     return category

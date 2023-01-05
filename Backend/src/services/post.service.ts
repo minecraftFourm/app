@@ -10,10 +10,16 @@ export interface Req extends Request {
         profilePictureId?: string
     },
     query: {
-        title: string | undefined
-        jump: string | undefined
-        limit: string | undefined
-        category: string | undefined
+        title?: string 
+        jump?: string 
+        limit?: string 
+        category?: string 
+        username?: string
+        email?: string
+        role?: {
+
+        }
+        roleId?: string
     }
 }
 
@@ -76,7 +82,7 @@ export const handleNewPost = async (req: Req) => {
 }
 
 export const handleGetAllPost = async (req: Req) => {
-    let { title, jump, limit, category } = req.query
+    let { title, jump = 0, limit = 0, category } = req.query
 
     const post = await prisma.post.findMany({
         where: {
@@ -148,6 +154,7 @@ export const handleEditPost = async (req: Req) => {
         *   Or if the current user can edit other post
         *   Or if the current user is an admin.
     */
+   console.log(1)
     if (!((post?.ownerId === ownerId && canEditPost) || canEditOtherPost || isAdmin)) {
         throw new CustomError('You do not have permission to edit this post.', StatusCodes.UNAUTHORIZED)
     }

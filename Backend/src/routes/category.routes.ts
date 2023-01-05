@@ -9,9 +9,9 @@ export const categoryRouter = Router();
 
 categoryRouter.route('/')
     .get(wrapper(getCategories))
-    .post(auth, adminOnly, wrapper(createCategory))
+    .post(auth, wrapper(createCategory))
 
 categoryRouter.route('/:id')
-    .delete(auth, adminOnly, wrapper(deleteCategory))
+    .delete(auth, wrapper(deleteCategory))
     .get(wrapper(getCategory))
-    .patch(auth, adminOnly, wrapper(editCategory))
+    .patch(auth, wrapper(editCategory))

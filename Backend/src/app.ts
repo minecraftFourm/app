@@ -14,8 +14,8 @@ const cors = require("cors");
 const cloudinary = require('cloudinary').v2;
 dotenv.config()
 
-const port = process.env.PORT;
-const app = express();
+export const port = process.env.PORT;
+export const app = express();
 
 // Return "https" URLs by setting secure: true
 cloudinary.config({
@@ -47,6 +47,6 @@ app.use('*', (req, res) => {
 })
 
 app.use(errorHandler);
-app.listen(port, () => {
-    console.log(`Server running at ${port}`);
-});
+// app.listen(port, () => {
+//     console.log(`Server running at ${port}`);
+// });

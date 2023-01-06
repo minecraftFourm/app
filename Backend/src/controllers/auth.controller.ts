@@ -22,7 +22,7 @@ export const signOutUser = async (req: Request, res: Response) => {
     logoutUser(res)
     res.json({
         message: "user logged out"
-    })
+    }).status(StatusCodes.NO_CONTENT)
 }
 
 // ! Don't think we need a specific route dedicated to refreshing tokens anymore.

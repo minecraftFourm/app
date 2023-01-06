@@ -39,6 +39,10 @@ model Role {
   canPostAdmin Boolean @default(false)
   canEditAdmin Boolean @default(false)
 
+  canCreateRole Boolean @default(false)
+  canEditRole Boolean @default(false)
+  canDeleteRole Boolean @default(false)
+
   canManageUsers Boolean @default(false)
   canRemoveUsers Boolean @default(false)
   canEditUsers   Boolean @default(false)

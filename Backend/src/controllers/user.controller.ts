@@ -23,10 +23,10 @@ export const getUser = async (req: Req, res: Response) => {
 
 export const editUser = async (req: Req, res: Response) => {
     const user = await handleEditUser(req);
-    return res.json({ message: "success", data: user })
+    return res.json({ message: "success", data: user }).status(StatusCodes.CREATED)
 }
 
 export const deleteUser = async (req: Req, res: Response) => {
     const user = handleDeleteUser(req)
-    return res.json({ message: 'success' })
+    return res.json({ message: 'success' }).status(StatusCodes.NO_CONTENT)
 }

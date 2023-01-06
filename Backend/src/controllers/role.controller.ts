@@ -23,7 +23,7 @@ export const getRoles = async (req: Request, res: Response) => {
         }
     })
     
-    return res.json({ count: role.length, data: role })
+    return res.json({ count: role.length, data: role }).status(StatusCodes.OK)
 }
 
 export const getRole = async (req: Request, res: Response) => {
@@ -36,7 +36,7 @@ export const getRole = async (req: Request, res: Response) => {
         }
     })
 
-    return res.json({ message: 'success', data: role })
+    return res.json({ message: 'success', data: role }).status(StatusCodes.OK)
 }
 
 export const editRole = async (req: Request, res: Response) => {
@@ -49,7 +49,7 @@ export const editRole = async (req: Request, res: Response) => {
         }
     })
 
-    res.json({ message: 'success', role })
+    res.json({ message: 'success', role }).status(StatusCodes.CREATED)
 }
 
 export const deleteRole = async (req: Request, res: Response) => {
@@ -70,5 +70,5 @@ export const deleteRole = async (req: Request, res: Response) => {
         }
     }
 
-    res.json({ message: 'success' })
+    res.json({ message: 'success' }).status(StatusCodes.NO_CONTENT)
 }

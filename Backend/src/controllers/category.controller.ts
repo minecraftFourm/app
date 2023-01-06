@@ -48,7 +48,7 @@ export const deleteCategory = async (req: Req, res: Response) => {
     if (!(category?.adminOnly && isAdmin)) throw new CustomError("You do not have permission to delete this category.", StatusCodes.UNAUTHORIZED)
 
     await deleteC(id)
-    res.json({ message: 'success' }).status(StatusCodes.OK)
+    res.json({ message: 'success' }).status(StatusCodes.NO_CONTENT)
 }
 
 export const getCategory = async (req: Request, res: Response) => {
@@ -57,7 +57,7 @@ export const getCategory = async (req: Request, res: Response) => {
 
     if (!category) throw new CustomError("Could not find category.", StatusCodes.BAD_REQUEST)
 
-    res.json({message: 'success', data: category})
+    res.json({message: 'success', data: category}).status(StatusCodes.OK)
 }
 
 export const editCategory = async (req: Req, res: Response) => {
@@ -77,11 +77,11 @@ export const editCategory = async (req: Req, res: Response) => {
 
     const updatedCategory = await updateCategory({id, name, adminOnly})
 
-    return res.json({ message: 'success', data: updatedCategory})
+    return res.json({ message: 'success', data: updatedCategory}).status(StatusCodes.CREATED)
 }
 
 export const getCategories = async (req: Req, res: Response) => {
     let { name, jump, limit } = req.query
     const categories = await getC({name, jump, limit})
-    res.json({count: categories.length, data: categories})
+    res.json({count: categories.length, data: categories}).status(StatusCodes.OK)
 }

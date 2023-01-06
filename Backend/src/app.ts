@@ -9,6 +9,7 @@ import { COOKIE_SECRET } from "./config";
 import { categoryRouter } from "./routes/category.routes";
 import { rolesRouter } from "./routes/roles.route";
 import { userRouter } from "./routes/user.routes";
+import { commentRouter } from "./routes/comment.routes";
 const morgan = require("morgan");
 const cors = require("cors");
 const cloudinary = require('cloudinary').v2;
@@ -37,6 +38,7 @@ app.use('/post', postRouter);
 app.use('/category', categoryRouter);
 app.use('/roles', rolesRouter);
 app.use('/user', userRouter);
+app.use('/comment', commentRouter);
 
 app.get('/protected', auth, async (req: Request, res: Response) => {
   return res.send("Howdy!")

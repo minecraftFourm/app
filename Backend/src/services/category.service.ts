@@ -15,7 +15,7 @@ interface CategoryParamsBody {
     jump?: string
 }
 
-export const createCategory = async (name: string) => {
+export const handleCreateCategory = async (name: string) => {
     const newCategory = await prisma.category.create({
         data: {
             name
@@ -27,7 +27,7 @@ export const createCategory = async (name: string) => {
 }
 
 
-export const getCategories = async ({name, limit, jump}: CategoryParamsBody) => {
+export const handleGetCategories = async ({name, limit, jump}: CategoryParamsBody) => {
 
     const category =  await prisma.category.findMany({
         where: {
@@ -47,7 +47,7 @@ export const getCategories = async ({name, limit, jump}: CategoryParamsBody) => 
 
 }
 
-export const getCategoryById = async (id: string) => {
+export const handleGetCategoryById = async (id: string) => {
     const category = await prisma.category.findUnique({
         where: { id },
         include: {
@@ -60,7 +60,7 @@ export const getCategoryById = async (id: string) => {
 }
 
 
-export const updateCategory = async ({id, name, adminOnly}:CategoryUpdateInput) => {
+export const handleUpdateCategory = async ({id, name, adminOnly}:CategoryUpdateInput) => {
     const category = await prisma.category.update({
         where: { id },
         data: {
@@ -72,7 +72,7 @@ export const updateCategory = async ({id, name, adminOnly}:CategoryUpdateInput) 
     return category
 }
 
-export const deleteCategory = async (id: string) => {
+export const handleDeleteCategory = async (id: string) => {
     await prisma.category.delete({
         where: {
             id

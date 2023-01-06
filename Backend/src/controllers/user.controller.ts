@@ -1,8 +1,7 @@
 import { Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import prisma from "../db/prisma.client";
 import { Req } from "../services/post.service";
-import { generalUserSelect, handleDeleteUser, handleEditUser, handleGetAllUsers } from "../services/user.service";
+import { handleDeleteUser, handleEditUser, handleGetAllUsers, handleGetUser } from "../services/user.service";
 
 
 export const getUsers = async (req: Req, res: Response) => {
@@ -12,12 +11,7 @@ export const getUsers = async (req: Req, res: Response) => {
 
 export const getUser = async (req: Req, res: Response) => {
     const { id } = req.params
-
-    const user = await prisma.user.findUnique({
-        where: { id },
-        select: generalUserSelect
-    })
-
+    const user = await handleGetUser(id)
     return res.json({ message: 'success', data: user }).status(StatusCodes.OK)
 }
 

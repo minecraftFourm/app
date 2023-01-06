@@ -172,3 +172,13 @@ export const handleEditUser = async (req: Req) => {
 
     return user
 }
+
+export const handleGetUser = async ( id: string ) => {
+
+    const user = await prisma.user.findUnique({
+        where: { id },
+        select: generalUserSelect
+    })
+
+    return user
+}

@@ -3,7 +3,7 @@ import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import prisma from "../db/prisma.client"
 import CustomError from "../middlewears/custom-error"
-import {createCategory as createC, getCategoryById, deleteCategory as deleteC, updateCategory, getCategories as getC} from '../services/category.service'
+import {handleCreateCategory, handleDeleteCategory, handleGetCategories, handleGetCategoryById, handleUpdateCategory } from '../services/category.service'
 
 interface Req extends Request {
     query: {
@@ -26,7 +26,7 @@ export const createCategory = async (req: Req, res: Response) => {
     // * Checks if the user is trying to create an admin only category, and if so, they must be an admin, if not, an error is thrown.
     if (!(adminOnly && isAdmin)) throw new CustomError("You do not have permission to create an adminOnly category.", StatusCodes.UNAUTHORIZED)
 
-    const newCategory = await createC(name)
+    const newCategory = await handleCreateCategory(name)
     res.json({ message: 'success', data: newCategory }).status(StatusCodes.CREATED)
 }
 
@@ -47,13 +47,13 @@ export const deleteCategory = async (req: Req, res: Response) => {
     // * If the category is adminOnly, it checks if the user trying to delete it is an admin.
     if (!(category?.adminOnly && isAdmin)) throw new CustomError("You do not have permission to delete this category.", StatusCodes.UNAUTHORIZED)
 
-    await deleteC(id)
+    await handleDeleteCategory(id)
     res.json({ message: 'success' }).status(StatusCodes.NO_CONTENT)
 }
 
 export const getCategory = async (req: Request, res: Response) => {
     const { id } = req.params
-    const category = await getCategoryById(id)
+    const category = await handleGetCategoryById(id)
 
     if (!category) throw new CustomError("Could not find category.", StatusCodes.BAD_REQUEST)
 
@@ -75,13 +75,13 @@ export const editCategory = async (req: Req, res: Response) => {
     // * If the category is adminOnly, it checks if the user trying to edit it is an admin.
     if (!(category?.adminOnly && isAdmin)) throw new CustomError("You do not have permission to edit this category.", StatusCodes.UNAUTHORIZED)
 
-    const updatedCategory = await updateCategory({id, name, adminOnly})
+    const updatedCategory = await handleUpdateCategory({id, name, adminOnly})
 
     return res.json({ message: 'success', data: updatedCategory}).status(StatusCodes.CREATED)
 }
 
 export const getCategories = async (req: Req, res: Response) => {
     let { name, jump, limit } = req.query
-    const categories = await getC({name, jump, limit})
+    const categories = await handleGetCategories({name, jump, limit})
     res.json({count: categories.length, data: categories}).status(StatusCodes.OK)
 }

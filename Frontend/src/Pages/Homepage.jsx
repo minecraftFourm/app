@@ -21,8 +21,6 @@ const Homepage = () => {
 		const data = await CustomFetch({ url: 'protected' });
 	}
 
-	const [ showTitle, setShowTitle ] = useState(false);
-
 	const Content = () => {
 		return (
 		<div className={`absolute top-0 z-0 bottom-0 left-0 right-0 grid place-items-center text-white bg-[#00000080] duration-1000`}>
@@ -43,14 +41,7 @@ const Homepage = () => {
 				modules={[Pagination, Keyboard]}
 				className="h-[700px]"
 			>
-				<SwiperSlide className="">
-					{/* <LazyLoadImage
-						alt='Website Hero Background'
-						src={mainBg} // use normal <img> attributes as props
-						afterLoad={() => setShowTitle(true)}
-						effect="blur"
-						className="max-h-[500px] h-full w-full"
-					/> */}
+				<SwiperSlide className="w-full h-full">
 					<img src={mainBg} alt="" className=" h-full w-full object-cover object-center" />
 					<Content />
 				</SwiperSlide>
@@ -69,7 +60,7 @@ const Homepage = () => {
 
 		</section>
 		{/* TODO: Hero Content */}
-		<section className="bg-[#1B263B] w-full h-full px-16 py-4 -mt-2">
+		<section className="bg-[#1B263B] w-full h-full px-16 py-4">
 			<div className="flex flex-row gap-8 justify-between w-full h-full">
 				<div className="w-full bg-white p-6 flex flex-col gap-4">
 					<div className="w-full border border-gray-400 bg-white rounded-sm overflow-hidden">

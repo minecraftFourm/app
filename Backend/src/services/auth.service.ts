@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import * as argon from 'argon2';
 import jwt from 'jsonwebtoken'
 import { Request, Response } from "express";
-import { ACCESS_TOKEN_EXIPIRY, EMAIL_PATTERN, PASSWORD_PATTERN, REFRESH_TOKEN_EXIPIRY, USERNAME_PATTERN } from "../config";
+import { ACCESS_TOKEN_EXIPIRY, DEFAULT_PROFILE_PICTURE, DEFAULT_ROLE_ID, EMAIL_PATTERN, PASSWORD_PATTERN, REFRESH_TOKEN_EXIPIRY, USERNAME_PATTERN } from "../config";
 import CustomError from "../middlewears/custom-error";
 import { StatusCodes } from "http-status-codes";
 
@@ -20,7 +20,12 @@ type LoginBody = {
 
 type props = {
     id: string,
-    username?: string
+    username: string
+    email: string
+    role?: {
+
+    }
+    profilePicture: string
 }
 
 export const jwt_generator = async (payload: props, res: Response) => {
@@ -70,6 +75,9 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
         const user = await prisma.user.findUnique({
             where: {
                 email: email.toLowerCase()
+            },
+            include: {
+                role: true
             }
         })
 
@@ -80,9 +88,8 @@ export const loginUser = async (auth: LoginBody, res: Response) => {
         if(!await argon.verify(user.password, password)) {
             throw new CustomError("Invalid Password", StatusCodes.BAD_REQUEST)
         }
-
-        await jwt_generator({ id: user.id, username: user.username }, res)
-
+        
+        await jwt_generator({ id: user.id, username: user.username, role: user.role, email: user.email, profilePicture: user.profilePicture }, res)
         
         return { id: user.id, username: user.username, email: user.email }
     }
@@ -94,8 +101,7 @@ export const createUser = async (user: UserBody, res: Response) => {
     const validateUsername = USERNAME_PATTERN.test(username);
 	const validateEmail = EMAIL_PATTERN.test(email);
 	const validatePassword = PASSWORD_PATTERN.test(password);
-    console.log(username, email, password)
-    console.log(validateUsername, validateEmail, validatePassword)
+    
 	// * Checks if a real email, good password and solid username has been provided using Regex patterns I copied from the world wide web.
 	if (!validateUsername) throw new CustomError("Invalid Username.", StatusCodes.BAD_REQUEST); 
 	if (!validatePassword) throw new CustomError("Invalid Password.", StatusCodes.BAD_REQUEST);
@@ -113,11 +119,20 @@ export const createUser = async (user: UserBody, res: Response) => {
             data: {
                 username,
                 password,
-                email
+                email,
+                roleId: DEFAULT_ROLE_ID,
+                profilePicture: DEFAULT_PROFILE_PICTURE
+            },
+            select: {
+                id: true,
+                username: true,
+                role: true,
+                email: true,
+                profilePicture: true
             }
         })
 
-        await jwt_generator({ id: newUser.id, username: newUser.username }, res)
+        await jwt_generator({ id: newUser.id, username: newUser.username, role: newUser.role, email: newUser.email, profilePicture: newUser.profilePicture }, res)
         
         return { id: newUser.id, username: newUser.username, email: newUser.email }
         

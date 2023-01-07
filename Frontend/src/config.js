@@ -7,5 +7,8 @@ export const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/
 export const USERNAME_PATTERN = /^(?:\w{5,31}[a-z0-9])$/i; 
 export const USERNAME_REQUIREMENT = 'Minimum 5 characters, cannot end with special characters, Maximum length is 32 characters.'
 
+export const MAX_TITLE_LENGTH = 300
 
 
+export const ANNOUNCEMENT_CATEGORY_ID = 'd0ed3d28-bbe4-4e61-b473-cb0dd2257861'
+export const ANNOUNCEMENT_CATEGORY_NAME = 'announcement'

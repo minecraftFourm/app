@@ -154,7 +154,6 @@ export const handleEditPost = async (req: Req) => {
         *   Or if the current user can edit other post
         *   Or if the current user is an admin.
     */
-   console.log(1)
     if (!((post?.ownerId === ownerId && canEditPost) || canEditOtherPost || isAdmin)) {
         throw new CustomError('You do not have permission to edit this post.', StatusCodes.UNAUTHORIZED)
     }

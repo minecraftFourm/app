@@ -49,7 +49,7 @@ app.use(
 app.use('/', authRouter);
 app.use('/post', postRouter);
 app.use('/category', categoryRouter);
-app.use('/roles', rolesRouter);
+app.use('/role', rolesRouter);
 app.use('/user', userRouter);
 app.use('/comment', commentRouter);
 

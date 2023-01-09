@@ -11,28 +11,29 @@ datasource db {
 }
 
 model User {
-  id             String      @id @default(uuid())
-  username       String
-  password       String
-  email          String      @unique()
-  profilePicture String      @default("")
-  profilePictureId String @default("")
-  role           Role        @relation(fields: [roleId], references: [id])
-  roleId         String
-  followers      Follower[]
-  following      Following[]
-  bio            String      @default("")
-  created        DateTime    @default(now())
-  post           Post[]
-  refreshToken   String      @default("")
-  reactions       reactions[]
+  id               String      @id @default(uuid())
+  username         String
+  password         String
+  email            String      @unique()
+  profilePicture   String      @default("")
+  profilePictureId String      @default("")
+  role             Role        @relation(fields: [roleId], references: [id])
+  roleId           String
+  followers        Follower[]
+  following        Following[]
+  bio              String      @default("")
+  created          DateTime    @default(now())
+  post             Post[]
+  comments         Comment[]
+  refreshToken     String      @default("")
+  reactions        reactions[]
 }
 
 model Role {
-  id    String @id @default(uuid())
-  title String @unique
-  color String
-  user  User[]
+  id      String  @id @default(uuid())
+  title   String  @unique
+  color   String
+  user    User[]
   isStaff Boolean @default(false)
 
   isAdmin      Boolean @default(false)
@@ -40,7 +41,7 @@ model Role {
   canEditAdmin Boolean @default(false)
 
   canCreateRole Boolean @default(false)
-  canEditRole Boolean @default(false)
+  canEditRole   Boolean @default(false)
   canDeleteRole Boolean @default(false)
 
   canManageUsers Boolean @default(false)
@@ -70,12 +71,12 @@ model Role {
 }
 
 model Category {
-  id      String   @id @default(uuid())
-  name    String   @unique
-  posts   Post[]
-  created DateTime @default(now())
-  updated DateTime @updatedAt
-  adminOnly Boolean @default(false)
+  id        String   @id @default(uuid())
+  name      String   @unique
+  posts     Post[]
+  created   DateTime @default(now())
+  updated   DateTime @updatedAt
+  adminOnly Boolean  @default(false)
 }
 
 model Follower {
@@ -91,26 +92,26 @@ model Following {
 }
 
 model Post {
-  id         String    @id @default(uuid())
+  id         String      @id @default(uuid())
   title      String
   content    String
   comments   Comment[]
-  created    DateTime  @default(now())
-  updated    DateTime  @updatedAt
-  reactions      reactions[]
-  category   Category  @relation(fields: [categoryId], references: [id])
+  created    DateTime    @default(now())
+  updated    DateTime    @updatedAt
+  reactions  reactions[]
+  category   Category    @relation(fields: [categoryId], references: [id])
   categoryId String
-  owner      User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner      User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId    String
 }
 
 model reactions {
-  id     String @id @default(uuid())
-  user   User   @relation(fields: [userId], references: [id])
+  id     String       @id @default(uuid())
+  user   User         @relation(fields: [userId], references: [id])
   userId String
   postId String
-  post   Post   @relation(fields: [postId], references: [id])
-  type reactionType
+  post   Post         @relation(fields: [postId], references: [id])
+  type   reactionType
 
   @@unique([userId, postId])
 }
@@ -141,6 +142,8 @@ model Comment {
   post    Post     @relation(fields: [postId], references: [id])
   postId  String
   comment String
+  userId  String
+  user    User     @relation(fields: [userId], references: [id])
   created DateTime @default(now())
   updated DateTime @updatedAt
 }

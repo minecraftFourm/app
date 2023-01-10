@@ -1,12 +1,40 @@
+import { Role } from "@prisma/client"
+import { Request } from "express"
 import { StatusCodes } from "http-status-codes"
 import prisma from "../db/prisma.client"
 import CustomError from "../middlewears/custom-error"
-import { Req } from "./post.service"
 
 type bodyObject = {
     content: string
     postId: string
     userId: string
+}
+
+interface Req extends Request {
+    user: {
+        id: string
+        role: Role
+        profilePictureId?: string
+    },
+    query: {
+        title?: string 
+        jump?: string 
+        limit?: string 
+        category?: string 
+        username?: string
+        email?: string
+        role?: {
+
+        },
+        postId: string
+        updated: string
+        created: string
+        sort: "asc" | "desc"
+        roleId?: string
+    },
+    params: {
+        id: string
+    }
 }
 
 export const handleGetComment = async (id: string) => {
@@ -17,10 +45,17 @@ export const handleGetComment = async (id: string) => {
     return comment
 }
 
-export const handleGetComments = async () => {
+export const handleGetComments = async (req: Req) => {
+    const { postId, updated, created, sort } = req.query
+
     const comment = await prisma.comment.findMany({
         where: {
-
+            postId,
+            updated,
+            created
+        },
+        orderBy: {
+            updated: sort
         }
     })
 
@@ -39,6 +74,23 @@ export const handleCreateComment = async (body: bodyObject) => {
     })
 
     return comment
+}
+
+export const handleEditComment = async (req: Req) => {
+    const { params: { id }, body: { comment: content } } = req
+
+    if (!content) throw new CustomError("Missing content field.", StatusCodes.NOT_ACCEPTABLE)
+    
+    const comment = await prisma.comment.update({
+        where: {
+            id
+        },
+        data: {
+            comment: content
+        }
+    })
+
+    return comment 
 }
 
 export const handleDeleteComment = async (req: Req) => {

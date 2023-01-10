@@ -72,8 +72,9 @@ export const editCategory = async (req: Req, res: Response) => {
         }
     })
 
+    if (!category) throw new CustomError("This category does not exist.", StatusCodes.NOT_FOUND)
     // * If the category is adminOnly, it checks if the user trying to edit it is an admin.
-    if (!(category?.adminOnly && isAdmin)) throw new CustomError("You do not have permission to edit this category.", StatusCodes.UNAUTHORIZED)
+    if (!(category.adminOnly && isAdmin)) throw new CustomError("You do not have permission to edit this category.", StatusCodes.UNAUTHORIZED)
 
     const updatedCategory = await handleUpdateCategory({id, name, adminOnly})
 

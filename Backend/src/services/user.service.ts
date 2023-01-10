@@ -53,23 +53,40 @@ export const handleDeleteUser = async (req: Req) => {
 }
 
 export const handleGetAllUsers = async (req: Req) => {
-    const { username, email, role, roleId, jump = 0 } = req.query;
+    const { username, email, isStaff, isAdmin, roleId, jump = 0 } = req.query;
+    type perms = {
+        isStaff: undefined | boolean
+        isAdmin: undefined | boolean
+    }
+    let permissionValues: perms = {
+        isStaff: undefined,
+        isAdmin: undefined,
+    } 
+
+    if (isStaff) {
+        permissionValues.isStaff = isStaff === 't' ? true : false;    
+    }
+
+    if (isAdmin) {
+        permissionValues.isAdmin = isAdmin === 't' ? true : false
+    }
 
     const users = await prisma.user.findMany({
         where: {
             username: {
-                contains: username,
+                contains: username || undefined,
                 mode: 'insensitive'
             },
             email: {
-                contains: email,
+                contains: email || undefined,
                 mode: 'insensitive'
             },                
             role: {
-                ...role,
+                isStaff: permissionValues.isStaff,
+                isAdmin: permissionValues.isAdmin
             },
             roleId: {
-                equals: roleId
+                equals: roleId || undefined
             }
         },
         skip: Number(jump),

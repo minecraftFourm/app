@@ -16,9 +16,8 @@ export interface Req extends Request {
         category?: string 
         username?: string
         email?: string
-        role?: {
-
-        }
+        isStaff?: string
+        isAdmin?: string
         roleId?: string
     }
 }

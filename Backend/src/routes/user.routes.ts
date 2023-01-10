@@ -6,7 +6,7 @@ import auth from '../middlewears/auth';
 export const userRouter = Router();
 
 userRouter.route('/')
-    .get(auth, wrapper(getUsers))
+    .get(wrapper(getUsers))
 
 userRouter.route('/:id')
     .get(auth, wrapper(getUser))

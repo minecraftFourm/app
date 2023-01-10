@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useFetch } from "../Contexts/Fetch";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -13,22 +13,29 @@ import "swiper/css/keyboard";
 import github from "../assets/github.svg"
 import email from "../assets/email.svg"
 import Scroll from "../Components/Scroll-to-top";
+import StaffTeam from "../Components/StaffTeam";
 
 const Homepage = () => {
 	const CustomFetch = useFetch();
+	const [ staffTeam, setStaffTeam ] = useState([]);
 
-	const f = async () => {
-		const data = await CustomFetch({ url: 'protected' });
-	}
+	useEffect(() => {
+		(async() => {
+			const { data, response } = await CustomFetch({ url: 'user?isStaff=t', returnResponse: true });
+			if (response.ok) {
+				setStaffTeam(data.data)
+			}
+		})()
+	}, [])
 
 	const Content = () => {
 		return (
 		<div className={`absolute top-0 z-0 bottom-0 left-0 right-0 grid place-items-center text-white bg-[#00000080] duration-1000`}>
-			<h1 className={`font-extrabold text-6xl duration-700 opacity-100 z-10`} onClick={f}>ServerName</h1>
+			<h1 className={`font-extrabold text-6xl duration-700 opacity-100 z-10`}>ServerName</h1>
 		</div>
 		)
 	}
-	
+
   return (
 	<>
 		<section className="relative">
@@ -249,78 +256,47 @@ const Homepage = () => {
 					</div>
 				</aside>
 			</div>
+			{ staffTeam.length === 0 && <Scroll /> }
 		</section>
 
 		{/* Our Team */}
-		<section className="bg-white py-12">
-			<div className="w-full text-center">
-				<h2 className="text-gray-700 font-bold text-4xl">Our Team Members</h2>
-				<p className="text-gray-500">Meet our team</p>
-			</div>
+		{
+			staffTeam.length !== 0 
+			&& 
+			<>
+				<section className="bg-white py-12">
+					<div className="w-full text-center">
+						<h2 className="text-gray-700 font-bold text-4xl">Our Team Members</h2>
+						<p className="text-gray-500">Meet our team</p>
+					</div>
 
-			{/* TODO: Button controllers */}
-			<article className="mt-4 bg-indigo-500 mx-auto border border-slate-500 drop-shadow-lg max-w-[900px] h-[300px]">
-				<Swiper
-					slidesPerView={1}
-					loop={true}
-					modules={[Autoplay, Pagination, Keyboard]}
-					className="h-full"
-					autoplay={{
-						delay: 2500,
-						disableOnInteraction: false,
-					  }}
-				>
-					<SwiperSlide>
-						<section className="flex flex-row w-full h-full">
-							<img src="https://s3-alpha-sig.figma.com/img/2bf0/38b2/24b6fd21fbe783bc14937744f3e9a9cc?Expires=1672617600&Signature=NvublJObKVhmjMBxLObHUbRHEagUU~qUA3lyoSCgO1otPB~h5IFEU125~tAh~48DYX4LOdYFwTzVSBk724hreypVr1R1P6DOgDMpWQUiYswZ9g5V93slEbdE6aalP3d0AwrL-svT8xXmfI6EkDaEu6THoUUN3p8ZCeg5pLiR07CPvHxmU8KVONl-ssv-LqDEpXODba8-I3nHJIUf-1KTNZNvf~FuaKbTyAJzscPKeq6zypywTo-kpcoW0npW7r5y6SSsDEOzRa1-bbrzWny5lWVQMJbDbLxs65p0jJotsYBd9B70mo368I-4CjB7S9NPjFEMBYiciu7p~Sx21AwIIQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4" alt="" className="object-cover object-center max-w-[300px] w-full" />
-
-							<div className="w-full text-white mt-3 flex flex-col items-center relative">
-								<header className="text-center">
-									<h4 className="font-semibold text-3xl">Dave Chappel</h4>
-									<p className="font-normal">Plugin Developer</p>
-								</header>
-								<p className="px-6 mt-2 text-center font-light">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quidem a esse totam aspernatur, maiores porro non architecto voluptatibus consequuntur consequatur excepturi iure voluptate, velit ex, consectetur ad sit molestiae expedita.</p>
-								<footer className="flex flex-row justify-between px-4 gap-8 absolute bottom-2">
-									<a href="https://www.github.com/davechappel" className="flex flex-row gap-2 items-center ">
-										<img src={github} alt="" className="w-[32px]"/>
-										<p>github.com/davechappel</p>
-									</a>
-									<a href="mailto:davechappel@example.com" className="flex flex-row gap-2 items-center">
-										<img src={email} alt="" className="w-[32px]"/>
-										<p>davechappel@example.com</p>
-									</a>
-								</footer>
-							</div>
-						</section>
-					</SwiperSlide>
-					<SwiperSlide>
-					<section className="flex flex-row w-full h-full">
-							<img src="https://images.unsplash.com/photo-1671470394194-ab66585bd009?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1886&q=80" alt="" className="object-cover object-center max-w-[300px] w-full" />
-
-							<div className="w-full text-white mt-3 flex flex-col items-center relative">
-								<header className="text-center">
-									<h4 className="font-semibold text-3xl">Ben</h4>
-									<p className="font-normal">Web Developer</p>
-								</header>
-								<p className="px-6 mt-2 text-center font-light">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quidem a esse totam aspernatur, maiores porro non architecto voluptatibus consequuntur consequatur excepturi iure voluptate, velit ex, consectetur ad sit molestiae expedita.</p>
-								<footer className="flex flex-row justify-between px-4 gap-8 absolute bottom-2">
-									<a href="https://www.github.com/ben" className="flex flex-row gap-2 items-center ">
-										<img src={github} alt="" className="w-[32px]"/>
-										<p>github.com/ben</p>
-									</a>
-									<a href="mailto:ben@example.com" className="flex flex-row gap-2 items-center">
-										<img src={email} alt="" className="w-[32px]"/>
-										<p>ben@example.com</p>
-									</a>
-								</footer>
-							</div>
-						</section>
-					</SwiperSlide>
-				</Swiper>
-				
-			</article>
-		</section>
-		<Scroll />
+					{/* TODO: Button controllers */}
+					<article className="mt-4 bg-indigo-500 mx-auto border border-slate-500 drop-shadow-lg max-w-[900px] h-[300px]">
+						<Swiper
+							slidesPerView={1}
+							loop={true}
+							modules={[Autoplay, Pagination, Keyboard]}
+							className="h-full"
+							autoplay={{
+								delay: 2500,
+								disableOnInteraction: false,
+							}}
+						>
+							{staffTeam.map(item => {
+								return (
+									<SwiperSlide key={item.id}>
+										<StaffTeam
+											{...item}
+										/>
+									</SwiperSlide>
+								)
+							})}	
+						</Swiper>
+					</article>
+				</section> 
+				<Scroll /> 
+			</>
+		}
 	</>
   )
 	}

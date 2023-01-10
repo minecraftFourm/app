@@ -1,7 +1,7 @@
 import wrapper from "../middlewears/async-wrapper";
 import { Router } from 'express';
 import auth  from "../middlewears/auth";
-import { createComment, deleteComment, getComment, getComments } from "../controllers/comment.controller";
+import { createComment, deleteComment, editComment, getComment, getComments } from "../controllers/comment.controller";
 
 export const commentRouter = Router();
 
@@ -11,5 +11,5 @@ commentRouter.route('/')
 
 commentRouter.route('/:id')
     .get(wrapper(getComment))
-    .patch()
+    .patch(auth, wrapper(editComment))
     .delete(auth, wrapper(deleteComment))

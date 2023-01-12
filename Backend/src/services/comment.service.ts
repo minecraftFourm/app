@@ -3,6 +3,7 @@ import { Request } from "express"
 import { StatusCodes } from "http-status-codes"
 import prisma from "../db/prisma.client"
 import CustomError from "../middlewears/custom-error"
+import { generalUserSelect } from "./user.service"
 
 type bodyObject = {
     content: string
@@ -56,6 +57,15 @@ export const handleGetComments = async (req: Req) => {
         },
         orderBy: {
             updated: sort
+        },
+        select: {
+            comment: true,
+            updated: true,
+            created: true,
+            user: {
+                select: generalUserSelect
+            },
+            id: true,
         }
     })
 

@@ -1,6 +1,6 @@
 import React from 'react'
-import github from "../assets/github.svg"
-import email from "../assets/email.svg"
+import email from "../../assets/email.svg"
+import github from "../../assets/github.svg"
 import { SwiperSlide } from 'swiper/react'
 
 const StaffTeam = (props) => {

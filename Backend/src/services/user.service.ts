@@ -141,7 +141,7 @@ export const handleEditUser = async (req: Req) => {
 
     // * Checks if the user can edit user, or if the user is an admin.
     // * Or if the current user is the owner of the account being edited.
-    if (!(userId === id) || !(canEditUsers || isAdmin)) throw new CustomError('You do not have permission to edit this user.', StatusCodes.UNAUTHORIZED)
+    if (!((userId === id) || canEditUsers || isAdmin)) throw new CustomError('You do not have permission to edit this user.', StatusCodes.UNAUTHORIZED)
 
     // TODO: delete the previous user's profile picture if possible.
     let profilePictureInfo: pictureStats = {};

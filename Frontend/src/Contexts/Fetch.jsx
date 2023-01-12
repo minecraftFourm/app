@@ -29,7 +29,6 @@ const Fetch = ({children}) => {
         }
 
         const data = await response.json();
-        console.log(data)
         const returnValue = {
             data,
             response: returnResponse ? response : null

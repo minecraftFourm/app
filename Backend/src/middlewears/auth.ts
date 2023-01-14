@@ -41,6 +41,7 @@ const auth = wrapper(async (req: req, res: Response, next: NextFunction) => {
                 role: true
             }
         })
+        if (!userDetails) throw new CustomError("Could not find user.", StatusCodes.NOT_FOUND)
         req.user = userDetails
         return next()
     } catch (error: any) {
@@ -66,7 +67,7 @@ const auth = wrapper(async (req: req, res: Response, next: NextFunction) => {
     if (user?.refreshToken !== refreshToken) {
         throw new CustomError("Invalid Token.", StatusCodes.UNAUTHORIZED)
     }
-    if (!user) throw new CustomError(ReasonPhrases.BAD_REQUEST, StatusCodes.BAD_REQUEST)
+    if (!user) throw new CustomError("Could not find user.", StatusCodes.NOT_FOUND)
     await jwt_generator({ id: userDetails.id, username: user.username, email: user.email, role: user.role, profilePicture: user.profilePicture }, res) // Generates new refresh and access token.
     req.user = userDetails
     return next()

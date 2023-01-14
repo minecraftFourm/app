@@ -197,5 +197,6 @@ export const handleGetUser = async ( id: string ) => {
         select: generalUserSelect
     })
 
+    if (!user) throw new CustomError("User not found", StatusCodes.NOT_FOUND)
     return user
 }

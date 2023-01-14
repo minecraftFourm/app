@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",

@@ -10,6 +10,7 @@ import { categoryRouter } from "./routes/category.routes";
 import { rolesRouter } from "./routes/roles.route";
 import { userRouter } from "./routes/user.routes";
 import { commentRouter } from "./routes/comment.routes";
+import { StatusCodes } from "http-status-codes";
 const morgan = require("morgan");
 const cors = require("cors");
 const cloudinary = require('cloudinary').v2;
@@ -45,7 +46,7 @@ app.get('/protected', auth, async (req: Request, res: Response) => {
 })
 
 app.use('*', (req, res) => {
-    res.json({ err: 'Invalid Request' })
+    res.json({ err: 'Invalid Request' }).status(StatusCodes.NOT_FOUND)
 })
 
 app.use(errorHandler);

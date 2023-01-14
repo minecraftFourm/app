@@ -13,6 +13,7 @@ import { commentRouter } from "./routes/comment.routes";
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
 import { options } from "./swagger-options";
+import { StatusCodes } from "http-status-codes";
 const morgan = require("morgan");
 const cors = require("cors");
 const cloudinary = require('cloudinary').v2;
@@ -58,7 +59,7 @@ app.get('/protected', auth, async (req: Request, res: Response) => {
 })
 
 app.use('*', (req, res) => {
-    res.json({ err: 'Invalid Request' })
+    res.json({ err: 'Invalid Request' }).status(StatusCodes.NOT_FOUND)
 })
 
 app.use(errorHandler);

@@ -1,4 +1,6 @@
+import { StatusCodes } from "http-status-codes"
 import prisma from "../db/prisma.client"
+import CustomError from "../middlewears/custom-error"
 
 interface CategoryBodyInput {
     name: string,
@@ -54,8 +56,7 @@ export const handleGetCategoryById = async (id: string) => {
             posts: true
         }
     })
-
-
+    if (!category) throw new CustomError("User not found", StatusCodes.NOT_FOUND)
     return  category
 }
 

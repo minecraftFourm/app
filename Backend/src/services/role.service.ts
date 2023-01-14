@@ -43,7 +43,8 @@ export const getRolesById = async (id: string) => {
             }
         }
     })
-    
+
+    if (!role) throw new CustomError("User not found", StatusCodes.NOT_FOUND)
     return role
 }
 
@@ -76,10 +77,10 @@ export const deleteRoles = async (id: string) => {
 
     } catch (error: any) {
         if (error.code === 'P2025') {
-            throw new CustomError("Could not find post.", StatusCodes.BAD_REQUEST)
+            throw new CustomError("Could not find role.", StatusCodes.BAD_REQUEST)
         }
         else {
-            throw new CustomError('Something went wrong while trying to delete this post.', StatusCodes.INTERNAL_SERVER_ERROR) 
+            throw new CustomError('Something went wrong while trying to delete this role.', StatusCodes.INTERNAL_SERVER_ERROR) 
         }
     } 
 }

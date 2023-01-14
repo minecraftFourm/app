@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 import crypto from 'crypto'
 import * as argon from 'argon2';
+import { DEFAULT_PROFILE_PICTURE } from "../src/config";
 
 
 const main = async () => {
@@ -67,10 +68,14 @@ const main = async () => {
         },
         update: {},
         create: {
+            id: "bc86519b-12b6-4dec-96f1-b6888ce023e3",
             email: "admin@example.com",
             password,
             username: "admin",
-            roleId: "10b932a3-b8dd-4fc2-82b8-862bdef143bb"
+            roleId: "10b932a3-b8dd-4fc2-82b8-862bdef143bb",
+            profilePicture: DEFAULT_PROFILE_PICTURE,
+            bio: "Default Admin user",
+            
         }
     })
 }

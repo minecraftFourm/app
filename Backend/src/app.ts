@@ -10,6 +10,9 @@ import { categoryRouter } from "./routes/category.routes";
 import { rolesRouter } from "./routes/roles.route";
 import { userRouter } from "./routes/user.routes";
 import { commentRouter } from "./routes/comment.routes";
+import swaggerUi from 'swagger-ui-express'
+import swaggerJsdoc from 'swagger-jsdoc'
+import { options } from "./swagger-options";
 const morgan = require("morgan");
 const cors = require("cors");
 const cloudinary = require('cloudinary').v2;
@@ -28,10 +31,20 @@ const corsOptions = {
     credentials: true,
   }
 
+
+
+
 app.use(morgan("dev"));
 app.use(cors(corsOptions));
 app.use(express.json({limit: '100mb'}))
 app.use(cookieParser(COOKIE_SECRET))
+const specs = swaggerJsdoc(options);
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs)
+);
+
 
 app.use('/', authRouter);
 app.use('/post', postRouter);

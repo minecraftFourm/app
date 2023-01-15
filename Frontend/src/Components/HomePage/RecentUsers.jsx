@@ -11,10 +11,10 @@ const RecentUsers = (props) => {
             <div className="flex flex-row gap-1 border border-violet-500 items-center px-2 py-1" key={id}>
                 <img src={profilePicture} className="rounded-full h-[32px] w-[32px]" />
                 <div className="w-full">
-                    <p className="line-clamp-1">Why are the pineapples moving?</p>
+                    <p className="line-clamp-1">{username}</p>
                     <footer className="w-full flex flex-row justify-between">
-                        <p className="text-sm text-gray-500">{username}</p>
-                        <p className="text-sm text-gray-500">{format(created)}</p>
+                        <p className="text-sm text-gray-500">{title}</p>
+                        <p className="text-sm text-gray-500">Joined {format(created)}</p>
                     </footer>
                 </div>
             </div>

@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 import crypto from 'crypto'
 import * as argon from 'argon2';
-import { DEFAULT_PROFILE_PICTURE } from "../src/config";
+import { ANNOUNCEMENT_CATEGORY_ID, DEFAULT_PROFILE_PICTURE } from "../src/config";
 
 
 const main = async () => {
@@ -72,10 +72,19 @@ const main = async () => {
             email: "admin@example.com",
             password,
             username: "admin",
-            roleId: "10b932a3-b8dd-4fc2-82b8-862bdef143bb",
+            roleId: adminRole.id,
             profilePicture: DEFAULT_PROFILE_PICTURE,
             bio: "Default Admin user",
-            
+        }
+    })
+
+    const announcementCategory = await prisma.category.upsert({
+        where: { id: ANNOUNCEMENT_CATEGORY_ID },
+        update: {},
+        create: {
+            id: ANNOUNCEMENT_CATEGORY_ID,
+            name: "Announcement",
+            adminOnly: true,
         }
     })
 }

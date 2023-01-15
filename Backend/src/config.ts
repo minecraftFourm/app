@@ -12,4 +12,5 @@ export const ACCESS_TOKEN_EXIPIRY = 1000 * 60 * 15 // 15 Minutes
 export const REFRESH_TOKEN_EXIPIRY = 1000 * 60 * 60 * 24 * 30 // 30 days
 
 export const DEFAULT_ROLE_ID = '264ed4b4-9312-4766-9c7d-47f8f0ebecd1';
+export const ANNOUNCEMENT_CATEGORY_ID = 'd0ed3d28-bbe4-4e61-b473-cb0dd2257861'
 export const DEFAULT_PROFILE_PICTURE = 'https://res.cloudinary.com/dm5kc3cci/image/upload/v1672654883/User-128_z1uuhq.png'

@@ -27,12 +27,13 @@ const Homepage = () => {
 		staffTeam: []
 	})
 	const [ isLoading, setIsLoading ] = useState(true)
+	const [ err, setErr ] = useState()
 
 	useEffect(() => {
 		(async() => {
 			
 			// *Fetches announcements, staff list, recent comments, recent users, and recently updated posts from the backend.
-			let { data: announcementData, response: announcementResponse } = await CustomFetch({ url: 'post?category=announcement&limit=5', returnResponse: true });
+			let { data: announcementData, response: announcementResponse } = await CustomFetch({ url: 'post?category=announcement&limit=6', returnResponse: true });
 			let { data: staffData, response: staffResponse } = await CustomFetch({ url: 'user?isStaff=t', returnResponse: true });
 			let { data: recentlyUpdatedData, response: recentlyUpdatedResponse } = await CustomFetch({ url: 'post?limit=5', returnResponse: true })
 			let { data: recentComments, response: recentCommentsResponse } = await CustomFetch({ url: 'comment?limit=5&sort=desc', returnResponse: true })
@@ -89,20 +90,30 @@ const Homepage = () => {
 				<div className="flex flex-row gap-8 justify-between w-full h-full">
 					<div className="w-full bg-white p-4 flex flex-col gap-4">
 						
-						{data.announcement && data.announcement.map(item => {
-							return (
-								<div key={item.id}>
-									<Announcement
-										{...item}
-									/>
-								</div>
-								)
-							}
+						{
+							data.announcement && data.announcement.map(item => {
+								return (
+									<div key={item.id}>
+										<Announcement
+											{...item}
+										/>	
+									</div>
+									)
+								}
 						)}	
 
-						<div className="grid place-content-center">
-							<button className="border px-4 py-1 bg-violet-500 border-violet-600 hover:bg-violet-700 duration-300 rounded-sm text-white">Read More...</button>
-						</div>
+						{
+							data.announcement.length === 0 && <p className="text-center text-gray-600">There are currently no announcements...</p>
+						}
+
+
+						{ 
+							data.announcement > 5 && 
+							<div className="grid place-content-center">
+								<button className="border px-4 py-1 bg-violet-500 border-violet-600 hover:bg-violet-700 duration-300 rounded-sm text-white justify-self-end">Read More...</button>
+							</div>
+						}
+
 
 					</div>
 					<aside className="h-fit w-[450px] bg-white p-4 flex flex-col gap-4">
@@ -175,7 +186,7 @@ const Homepage = () => {
 
 		{/* Our Team */}
 		{
-			data.staff  
+			(data.staff && data.staff.length !== 0)  
 			&& 
 			<>
 				<section className="bg-white py-12">
@@ -208,9 +219,9 @@ const Homepage = () => {
 						</Swiper>
 					</article>
 				</section> 
+				{!isLoading && <Scroll /> }
 			</>
 		}
-		{!isLoading && <Scroll /> }
 	</>
   )}
 

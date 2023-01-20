@@ -33,15 +33,10 @@ const Homepage = () => {
 			
 			// *Fetches announcements, staff list, recent comments, recent users, and recently updated posts from the backend.
 			let { data: announcementData, response: announcementResponse } = await CustomFetch({ url: 'post?category=announcement&limit=5', returnResponse: true });
-			if (!announcementResponse.ok) announcementData = null;
 			let { data: staffData, response: staffResponse } = await CustomFetch({ url: 'user?isStaff=t', returnResponse: true });
-			if (!staffResponse.ok) staffData = null;
 			let { data: recentlyUpdatedData, response: recentlyUpdatedResponse } = await CustomFetch({ url: 'post?limit=5', returnResponse: true })
-			if (!recentlyUpdatedResponse.ok) recentlyUpdatedData = null;
 			let { data: recentComments, response: recentCommentsResponse } = await CustomFetch({ url: 'comment?limit=5&sort=desc', returnResponse: true })
-			if (!recentCommentsResponse.ok) recentComments = null;
 			let { data: recentUsers, response: recentUsersResponse } = await CustomFetch({ url: 'user?limit=5', returnResponse: true })
-			if (!recentUsersResponse.ok) recentUsers = null;
 			
 			setData(prevValue => {
 				return {
@@ -88,7 +83,7 @@ const Homepage = () => {
 
 		</section>
 		{/* TODO: Hero Content */}
-		<section className="bg-[#1B263B] w-full h-full px-16 py-4">
+		<section className="bg-[#1B263B] w-full h-full px-16 py-4 pb-16">
 			{ isLoading && <LoadingIcon /> }
 			{!isLoading && 
 				<div className="flex flex-row gap-8 justify-between w-full h-full">
@@ -113,7 +108,7 @@ const Homepage = () => {
 					<aside className="h-fit w-[450px] bg-white p-4 flex flex-col gap-4">
 						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400 shadow-md">
 							<p className="w-full bg-violet-500 text-white px-2 py-1 ">Recent Updates</p>
-							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
+							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[300px]">
 
 								{ 
 									data.recentUpdates.length != 0 &&
@@ -138,7 +133,7 @@ const Homepage = () => {
 
 						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
 							<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">Recent Comments</p>
-							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
+							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[300px]">
 
 								{
 									data.recentComments.length != 0 && 
@@ -157,7 +152,7 @@ const Homepage = () => {
 
 						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
 							<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">Recent Users</p>
-							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
+							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[300px]">
 
 								{
 									data.recentUsers.length != 0 && 

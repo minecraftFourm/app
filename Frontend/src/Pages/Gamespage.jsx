@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import bg from "../assets/games page.png"
 import Games from "../Components/Games";
+import Overlay from "../Components/Overlay";
 import { useFetch } from "../Contexts/Fetch";
 
 const Gamespage = () => {
@@ -28,30 +29,12 @@ const Gamespage = () => {
     }
   ]);
   const CustomFetch = useFetch()
-  const Content = (props) => {
-    const { description } = props
-		return (
-		<div className={`absolute top-0 z-0 bottom-0 left-0 right-0 grid place-items-center text-white bg-[#00000080] duration-1000`}>
-      <div className="text-center">
-        <h1 className={`font-extrabold text-6xl duration-700 opacity-100 z-10`}>ServerName</h1>
-        <p className="max-w-3xl pt-3">{description}</p>
-      </div>
-		</div>
-		)
-	}
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const { data, response } = await CustomFetch({ url: 'games', returnResponse: true })
-  //     setGames(data.data)
-  //   })()
-  // }, [])
 
   return (
   <div>
     <section className="w-full h-[700px] mb-4 relative">
       <img src={bg} alt="" className="w-full h-full object-cover object-center" />
-      <Content 
+      <Overlay 
         description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum voluptatum totam rem eos cupiditate tempora veniam, sit doloribus molestias omnis nemo molestiae libero nostrum consequuntur non tempore blanditiis? Non sequi laborum optio mollitia incidunt enim laboriosam nobis commodi ex hic? Error unde numquam sit nisi veniam, et doloremque architecto aliquam!"
         />
     </section>

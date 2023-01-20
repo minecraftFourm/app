@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useFetch } from "../Contexts/Fetch";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Keyboard, Pagination , Autoplay} from "swiper";
-import announcemnet1 from "../assets/announcement-1.jpg"
 import announcement2 from "../assets/announcement-2.jpg"
 import mainBg from "../assets/mainBg.jpg"
 import 'react-lazy-load-image-component/src/effects/blur.css';
@@ -16,6 +15,7 @@ import RecentPosts from "../Components/HomePage/recentPosts";
 import RecentComments from "../Components/HomePage/RecentComments";
 import RecentUsers from "../Components/HomePage/RecentUsers";
 import { LoadingIcon } from "../Components/Icons";
+import Overlay from "../Components/Overlay";
 
 const Homepage = () => {
 	const CustomFetch = useFetch();
@@ -57,15 +57,6 @@ const Homepage = () => {
 		})()
 	}, [])
 
-	const Content = () => {
-		return (
-		<div className={`absolute top-0 z-0 bottom-0 left-0 right-0 grid place-items-center text-white bg-[#00000080] duration-1000`}>
-			<h1 className={`font-extrabold text-6xl duration-700 opacity-100 z-10`}>ServerName</h1>
-		</div>
-		)
-	}
-
-
   return (
 	<>
 		<section className="relative">
@@ -80,17 +71,17 @@ const Homepage = () => {
 			>
 				<SwiperSlide className="w-full h-full">
 					<img src={mainBg} alt="" className=" h-full w-full object-cover object-center" />
-					<Content />
+					<Overlay />
 				</SwiperSlide>
 				<SwiperSlide className="">
 					<img src={announcement2} alt="" className=" h-full w-full object-cover object-center"/>
-					<Content />
+					<Overlay />
 				</SwiperSlide>
 				<SwiperSlide>
 					<img src="https://images.unsplash.com/photo-1607799632518-da91dd151b38?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80" 
 						alt="" 
 						className="w-full h-full object-cover object-center"/>
-					<Content />
+					<Overlay />
 				</SwiperSlide>
 			</Swiper>
 			<p className="absolute z-10 px-4 py-3 bottom-0 bg-blue-800 text-white font-medium rounded-tr-md drop-shadow-md">30 Players Currently Online</p>
@@ -122,26 +113,32 @@ const Homepage = () => {
 					<aside className="h-fit w-[450px] bg-white p-4 flex flex-col gap-4">
 						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400 shadow-md">
 							<p className="w-full bg-violet-500 text-white px-2 py-1 ">Recent Updates</p>
-							<div className="flex flex-col gap-2 mt-2 px-1">
+							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
 
-								{data.recentUpdates.length != 0 &&
-									data.recentUpdates.map(item => {
-										return (
-											<div key={item.id}>
-												<RecentPosts 
-														{...item}
-													/>
-											</div>
-										)
-									})
+								{ 
+									data.recentUpdates.length != 0 &&
+										data.recentUpdates.map(item => {
+											return (
+												<div key={item.id}>
+													<RecentPosts 
+															{...item}
+														/>	
+												</div>	
+											)
+										})
 								}
 								
+								{
+									data.recentUpdates.length === 0 && 
+									<p className="text-center text-sm text-gray-600">There are currently no recent updates.</p>
+								}
+
 							</div>
 						</div>
 
 						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
 							<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">Recent Comments</p>
-							<div className="flex flex-col gap-2 mt-2 px-1">
+							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
 
 								{
 									data.recentComments.length != 0 && 
@@ -150,12 +147,17 @@ const Homepage = () => {
 										/>
 								}
 
+								{
+									data.recentComments.length === 0 && 
+									<p className="text-center text-sm text-gray-600">There are currently no recent comments.</p>
+								}
+
 							</div>
 						</div>
 
 						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
 							<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">Recent Users</p>
-							<div className="flex flex-col gap-2 mt-2 px-1">
+							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
 
 								{
 									data.recentUsers.length != 0 && 
@@ -164,6 +166,11 @@ const Homepage = () => {
 										/>
 								}
 								
+								{
+									data.recentUsers.length === 0 && 
+									<p className="text-center text-sm text-gray-600">There are currently no recent users.</p>
+								}
+
 							</div>
 						</div>
 					</aside>

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import ForumHeader from "../Components/ForumHeader";
-import { useFetch } from "../Contexts/Fetch";
+import React, { useEffect } from "react";
+import ForumHeader from "../../Components/ForumHeader";
+import { useFetch } from "../../Contexts/Fetch";
 
 const Forumpage = () => {
   const CustomFetch = useFetch();
@@ -8,7 +8,6 @@ const Forumpage = () => {
   useEffect(() => {
     (async () => {
       const { data, response } = await CustomFetch({ url: 'category', returnResponse: true });
-      console.log(data)
     })();
   }, [])
   return (

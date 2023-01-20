@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useEditor, useEditorValue } from '../Components/Editor'
 import { MAX_TITLE_LENGTH } from '../config';
 import { useFetch } from '../Contexts/Fetch';
+import ForumHeader from '../Components/ForumHeader'
 
 const EditAnnouncement = () => {
     const Editor = useEditor();
@@ -17,10 +18,10 @@ const EditAnnouncement = () => {
 
     useEffect(() => {
         (async () => {
-            const { data, response } = await CustomFetch({ url: `announcement/${id}`, returnResponse: true });
+            const { data, response } = await CustomFetch({ url: `post/${id}`, returnResponse: true });
+            console.log(data);
             setAnnouncementValue(data.data);
             updateTitle(data.data.title);
-            console.log(response);
         })()
 
     }, [])
@@ -28,7 +29,7 @@ const EditAnnouncement = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         console.log(EditorValue())
-        const { response, data} = await CustomFetch({url: `announcement/${id}`, options: {
+        const { response, data} = await CustomFetch({url: `post/${id}`, options: {
             method: 'PATCH',
             body: JSON.stringify({
                 title: title.value,
@@ -51,19 +52,22 @@ const EditAnnouncement = () => {
             }
         })
     }
-
+    
   return (
-    <div className='my-6 px-4'>
-        <form onSubmit={handleSubmit}>
-            <h2 className='font-bold'>{announcementValue ? announcementValue.title : null}</h2>
-            <input type="text" name="title" id="" value={title && title.value} onChange={(e) => updateTitle(e.target.value)} />
-            <Editor 
-                initialValue={announcementValue ? announcementValue.content : null}
-            />
-            <div className='w-full grid place-content-center mt-2'>
-                <button type="submit" className='bg-indigo-500 text-white px-3 py-1 rounded-sm'>Save Announcement</button>
-            </div>
-        </form>
+    <div className='pb-12 '>
+        <ForumHeader />
+        <div className='my-6 px-4'>
+            <form onSubmit={handleSubmit}>
+                <h2 className='font-bold'>{announcementValue ? announcementValue.title : null}</h2>
+                <input type="text" name="title" id="" value={title && title.value} onChange={(e) => updateTitle(e.target.value)} />
+                <Editor 
+                    initialValue={announcementValue ? announcementValue.content : null}
+                />
+                <div className='w-full grid place-content-center mt-4'>
+                    <button type="submit" className='bg-indigo-500 text-white px-3 py-1 rounded-sm'>Save Announcement</button>
+                </div>
+            </form>
+        </div>
     </div>
   )
 }

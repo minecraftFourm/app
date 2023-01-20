@@ -5,8 +5,6 @@ export const PASSWORD_PATTERN =
 
 export const USERNAME_PATTERN = /^(?:\w{5,31}[a-z0-9])$/i; // Minimum 5 characters, cannot end with special characters, Maximum length is 32 characters.
 
-export const COOKIE_SECRET = 'secret';
-
 export const HEX_PATTERN = /^#?([a-f0-9]{6}|[a-f0-9]{3})$/
 export const ACCESS_TOKEN_EXIPIRY = 1000 * 60 * 15 // 15 Minutes
 export const REFRESH_TOKEN_EXIPIRY = 1000 * 60 * 60 * 24 * 30 // 30 days

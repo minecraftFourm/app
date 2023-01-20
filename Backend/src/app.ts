@@ -5,7 +5,6 @@ import { router as postRouter } from "./routes/post.routes";
 import cookieParser from "cookie-parser";
 import errorHandler from "./middlewears/error-handler";
 import auth from "./middlewears/auth";
-import { COOKIE_SECRET } from "./config";
 import { categoryRouter } from "./routes/category.routes";
 import { rolesRouter } from "./routes/roles.route";
 import { userRouter } from "./routes/user.routes";
@@ -38,7 +37,7 @@ const corsOptions = {
 app.use(morgan("dev"));
 app.use(cors(corsOptions));
 app.use(express.json({limit: '100mb'}))
-app.use(cookieParser(COOKIE_SECRET))
+app.use(cookieParser(process.env.COOKIE_SECRET))
 const specs = swaggerJsdoc(options);
 app.use(
   "/api-docs",

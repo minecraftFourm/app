@@ -61,9 +61,11 @@ const Homepage = () => {
 		return (
 		<div className={`absolute top-0 z-0 bottom-0 left-0 right-0 grid place-items-center text-white bg-[#00000080] duration-1000`}>
 			<h1 className={`font-extrabold text-6xl duration-700 opacity-100 z-10`}>ServerName</h1>
+			<h1 className={`font-extrabold text-6xl duration-700 opacity-100 z-10`}>ServerName</h1>
 		</div>
 		)
 	}
+
 
   return (
 	<>
@@ -180,7 +182,44 @@ const Homepage = () => {
 						<h2 className="text-gray-700 font-bold text-4xl">Our Team Members</h2>
 						<p className="text-gray-500">Meet our team</p>
 					</div>
+		{
+			data.staff  
+			&& 
+			<>
+				<section className="bg-white py-12">
+					<div className="w-full text-center">
+						<h2 className="text-gray-700 font-bold text-4xl">Our Team Members</h2>
+						<p className="text-gray-500">Meet our team</p>
+					</div>
 
+					{/* TODO: Button controllers */}
+					<article className="mt-4 bg-indigo-500 mx-auto border border-slate-500 drop-shadow-lg max-w-[900px] h-[300px]">
+						<Swiper
+							slidesPerView={1}
+							loop={true}
+							modules={[Autoplay, Pagination, Keyboard]}
+							className="h-full"
+							autoplay={{
+								delay: 5000,
+								disableOnInteraction: false,
+							}}
+						>
+							{data.staff.map(item => {
+								return (
+									<SwiperSlide key={item.id}>
+										<StaffTeam
+											{...item}
+										/>
+									</SwiperSlide>
+								)
+							})}	
+						</Swiper>
+					</article>
+				</section> 
+				<Scroll /> 
+			</>
+		}
+	</>
 					{/* TODO: Button controllers */}
 					<article className="mt-4 bg-indigo-500 mx-auto border border-slate-500 drop-shadow-lg max-w-[900px] h-[300px]">
 						<Swiper

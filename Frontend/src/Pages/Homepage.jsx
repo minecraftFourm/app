@@ -15,6 +15,7 @@ import Announcement from "../Components/HomePage/Announcement";
 import RecentPosts from "../Components/HomePage/recentPosts";
 import RecentComments from "../Components/HomePage/RecentComments";
 import RecentUsers from "../Components/HomePage/RecentUsers";
+import { LoadingIcon } from "../Components/Icons";
 
 const Homepage = () => {
 	const CustomFetch = useFetch();
@@ -25,17 +26,23 @@ const Homepage = () => {
 		announcement: [],
 		staffTeam: []
 	})
+	const [ isLoading, setIsLoading ] = useState(true)
 
 	useEffect(() => {
 		(async() => {
 			
 			// *Fetches announcements, staff list, recent comments, recent users, and recently updated posts from the backend.
-			const { data: announcementData, response: announcementResponse } = await CustomFetch({ url: 'post?category=announcement&limit=5', returnResponse: true });
-			const { data: staffData, response: staffResponse } = await CustomFetch({ url: 'user?isStaff=t', returnResponse: true });
-			const { data: recentlyUpdatedData, response: recentlyUpdatedResponse } = await CustomFetch({ url: 'post?limit=5', returnResponse: true })
-			const { data: recentComments, response: recentCommentsResponse } = await CustomFetch({ url: 'comment?limit=5&sort=desc', returnResponse: true })
-			const { data: recentUsers, response: recentUsersResponse } = await CustomFetch({ url: 'user?limit=5', returnResponse: true })
-
+			let { data: announcementData, response: announcementResponse } = await CustomFetch({ url: 'post?category=announcement&limit=5', returnResponse: true });
+			if (!announcementResponse.ok) announcementData = null;
+			let { data: staffData, response: staffResponse } = await CustomFetch({ url: 'user?isStaff=t', returnResponse: true });
+			if (!staffResponse.ok) staffData = null;
+			let { data: recentlyUpdatedData, response: recentlyUpdatedResponse } = await CustomFetch({ url: 'post?limit=5', returnResponse: true })
+			if (!recentlyUpdatedResponse.ok) recentlyUpdatedData = null;
+			let { data: recentComments, response: recentCommentsResponse } = await CustomFetch({ url: 'comment?limit=5&sort=desc', returnResponse: true })
+			if (!recentCommentsResponse.ok) recentComments = null;
+			let { data: recentUsers, response: recentUsersResponse } = await CustomFetch({ url: 'user?limit=5', returnResponse: true })
+			if (!recentUsersResponse.ok) recentUsers = null;
+			
 			setData(prevValue => {
 				return {
 					recentComments: recentComments.data,
@@ -45,11 +52,10 @@ const Homepage = () => {
 					staff: staffData.data
 				}
 			})
+			setIsLoading(false)
 			// TODO: handle erros
 		})()
 	}, [])
-
-	console.log(1)
 
 	const Content = () => {
 		return (
@@ -91,76 +97,77 @@ const Homepage = () => {
 		</section>
 		{/* TODO: Hero Content */}
 		<section className="bg-[#1B263B] w-full h-full px-16 py-4">
-			<div className="flex flex-row gap-8 justify-between w-full h-full">
-				<div className="w-full bg-white p-4 flex flex-col gap-4">
-					
+			{ isLoading && <LoadingIcon /> }
+			{!isLoading && 
+				<div className="flex flex-row gap-8 justify-between w-full h-full">
+					<div className="w-full bg-white p-4 flex flex-col gap-4">
+						
+						{data.announcement && data.announcement.map(item => {
+							return (
+								<div key={item.id}>
+									<Announcement
+										{...item}
+									/>
+								</div>
+								)
+							}
+						)}	
 
-					{data.announcement && data.announcement.map(item => {
-						return (
-							<div key={item.id}>
-								<Announcement
-									{...item}
-								/>
+						<div className="grid place-content-center">
+							<button className="border px-4 py-1 bg-violet-500 border-violet-600 hover:bg-violet-700 duration-300 rounded-sm text-white">Read More...</button>
+						</div>
+
+					</div>
+					<aside className="h-fit w-[450px] bg-white p-4 flex flex-col gap-4">
+						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400 shadow-md">
+							<p className="w-full bg-violet-500 text-white px-2 py-1 ">Recent Updates</p>
+							<div className="flex flex-col gap-2 mt-2 px-1">
+
+								{data.recentUpdates.length != 0 &&
+									data.recentUpdates.map(item => {
+										return (
+											<div key={item.id}>
+												<RecentPosts 
+														{...item}
+													/>
+											</div>
+										)
+									})
+								}
+								
 							</div>
-							)
-						}
-					)}	
+						</div>
 
-					<div className="grid place-content-center">
-						<button className="border px-4 py-1 bg-violet-500 border-violet-600 hover:bg-violet-700 duration-300 rounded-sm text-white">Read More...</button>
-					</div>
+						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
+							<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">Recent Comments</p>
+							<div className="flex flex-col gap-2 mt-2 px-1">
 
+								{
+									data.recentComments.length != 0 && 
+										<RecentComments 
+											items = {data.recentComments}
+										/>
+								}
+
+							</div>
+						</div>
+
+						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
+							<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">Recent Users</p>
+							<div className="flex flex-col gap-2 mt-2 px-1">
+
+								{
+									data.recentUsers.length != 0 && 
+										<RecentUsers 
+											items = {data.recentUsers}
+										/>
+								}
+								
+							</div>
+						</div>
+					</aside>
 				</div>
-				<aside className="h-fit w-[450px] bg-white p-4 flex flex-col gap-4">
-					<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400 shadow-md">
-						<p className="w-full bg-violet-500 text-white px-2 py-1 ">Recent Updates</p>
-						<div className="flex flex-col gap-2 mt-2 px-1">
-
-							{data.recentUpdates.length != 0 &&
-								data.recentUpdates.map(item => {
-									return (
-										<div key={item.id}>
-											<RecentPosts 
-													{...item}
-												/>
-										</div>
-									)
-								})
-							}
-							
-						</div>
-					</div>
-
-					<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
-						<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">Recent Comments</p>
-						<div className="flex flex-col gap-2 mt-2 px-1">
-
-							{
-								data.recentComments.length != 0 && 
-									<RecentComments 
-										items = {data.recentComments}
-									/>
-							}
-
-						</div>
-					</div>
-
-					<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
-						<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">Recent Users</p>
-						<div className="flex flex-col gap-2 mt-2 px-1">
-
-							{
-								data.recentUsers.length != 0 && 
-									<RecentUsers 
-										items = {data.recentUsers}
-									/>
-							}
-							
-						</div>
-					</div>
-				</aside>
-			</div>
-			{ data.staff && <Scroll /> }
+			}
 		</section>
 
 		{/* Our Team */}

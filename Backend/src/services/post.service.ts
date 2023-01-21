@@ -3,6 +3,7 @@ import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import prisma from "../db/prisma.client"
 import CustomError from "../middlewears/custom-error"
+import { generalUserSelect } from "./user.service"
 export interface Req extends Request {
     user: {
         id: string
@@ -19,6 +20,7 @@ export interface Req extends Request {
         isStaff?: string
         isAdmin?: string
         roleId?: string
+        sort?: "desc" | "asc"
     }
 }
 
@@ -98,12 +100,7 @@ export const handleGetAllPost = async (req: Req) => {
         },
         include: {
             owner: {
-                select: {
-                    username: true,
-                    email: true,
-                    role: true,
-                    created: true
-                }
+                select: generalUserSelect
             },
             comments: {
                 select: {

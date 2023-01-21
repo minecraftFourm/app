@@ -22,6 +22,11 @@ type pictureStats = {
     public_id?: string
 }
 
+type perms = {
+    isStaff: undefined | boolean
+    isAdmin: undefined | boolean
+}
+
 export const handleDeleteUser = async (req: Req) => {
     const { params: { id }, user: { id: currentUser, role: { canRemoveUsers, isAdmin } } } = req
 
@@ -53,11 +58,8 @@ export const handleDeleteUser = async (req: Req) => {
 }
 
 export const handleGetAllUsers = async (req: Req) => {
-    const { username, email, isStaff, isAdmin, roleId, jump = 0 } = req.query;
-    type perms = {
-        isStaff: undefined | boolean
-        isAdmin: undefined | boolean
-    }
+    const { username, email, isStaff, isAdmin, roleId, jump = 0, sort = "desc" } = req.query;
+
     let permissionValues: perms = {
         isStaff: undefined,
         isAdmin: undefined,
@@ -90,6 +92,9 @@ export const handleGetAllUsers = async (req: Req) => {
             }
         },
         skip: Number(jump),
+        orderBy: {
+            created: sort
+        },
         select: {
             id: true,
             username: true,

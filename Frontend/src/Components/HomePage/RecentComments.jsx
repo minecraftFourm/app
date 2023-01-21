@@ -12,7 +12,7 @@ const RecentComments = (props) => {
                 <div className="w-full">
                     <p className="line-clamp-1 text-sm font-semibold">{comment}</p>
                     <footer className="w-full flex flex-row justify-between">
-                        <p className="text-xs text-gray-500">{username}</p>
+                        <p className="text-xs text-gray-500 capitalize">{username}</p>
                         <p className="text-xs text-gray-500">{format(updated)}</p>
                     </footer>
                 </div>

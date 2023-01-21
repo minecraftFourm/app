@@ -13,7 +13,7 @@ const StaffTeam = (props) => {
 
             <div className="w-full text-white mt-3 flex flex-col items-center relative">
                 <header className="text-center">
-                    <h4 className="font-semibold text-3xl">{username}</h4>
+                    <h4 className="font-semibold text-3xl capitalizes">{username}</h4>
                     <p className="font-normal">{role.title}</p>
                 </header>
                 <p className="px-6 mt-2 text-center font-light">{ bio ? "Missing bio..." : bio }</p>

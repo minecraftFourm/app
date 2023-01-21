@@ -109,14 +109,8 @@ const Homepage = () => {
 						{
 							data.announcement && 
 								<Announcement 
-										<Announcement
-								<Announcement 
 									items={data.announcement}
 								/>
-										/>	
-								/>
-						}	
-								}
 						}	
 
 						{
@@ -141,11 +135,7 @@ const Homepage = () => {
 								{ 
 									data.recentUpdates.length != 0 && 
 										<RecentPosts 
-													<RecentPosts 
-										<RecentPosts 
 											items={data.recentUpdates}
-										/>
-														/>	
 										/>
 								}
 								

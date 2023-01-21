@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { useFetch } from "../Contexts/Fetch";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Keyboard, Pagination , Autoplay} from "swiper";
@@ -16,6 +16,7 @@ import RecentComments from "../Components/HomePage/RecentComments";
 import RecentUsers from "../Components/HomePage/RecentUsers";
 import { LoadingIcon } from "../Components/Icons";
 import Overlay from "../Components/Overlay";
+const ErrorComponent = lazy(() => import("../Components/Error"))
 
 const Homepage = () => {
 	const CustomFetch = useFetch();
@@ -26,30 +27,41 @@ const Homepage = () => {
 		announcement: [],
 		staffTeam: []
 	})
+	const [mcData, setMcData] = useState({
+		isLoading: false,
+		err: false,
+		players: null
+	});
 	const [ isLoading, setIsLoading ] = useState(true)
-	const [ err, setErr ] = useState()
+	const [ err, setErr ] = useState(null)
 
 	useEffect(() => {
-		(async() => {
-			
-			// *Fetches announcements, staff list, recent comments, recent users, and recently updated posts from the backend.
-			let { data: announcementData, response: announcementResponse } = await CustomFetch({ url: 'post?category=announcement&limit=6', returnResponse: true });
-			let { data: staffData, response: staffResponse } = await CustomFetch({ url: 'user?isStaff=t', returnResponse: true });
-			let { data: recentlyUpdatedData, response: recentlyUpdatedResponse } = await CustomFetch({ url: 'post?limit=5', returnResponse: true })
-			let { data: recentComments, response: recentCommentsResponse } = await CustomFetch({ url: 'comment?limit=5&sort=desc', returnResponse: true })
-			let { data: recentUsers, response: recentUsersResponse } = await CustomFetch({ url: 'user?limit=5', returnResponse: true })
-			
-			setData(prevValue => {
-				return {
-					recentComments: recentComments.data,
-					recentUsers: recentUsers.data,
-					recentUpdates: recentlyUpdatedData.data,
-					announcement: announcementData.data,
-					staff: staffData.data
-				}
-			})
-			setIsLoading(false)
-			// TODO: handle erros
+		(async () => {
+			try {
+				setIsLoading(true)
+				setErr(null)
+
+				// *Fetches announcements, staff list, recent comments, recent users, and recently updated posts from the backend.
+				let { data: announcementData, response: announcementResponse } = await CustomFetch({ url: 'post?category=announcement&limit=6', returnResponse: true });
+				let { data: staffData, response: staffResponse } = await CustomFetch({ url: 'user?isStaff=t', returnResponse: true });
+				let { data: recentlyUpdatedData, response: recentlyUpdatedResponse } = await CustomFetch({ url: 'post?limit=6', returnResponse: true })
+				let { data: recentComments, response: recentCommentsResponse } = await CustomFetch({ url: 'comment?limit=6&sort=desc', returnResponse: true })
+				let { data: recentUsers, response: recentUsersResponse } = await CustomFetch({ url: 'user?limit=6&sort=desc', returnResponse: true })
+				
+				setData(prevValue => {
+					return {
+						recentComments: recentComments.data,
+						recentUsers: recentUsers.data,
+						recentUpdates: recentlyUpdatedData.data,
+						announcement: announcementData.data,
+						staff: staffData.data
+					}
+				})
+			} catch (error) {
+				setErr(true)
+			} finally {
+				setIsLoading(false)
+			}
 		})()
 	}, [])
 
@@ -85,22 +97,27 @@ const Homepage = () => {
 		</section>
 		{/* TODO: Hero Content */}
 		<section className="bg-[#1B263B] w-full h-full px-16 py-4 pb-16">
+
 			{ isLoading && <LoadingIcon /> }
-			{!isLoading && 
+
+			{ err && <ErrorComponent /> }
+
+			{!isLoading && !err && 
 				<div className="flex flex-row gap-8 justify-between w-full h-full">
 					<div className="w-full bg-white p-4 flex flex-col gap-4">
 						
 						{
-							data.announcement && data.announcement.map(item => {
-								return (
-									<div key={item.id}>
+							data.announcement && 
+								<Announcement 
 										<Announcement
-											{...item}
+								<Announcement 
+									items={data.announcement}
+								/>
 										/>	
-									</div>
-									)
+								/>
+						}	
 								}
-						)}	
+						}	
 
 						{
 							data.announcement.length === 0 && <p className="text-center text-gray-600">There are currently no announcements...</p>
@@ -119,19 +136,17 @@ const Homepage = () => {
 					<aside className="h-fit w-[450px] bg-white p-4 flex flex-col gap-4">
 						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400 shadow-md">
 							<p className="w-full bg-violet-500 text-white px-2 py-1 ">Recent Updates</p>
-							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[300px]">
+							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
 
 								{ 
-									data.recentUpdates.length != 0 &&
-										data.recentUpdates.map(item => {
-											return (
-												<div key={item.id}>
+									data.recentUpdates.length != 0 && 
+										<RecentPosts 
 													<RecentPosts 
-															{...item}
+										<RecentPosts 
+											items={data.recentUpdates}
+										/>
 														/>	
-												</div>	
-											)
-										})
+										/>
 								}
 								
 								{
@@ -144,10 +159,10 @@ const Homepage = () => {
 
 						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
 							<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">Recent Comments</p>
-							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[300px]">
+							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
 
 								{
-									data.recentComments.length != 0 && 
+									data.recentComments.length !== 0 && 
 										<RecentComments 
 											items = {data.recentComments}
 										/>
@@ -163,7 +178,7 @@ const Homepage = () => {
 
 						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
 							<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">Recent Users</p>
-							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[300px]">
+							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
 
 								{
 									data.recentUsers.length != 0 && 
@@ -199,6 +214,9 @@ const Homepage = () => {
 					<article className="mt-4 bg-indigo-500 mx-auto border border-slate-500 drop-shadow-lg max-w-[900px] h-[300px]">
 						<Swiper
 							slidesPerView={1}
+							pagination={{
+								dynamicBullets: true,
+								}}
 							loop={true}
 							modules={[Autoplay, Pagination, Keyboard]}
 							className="h-full"

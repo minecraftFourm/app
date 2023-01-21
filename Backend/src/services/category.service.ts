@@ -1,4 +1,7 @@
+import { StatusCodes } from "http-status-codes"
 import prisma from "../db/prisma.client"
+import CustomError from "../middlewears/custom-error"
+import { generalUserSelect } from "./user.service"
 
 interface CategoryBodyInput {
     name: string,
@@ -51,11 +54,17 @@ export const handleGetCategoryById = async (id: string) => {
     const category = await prisma.category.findUnique({
         where: { id },
         include: {
-            posts: true
+            posts: {
+                include: {
+                    comments: true,
+                    owner: {
+                        select: generalUserSelect
+                    }
+                }
+            }
         }
     })
-
-
+    if (!category) throw new CustomError("Category not found", StatusCodes.NOT_FOUND)
     return  category
 }
 

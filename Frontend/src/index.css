@@ -13,3 +13,23 @@ input {
 .games-shadow {
     filter: drop-shadow(3px 4px 4px rgba(0, 0, 0, 0.25));
 }
+
+.spin {
+    animation-name: spin;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(180deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

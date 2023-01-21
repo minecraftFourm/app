@@ -6,7 +6,7 @@ import Footer from "./Components/Footer";
 import ViewAnnouncement from "./Pages/ViewAnnouncement";
 import EditAnnouncement from "./Pages/EditAnnouncement";
 const Home = lazy(() => import("./Pages/Homepage"))
-const Forum = lazy(() => import("./Pages/Forumpage"))
+const Forum = lazy(() => import("./Pages/Forum/Forumpage"))
 const Rules = lazy(() => import("./Pages/Rulespage"))
 const Games = lazy(() => import("./Pages/Gamespage"))
 const Login = lazy(() => import("./Pages/Authentication/LoginPage"))
@@ -16,7 +16,7 @@ const Announcements = lazy(() => import("./Pages/Dashboard/Announcements"));
 const AnnouncementHome = lazy(() => import("./Pages/Dashboard/AnnouncementHome")); 
 const Dashboard = lazy(() => import("./Pages/Dashboard")); 
 const NewAnnouncement = lazy(() => import("./Pages/Dashboard/NewAnnouncement")); 
-
+const Posts = lazy(() => import("./Pages/Forum/PostsInCategory"));
 
 function App() {
   return (
@@ -35,8 +35,9 @@ function App() {
               <Route path="/rules" element={<Rules />} />  
               <Route path="/games" element={<Games />} />  
               <Route path="/forum" element={<Forum />} />  
-              <Route path="forum/announcement/:id" element={<ViewAnnouncement />} />
+              <Route path="forum/post/:id" element={<ViewAnnouncement />} />
               <Route path="forum/edit/:id" element={<EditAnnouncement />} />
+              <Route path="forum/category/:id" element={<Posts />} />
             </Route>
 
             <Route element={<RedirectAuth />}>

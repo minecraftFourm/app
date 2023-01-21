@@ -120,7 +120,7 @@ const LoginPage = () => {
 
     // Updates the formSubmittable state, couldn't have this code along with the code above due to state taking time before it applies the changes.
     useEffect(() => {
-        (options.validEmail.valid && options.validPassword.valid) ? setFormSubmittable(true) : setFormSubmittable(false) 
+        (options.validEmail.valid) ? setFormSubmittable(true) : setFormSubmittable(false) 
     })
 
     // Tries logging in the user, and if successful redirects back to the main page.

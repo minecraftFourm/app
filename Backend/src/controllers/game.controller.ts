@@ -6,11 +6,12 @@ import { Req } from "../services/post.service"
 import {createGames, getAllGames, getGameById, updateGame, deleteGame as deleteG} from '../services/games.service'
 
 export const createGame = async (req: Req, res: Response) => {
-    const { body, user: { role: { isAdmin } } } = req
-
+    const { body: { title, description, previewImg, tags, statsLink }, user: { role: { isAdmin } } } = req
+    
     if (!(isAdmin)) throw new CustomError("You do not have permission to create games.", StatusCodes.UNAUTHORIZED)
-    const game = await createGames(body)
+    if (!title) throw new CustomError("Title is required.", StatusCodes.BAD_REQUEST)
 
+    const game = await createGames({ title, description, previewImg, tags, statsLink })
     res.json({ message: 'success', data: game }).status(StatusCodes.CREATED)
 }
 

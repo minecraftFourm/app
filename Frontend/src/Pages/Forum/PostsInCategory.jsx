@@ -11,8 +11,15 @@ const Posts = () => {
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [searchParam, setSearchParam] = useState("");
+  const [showPrevBtn, setShowPrevBtn] = useState(false);
+  const [showNextBtn, setShowNextBtn] = useState(true);
 
-  // Filter data.posts for search functionality
+  // Pagination logic
+  // const [] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(5);
+
+  // End of pagination logic
 
   useEffect(() => {
     (async () => {
@@ -31,6 +38,34 @@ const Posts = () => {
       setData(data.data);
     })();
   }, []);
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = data?.posts.slice(indexOfFirstPost, indexOfLastPost);
+
+  const previousPage = () => {
+    if (currentPage !== 1) {
+      console.log(currentPage);
+      setCurrentPage(currentPage - 1);
+      setShowNextBtn(true);
+      // If we reach the start after clicking back, hide the prev btn
+      if (currentPage - 1 === 1) {
+        setShowPrevBtn(false);
+      }
+    }
+  };
+
+  const nextPage = () => {
+    if (currentPage !== Math.ceil(data.posts.length / postsPerPage)) {
+      console.log(Math.ceil(data.posts.length / postsPerPage), currentPage);
+      setCurrentPage(currentPage + 1);
+      setShowPrevBtn(true);
+      // If we reach the end of the posts, hide the next btn
+      if (currentPage + 1 === Math.ceil(data.posts.length / postsPerPage)) {
+        setShowNextBtn(false);
+      }
+    }
+  };
 
   console.log(data);
 
@@ -60,15 +95,25 @@ const Posts = () => {
 
             <section className="mt-8 flex flex-col gap-2 pb-8 px-2">
               {data && (
-                <PostComponent posts={data.posts} searchParam={searchParam} />
+                <PostComponent posts={currentPosts} searchParam={searchParam} />
               )}
               {!data && <LoadingIcon color="text-black" />}
             </section>
             <section className="w-full justify-center flex flex-row gap-4 my-2">
-              <button className="bg-violet-500 px-2 py-1 text-white rounded-sm">
+              <button
+                className={`bg-violet-500 px-2 py-1 text-white rounded-sm ${
+                  showPrevBtn ? "" : "hidden"
+                }`}
+                onClick={previousPage}
+              >
                 Previous Page
               </button>
-              <button className="bg-violet-500 px-2 py-1 text-white rounded-sm">
+              <button
+                className={`bg-violet-500 px-2 py-1 text-white rounded-sm ${
+                  showNextBtn ? "" : "hidden"
+                }`}
+                onClick={nextPage}
+              >
                 Next Page
               </button>
             </section>

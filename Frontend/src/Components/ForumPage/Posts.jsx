@@ -8,7 +8,6 @@ import { convert } from "html-to-text";
 const Posts = (props) => {
   console.log(props);
   const { posts: data, searchParam } = props;
-  console.log(searchParam);
 
   const Component = () => {
     // Filter by post.title

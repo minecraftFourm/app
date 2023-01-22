@@ -11,7 +11,7 @@ import "swiper/css/keyboard";
 import Scroll from "../Components/Scroll-to-top";
 import StaffTeam from "../Components/HomePage/StaffTeam";
 import Announcement from "../Components/HomePage/Announcement";
-import RecentPosts from "../Components/HomePage/recentPosts";
+import RecentPosts from "../Components/HomePage/RecentPosts";
 import RecentComments from "../Components/HomePage/RecentComments";
 import RecentUsers from "../Components/HomePage/RecentUsers";
 import { LoadingIcon } from "../Components/Icons";

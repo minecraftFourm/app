@@ -19,7 +19,7 @@ const cors = require("cors");
 const cloudinary = require('cloudinary').v2;
 dotenv.config()
 
-export const port = process.env.PORT;
+export const port = process.env.PORT || 5000;
 export const app = express();
 
 // Return "https" URLs by setting secure: true

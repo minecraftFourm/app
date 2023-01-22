@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Game" ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "previewImg" DROP NOT NULL,
+ALTER COLUMN "statsLink" DROP NOT NULL;

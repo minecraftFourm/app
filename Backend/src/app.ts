@@ -13,12 +13,13 @@ import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
 import { options } from "./swagger-options";
 import { StatusCodes } from "http-status-codes";
+import { gamesRouter } from "./routes/game.routes";
 const morgan = require("morgan");
 const cors = require("cors");
 const cloudinary = require('cloudinary').v2;
 dotenv.config()
 
-export const port = process.env.PORT || 3000;
+export const port = process.env.PORT || 5000;
 export const app = express();
 
 // Return "https" URLs by setting secure: true
@@ -52,6 +53,7 @@ app.use('/category', categoryRouter);
 app.use('/role', rolesRouter);
 app.use('/user', userRouter);
 app.use('/comment', commentRouter);
+app.use('/game', gamesRouter);
 
 app.get('/protected', auth, async (req: Request, res: Response) => {
   return res.send("Howdy!")

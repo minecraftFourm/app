@@ -1,6 +1,5 @@
 import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
-import prisma from "../db/prisma.client"
 import CustomError from "../middlewears/custom-error"
 import { Req } from "../services/post.service"
 import {createGames, getAllGames, getGameById, updateGame, deleteGame as deleteG} from '../services/games.service'

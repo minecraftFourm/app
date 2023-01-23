@@ -5,6 +5,7 @@ import CheckAuth from "./Contexts/CheckAuth";
 import Footer from "./Components/Footer";
 import ViewAnnouncement from "./Pages/ViewAnnouncement";
 import EditAnnouncement from "./Pages/EditAnnouncement";
+
 const Home = lazy(() => import("./Pages/Homepage"))
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"))
 const Rules = lazy(() => import("./Pages/Rulespage"))
@@ -17,6 +18,8 @@ const AnnouncementHome = lazy(() => import("./Pages/Dashboard/AnnouncementHome")
 const Dashboard = lazy(() => import("./Pages/Dashboard")); 
 const NewAnnouncement = lazy(() => import("./Pages/Dashboard/NewAnnouncement")); 
 const Posts = lazy(() => import("./Pages/Forum/PostsInCategory"));
+const NotFound = lazy(() => import("./Pages/NotFoundPage"));
+const NewPost = lazy(() => import("./Pages/NewPost"));
 
 function App() {
   return (
@@ -38,11 +41,15 @@ function App() {
               <Route path="forum/post/:id" element={<ViewAnnouncement />} />
               <Route path="forum/edit/:id" element={<EditAnnouncement />} />
               <Route path="forum/category/:id" element={<Posts />} />
+              <Route path="forum/new" element={<NewPost />} />
             </Route>
 
-            <Route element={<RedirectAuth />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+            <Route>
+              <Route path="not-found" element={<NotFound />} />
+              <Route element={<RedirectAuth />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </Route>
             </Route>
           </Route>
         </Route>

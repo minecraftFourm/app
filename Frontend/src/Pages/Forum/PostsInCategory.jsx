@@ -13,13 +13,11 @@ const Posts = () => {
   const [searchParam, setSearchParam] = useState("");
   const [showPrevBtn, setShowPrevBtn] = useState(false);
   const [showNextBtn, setShowNextBtn] = useState(true);
+  const [totalPages, setTotalPages] = useState(0);
 
   // Pagination logic
-  // const [] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(5);
-
-  // End of pagination logic
 
   useEffect(() => {
     (async () => {
@@ -41,7 +39,16 @@ const Posts = () => {
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = data?.posts.slice(indexOfFirstPost, indexOfLastPost);
+
+  // The full array of filtered posts
+  const filteredPosts = data?.posts.filter((item) => {
+    return searchParam.toLowerCase() === ""
+      ? item
+      : item.title.toLowerCase().includes(searchParam.toLowerCase());
+  });
+
+  // The array of posts we are currently going to display
+  const currentPosts = filteredPosts?.slice(indexOfFirstPost, indexOfLastPost);
 
   const previousPage = () => {
     if (currentPage !== 1) {
@@ -55,13 +62,23 @@ const Posts = () => {
     }
   };
 
+  // const nextPage = () => {
+  //   if (currentPage !== Math.ceil(currentPosts.length / postsPerPage)) {
+  //     setCurrentPage(currentPage + 1);
+  //     setShowPrevBtn(true);
+  //     // If we reach the end of the posts, hide the next btn
+  //     if (currentPage + 1 === Math.ceil(currentPosts.length / postsPerPage)) {
+  //       setShowNextBtn(false);
+  //     }
+  //   }
+  // };
   const nextPage = () => {
-    if (currentPage !== Math.ceil(data.posts.length / postsPerPage)) {
-      console.log(Math.ceil(data.posts.length / postsPerPage), currentPage);
+    if (currentPage !== Math.ceil(filteredPosts.length / postsPerPage)) {
+      // console.log(Math.ceil(data.posts.length / postsPerPage), currentPage);
       setCurrentPage(currentPage + 1);
       setShowPrevBtn(true);
       // If we reach the end of the posts, hide the next btn
-      if (currentPage + 1 === Math.ceil(data.posts.length / postsPerPage)) {
+      if (currentPage + 1 === Math.ceil(filteredPosts.length / postsPerPage)) {
         setShowNextBtn(false);
       }
     }
@@ -81,8 +98,14 @@ const Posts = () => {
                 {data && data.name} {isLoading && "Loading..."}
               </h1>
               <div className="flex flex-row gap-2 items-center">
+                {/* THIS MAKES THE BTN DISSAPPEAR BUT I NEED TO MAKE IT REAPPEAR IF WE GO BACK */}
                 <input
-                  onChange={(e) => setSearchParam(e.target.value)}
+                  onChange={(e) => {
+                    setSearchParam(e.target.value);
+                    setTotalPages(
+                      Math.ceil(filteredPosts.length / postsPerPage)
+                    );
+                  }}
                   type="text"
                   name="search"
                   id="search"
@@ -94,12 +117,14 @@ const Posts = () => {
             </header>
 
             <section className="mt-8 flex flex-col gap-2 pb-8 px-2">
-              {data && (
-                <PostComponent posts={currentPosts} searchParam={searchParam} />
-              )}
+              {data && <PostComponent posts={currentPosts} />}
               {!data && <LoadingIcon color="text-black" />}
             </section>
-            <section className="w-full justify-center flex flex-row gap-4 my-2">
+            <section
+              className={`w-full justify-center flex flex-row gap-4 my-2 ${
+                totalPages === 1 ? "hidden" : ""
+              }`}
+            >
               <button
                 className={`bg-violet-500 px-2 py-1 text-white rounded-sm ${
                   showPrevBtn ? "" : "hidden"

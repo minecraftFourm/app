@@ -96,7 +96,7 @@ const Homepage = () => {
 
 		</section>
 		{/* TODO: Hero Content */}
-		<section className="bg-[#1B263B] w-full h-full px-16 py-4 pb-16">
+		<section className="bg-[#1B263B] w-full h-full px-16 md:px-2 py-4 pb-16">
 
 			{ isLoading && <LoadingIcon /> }
 
@@ -117,17 +117,15 @@ const Homepage = () => {
 							data.announcement.length === 0 && <p className="text-center text-gray-600">There are currently no announcements...</p>
 						}
 
-
 						{ 
-							data.announcement > 5 && 
+							data.announcement.length > 5 && 
 							<div className="grid place-content-center">
 								<button className="border px-4 py-1 bg-violet-500 border-violet-600 hover:bg-violet-700 duration-300 rounded-sm text-white justify-self-end">Read More...</button>
 							</div>
 						}
 
-
 					</div>
-					<aside className="h-fit w-[450px] bg-white p-4 flex flex-col gap-4">
+					<aside className="h-fit w-[450px] bg-white p-4 flex flex-col gap-4 lg:hidden">
 						<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400 shadow-md">
 							<p className="w-full bg-violet-500 text-white px-2 py-1 ">Recent Updates</p>
 							<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
@@ -194,14 +192,14 @@ const Homepage = () => {
 			(data.staff && data.staff.length !== 0)  
 			&& 
 			<>
-				<section className="bg-white py-12">
+				<section className="bg-white py-12 flex flex-col mx-4">
 					<div className="w-full text-center">
 						<h2 className="text-gray-700 font-bold text-4xl">Our Team Members</h2>
 						<p className="text-gray-500">Meet our team</p>
 					</div>
 
 					{/* TODO: Button controllers */}
-					<article className="mt-4 bg-indigo-500 mx-auto border border-slate-500 drop-shadow-lg max-w-[900px] h-[300px]">
+					<article className="mt-4 w-full border-slate-500 drop-shadow-lg">
 						<Swiper
 							slidesPerView={1}
 							pagination={{
@@ -209,7 +207,7 @@ const Homepage = () => {
 								}}
 							loop={true}
 							modules={[Autoplay, Pagination, Keyboard]}
-							className="h-full"
+							className="max-w-fit"
 							autoplay={{
 								delay: 5000,
 								disableOnInteraction: false,

@@ -18,12 +18,13 @@ export default function Editor({children}) {
   };
 
   const editor = (props) => {
+    const { initialValue, showMenu } = props
 
     return (
       <>
         <Edit
           onInit={(evt, editor) => editorRef.current = editor}
-          initialValue={props.initialValue ? props.initialValue : null }
+          initialValue={initialValue ? initialValue : null }
           init={{
               browser_spellcheck: true,
               init_instance_callback: (editor) => {
@@ -37,7 +38,7 @@ export default function Editor({children}) {
               plugins: ' importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap  emoticons',
               editimage_cors_hosts: ['picsum.photos'],
               menubar: 'edit view insert format tools table help',
-              // menubar: false,
+              menubar: showMenu ? true : false,
               toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview | insertfile image template link anchor codesample | ltr rtl',
               toolbar_sticky: false,
               autosave_ask_before_unload: true,

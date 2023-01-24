@@ -1,6 +1,6 @@
 import { lazy, useState } from "react";
 import Navbar from "./Components/Navbar";
-import { createBrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import CheckAuth from "./Contexts/CheckAuth";
 import Footer from "./Components/Footer";
 import ViewAnnouncement from "./Pages/ViewAnnouncement";
@@ -27,8 +27,6 @@ function App() {
         <Route element={<CheckAuth />}>
           {/* TODO: Add adminOnly middlewear */}
           <Route path="/dashboard" element={<Dashboard />}> 
-            <Route element={<AnnouncementHome />} path="" />
-            <Route element={<NewAnnouncement />} path="newAnnouncement" />
             <Route element={<Announcements />} path="announcement" />
           </Route>
 
@@ -41,7 +39,9 @@ function App() {
               <Route path="forum/post/:id" element={<ViewAnnouncement />} />
               <Route path="forum/edit/:id" element={<EditAnnouncement />} />
               <Route path="forum/category/:id" element={<Posts />} />
-              <Route path="forum/new" element={<NewPost />} />
+              <Route element={<AnnouncementHome />} path="" />
+              <Route element={<NewAnnouncement />} path="newAnnouncement" />
+              <Route path="forum/new" element={<NewPost />}/>
             </Route>
 
             <Route>

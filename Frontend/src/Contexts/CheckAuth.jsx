@@ -5,6 +5,7 @@ import jwt_decode from "jwt-decode";
 import { UseSetUser } from './UserContext';
 import { useEffect } from 'react';
 import { useFetch } from './Fetch'
+import { Toaster } from 'react-hot-toast';
 
 
 const CheckAuth = ({ children }) => {
@@ -33,10 +34,25 @@ const CheckAuth = ({ children }) => {
     })()
   }, []);
     
-
   return (
     <>
         {children}
+        <Toaster
+          toastOptions={{
+            success: {
+              style: {
+                background: 'green',
+                color: 'white',
+              },
+            },
+            error: {
+              style: {
+                background: 'red',
+                color: 'white',
+              },
+            },
+          }}
+        />
         <Outlet />
     </>
   )

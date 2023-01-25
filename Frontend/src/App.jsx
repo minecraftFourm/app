@@ -6,6 +6,7 @@ import Footer from "./Components/Footer";
 import ViewAnnouncement from "./Pages/ViewAnnouncement";
 import EditAnnouncement from "./Pages/EditAnnouncement";
 import { Toaster } from "react-hot-toast";
+import RequireAuth from "./Contexts/RequireAuth";
 
 const Home = lazy(() => import("./Pages/Homepage"))
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"))
@@ -60,7 +61,7 @@ function App() {
               <Route path="forum/category/:id" element={<Posts />} />
               <Route element={<AnnouncementHome />} path="" />
               <Route element={<NewAnnouncement />} path="newAnnouncement" />
-              <Route path="forum/new" element={<NewPost />}/>
+              <Route path="forum/new" element={<RequireAuth> <NewPost /> </RequireAuth>}/>
             </Route>
 
             <Route>

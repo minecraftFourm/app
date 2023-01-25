@@ -20,6 +20,7 @@ const NewPost = () => {
     });
     const User = UseUser();
     const [ isLoading, setIsLoading ] = useState(false);
+    const [ disableSubmit, setDisableSubmit ] = useState(false);
     const [post, setPost] = useState("");
     const [err, setErr] = useState(false);
     const CustomFetch = useFetch();
@@ -44,7 +45,6 @@ const NewPost = () => {
                     
                     if (isAdmin) {
                         return data.data.map(item => {
-                            console.log(item)
                             if (state && state.category === item.id) {
                                 setDefaultCategory(i)
                                 updateState({ category: item.name, categoryId: item.id })
@@ -74,24 +74,37 @@ const NewPost = () => {
         e.preventDefault();
         const content = EditorValue()
         if (inputState.title && inputState.category && content.length > 0) {
-            const { data, response } = await CustomFetch({ 
-                url: "post", 
-                options: {
-                    method: "POST",
-                    body: JSON.stringify({
-                        title: inputState.title,
-                        content,
-                        category: inputState.categoryId
-                    })
-                }, 
-                returnResponse: true 
-            })
+            setDisableSubmit(true)
+            try {
+                const { data, response } = await CustomFetch({ 
+                    url: "post", 
+                    options: {
+                        method: "POST",
+                        body: JSON.stringify({
+                            title: inputState.title,
+                            content,
+                            category: inputState.categoryId
+                        })
+                    }, 
+                    returnResponse: true 
+                })                
 
-            toast.success("Successfully created a new post.", { 
-                duration: 8000, 
-                position: "bottom-left"
-            })
-            Navigate(`../forum/post/${data.data.id}`)
+                toast.success("Successfully created a new post.", { 
+                    duration: 8000, 
+                    position: "bottom-left"
+                })
+                Navigate(`../forum/post/${data.data.id}`)
+
+            } catch (error) {
+                toast.error("An error has occured while trying to create a post.", { 
+                    duration: 8000, 
+                    position: "bottom-left"
+                })
+                console.log(error)
+            } finally {
+                setDisableSubmit(false)
+            }
+
         }
         else {
             if (!inputState.title || !inputState.categoryId || !content) toast.error("Title, category, and post content are required.", { 
@@ -149,7 +162,7 @@ const NewPost = () => {
                         />
                         <Editor />
                         <div className='flex justify-center mt-2'>
-                            <button className="hover:bg-indigo-700 cursor-pointer bg-indigo-500 text-white py-1 px-6 border border-indigo-600 transition-colors duration-300 rounded" type="submit">Create Post</button>
+                            <button className="hover:bg-indigo-700 cursor-pointer bg-indigo-500 text-white py-1 px-6 border border-indigo-600 transition-colors duration-300 rounded" type="submit" disabled={disableSubmit}>Create Post</button>
                         </div>
                     </form>
                 </>

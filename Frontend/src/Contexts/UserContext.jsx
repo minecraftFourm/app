@@ -11,6 +11,7 @@ export const UserContext = ({children}) => {
         id: '',
         username: '',
         isAuthenticated: false,
+        isLoading: false,
     })
 
     const updateUser = (val) => {

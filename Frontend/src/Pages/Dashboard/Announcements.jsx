@@ -15,7 +15,7 @@ const Announcements = () => {
     useEffect(() => {
         (async () => {
             // TODO: Change the category value to a variable
-            const { data, response } = await CustomFetch({url: `post?category=${ANNOUNCEMENT_CATEGORY_NAME}`, returnResponse: true})
+            const { data, response } = await CustomFetch({url: `post?category=${ANNOUNCEMENT_CATEGORY_NAME}&limit=50`, returnResponse: true})
             setAnnouncements(() => {
                 return {
                     count: data.count,

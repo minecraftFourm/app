@@ -19,7 +19,7 @@ const Navbar = () => {
       credentials: 'include'
     })
     if (response.ok) {
-      setUser({ isAuthenticated: false, username: '', id: '' })
+      setUser({ isAuthenticated: false, username: '', id: '', isLoading: false })
       Navigate('login') // Navigate to login page
     }
   }

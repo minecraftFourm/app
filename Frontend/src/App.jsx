@@ -5,6 +5,7 @@ import CheckAuth from "./Contexts/CheckAuth";
 import Footer from "./Components/Footer";
 import ViewAnnouncement from "./Pages/ViewAnnouncement";
 import EditAnnouncement from "./Pages/EditAnnouncement";
+import { Toaster } from "react-hot-toast";
 
 const Home = lazy(() => import("./Pages/Homepage"))
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"))
@@ -22,9 +23,27 @@ const NotFound = lazy(() => import("./Pages/NotFoundPage"));
 const NewPost = lazy(() => import("./Pages/NewPost"));
 
 function App() {
+  const toastOptions = {
+    success: {
+      style: {
+        background: 'green',
+        color: 'white',
+      },
+    },
+    error: {
+      style: {
+        background: 'red',
+        color: 'white',
+      },
+    }}
+  
   return (
+    <CheckAuth>
+      <Toaster
+          toastOptions={toastOptions}
+        />
+
       <Routes>
-        <Route element={<CheckAuth />}>
           {/* TODO: Add adminOnly middlewear */}
           <Route path="/dashboard" element={<Dashboard />}> 
             <Route element={<Announcements />} path="announcement" />
@@ -45,15 +64,15 @@ function App() {
             </Route>
 
             <Route>
-              <Route path="not-found" element={<NotFound />} />
               <Route element={<RedirectAuth />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
               </Route>
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Route>
-        </Route>
       </Routes>
+    </CheckAuth>
   );
 }
 

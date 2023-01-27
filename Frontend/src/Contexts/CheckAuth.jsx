@@ -11,11 +11,12 @@ const CheckAuth = ({ children }) => {
 	const user = UseUser();
 	const accessToken = Cookies.get("Authorization");
 	const CustomFetch = useFetch();
-	const [isLoading, setIsLoading] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
+
 	useEffect(() => {
 		(async () => {
+			setIsLoading(true);
 			if (accessToken) {
-				setIsLoading(true);
 				let token = accessToken.match(/^s:(.*)\..*$/)[1];
 				let { id: userId } = jwt_decode(token);
 

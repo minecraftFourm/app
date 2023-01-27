@@ -1,7 +1,11 @@
-import React, { Suspense } from "react";
+import React, { 
+  Suspense,
+  useState
+ } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import { UseSetUser, UseUser } from "../Contexts/UserContext";
+import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai';
 
 const Navbar = () => {
   const Navigate = useNavigate();
@@ -11,6 +15,13 @@ const Navbar = () => {
     fontWeight: "500",
     color: "#6366f1"
   }
+
+  const [nav, setNav] = useState(false);
+  //toggler if md
+  const handleNav = () => {
+    setNav(!nav);
+  };
+
 
   const handleLogout = async () => {
     // TODO: convert to using custom fetch, and handle errors
@@ -26,8 +37,8 @@ const Navbar = () => {
   
   return (
     <>    
-      <div className="grid h-16 bg-white drop-shadow-lg w-full" id="header">
-        <div className="flex justify-between px-4 items-center w-full">
+      <div className="relative z-20 grid h-16 bg-white drop-shadow-lg w-full" id="header">
+        <div className="flex z-20 justify-between px-4 items-center w-full">
           <div>
             <Link to={"/"} className="text-2xl font-bold cursor-pointer">Servername</Link>
           </div>
@@ -70,12 +81,47 @@ const Navbar = () => {
               </div>
             )}
           </div>
-           {/* Mobile Menu */}
-           <div className="hidden md:block">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              </svg>
-            </div>
+           <div onClick={handleNav} className="invisible md:visible">
+            {nav ? <AiOutlineClose size={30}/> : <AiOutlineMenu size={30} />}
+          </div>
+              <ul className={nav ? 'absolute left-0 text-white top-0 w-[85%] z-20 h-[100%] border-r border-r-gray-900 bg-[#4338ca] ease-in-out duration-500' : 'ease-in-out duration-500 absolute left-[-100%] bg-[#4338ca]'}>
+                  <li className='w-full text-2xl font-bold m-4'>Servername</li>
+                  <li onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c]  border-indigo-300'>
+                        <NavLink to="/" style={({isActive}) => isActive ? activeStyle : undefined }>
+                          Home
+                        </NavLink>
+                   </li>
+                  <li onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c] border-indigo-300'>                
+                      <NavLink to="forum" style={({isActive}) => isActive ? activeStyle : undefined }>
+                        Forum
+                      </NavLink>
+                  </li>
+                    <li onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c] border-indigo-300'>                
+                      <NavLink to="rules" style={({isActive}) => isActive ? activeStyle : undefined }>
+                        Rules
+                      </NavLink>
+                    </li>
+                  <li  onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c] border-indigo-300'>                
+                    <NavLink to="games" style={({isActive}) => isActive ? activeStyle : undefined }>
+                      Games
+                    </NavLink>
+                  </li>
+                        {user.isAuthenticated ? (
+                    <li onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c] border-indigo-300'>
+                      <img src={user.profilePicture} className="w-[48px] h-[48px] object-cover object-center rounded-full " alt="" />
+                      <button className="mr-4 text-sm font-medium" onClick={handleLogout}>Logout</button>
+                    </li>
+                      ) : (
+                    <li onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c] border-indigo-300'>
+                      <NavLink to={"./login"} className="mr-4 text-lg font-medium hover:text-indigo-300 duration-300 text-white">Login</NavLink>
+                      <NavLink to={"./register"} className="py-1 px-4 bg-indigo-500 rounded-md font-medium text-white hover:bg-indigo-700 duration-300">
+                        Register
+                      </NavLink>
+                    </li>
+                  )}
+              </ul>
+              
+              
         </div>
       </div>
 

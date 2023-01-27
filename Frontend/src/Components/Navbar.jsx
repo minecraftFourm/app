@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import { UseSetUser, UseUser } from "../Contexts/UserContext";
+import Footer from "./Footer";
 
 const Navbar = () => {
   const Navigate = useNavigate();
@@ -78,11 +79,6 @@ const Navbar = () => {
             </div>
         </div>
       </div>
-
-      {/* TODO: Change to a proper loading screen  */}
-      <Suspense fallback={<h1>Loading...</h1>}>
-        <Outlet />
-      </Suspense>
     </>
   );
 };

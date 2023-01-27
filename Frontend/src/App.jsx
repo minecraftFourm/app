@@ -1,12 +1,13 @@
-import { lazy, useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import Navbar from "./Components/Navbar";
-import { Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes } from "react-router-dom";
 import CheckAuth from "./Contexts/CheckAuth";
 import Footer from "./Components/Footer";
 import ViewAnnouncement from "./Pages/ViewAnnouncement";
 import EditAnnouncement from "./Pages/EditAnnouncement";
 import { Toaster } from "react-hot-toast";
 import RequireAuth from "./Contexts/RequireAuth";
+import AdminOnly from "./Contexts/AdminOnly";
 
 const Home = lazy(() => import("./Pages/Homepage"))
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"))
@@ -24,6 +25,41 @@ const NotFound = lazy(() => import("./Pages/NotFoundPage"));
 const NewPost = lazy(() => import("./Pages/NewPost"));
 
 function App() {
+
+  const NavAndFooter = () => {
+    return (
+      <>
+        <Navbar />
+      {/* TODO: Change to a proper loading screen  */}
+        <Suspense fallback={<h1>Loading...</h1>}>
+          <Outlet />
+        </Suspense>
+        <Footer />
+      </>
+    )
+  }
+
+  const Nav = () => {
+    return (
+      <>
+        <Navbar />
+        <Suspense fallback={<h1>Loading...</h1>}>
+          <Outlet />
+        </Suspense>
+      </>
+    )
+  }
+
+  const UseAuth = (Children) => {
+    return (
+      <>
+        <RequireAuth>
+          <Children />
+        </RequireAuth>
+      </>
+    )
+  }
+
   const toastOptions = {
     success: {
       style: {
@@ -50,28 +86,27 @@ function App() {
             <Route element={<Announcements />} path="announcement" />
           </Route>
 
-          <Route element={<Navbar />}>
-            <Route element={<Footer />}>
-              <Route path='/' element={<Home />} />
-              <Route path="/rules" element={<Rules />} />  
-              <Route path="/games" element={<Games />} />  
-              <Route path="/forum" element={<Forum />} />  
-              <Route path="forum/post/:id" element={<ViewAnnouncement />} />
-              <Route path="forum/edit/:id" element={<EditAnnouncement />} />
-              <Route path="forum/category/:id" element={<Posts />} />
-              <Route element={<AnnouncementHome />} path="" />
-              <Route element={<NewAnnouncement />} path="newAnnouncement" />
-              <Route path="forum/new" element={<RequireAuth> <NewPost /> </RequireAuth>}/>
-            </Route>
+          <Route element={<NavAndFooter />}>
+            <Route path='/' element={<Home />} />
+            <Route path="/rules" element={<Rules />} />  
+            <Route path="/games" element={<Games />} />  
+            <Route path="/forum" element={<Forum />} />  
+            <Route path="forum/post/:id" element={<AdminOnly><ViewAnnouncement /></AdminOnly>} />
+            <Route path="forum/edit/:id" element={ <RequireAuth> <EditAnnouncement /> </RequireAuth> } />
+            <Route path="forum/category/:id" element={<Posts />} />
+            <Route element={<AnnouncementHome />} path="" />
+            <Route element={<NewAnnouncement />} path="newAnnouncement" />
+            <Route path="forum/new" element={<RequireAuth> <NewPost /> </RequireAuth>}/>
+          </Route>
 
-            <Route>
+          <Route element={<Nav />}>
               <Route element={<RedirectAuth />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
               </Route>
               <Route path="*" element={<NotFound />} />
-            </Route>
           </Route>
+
       </Routes>
     </CheckAuth>
   );

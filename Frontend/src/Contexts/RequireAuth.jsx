@@ -1,23 +1,20 @@
-import React from 'react'
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { UseUser } from './UserContext'
+import React from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { UseUser } from "./UserContext";
 
 const RequireAuth = ({ children }) => {
-    const User = UseUser()
-    const Navigate = useNavigate()
+	const User = UseUser();
+	const Navigate = useNavigate();
 
-    useEffect(() => {
-        if (!User.isAuthenticated && !User.isLoading) {
-            Navigate('../login')
-        }
-    }, [])
+	useEffect(() => {
+		// console.log(User.isAuthenticated)
+		if (!User.isAuthenticated && !User.isLoading) {
+			Navigate("../login");
+		}
+	}, []);
 
-    return (
-        <>
-            {children}
-        </>
-    )
-}
+	return <>{User.isAuthenticated && children}</>;
+};
 
-export default RequireAuth
+export default RequireAuth;

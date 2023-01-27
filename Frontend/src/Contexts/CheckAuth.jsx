@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import { UseSetUser, UseUser } from "./UserContext";
 import { useFetch } from "./Fetch";
-import DotLoader from "react-spinners/SyncLoader";
 import { LoadingIcon } from "../Components/Icons";
 
 const CheckAuth = ({ children }) => {
@@ -16,11 +15,11 @@ const CheckAuth = ({ children }) => {
 	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
-			if (accessToken) {
-				let token = accessToken.match(/^s:(.*)\..*$/)[1];
-				let { id: userId } = jwt_decode(token);
+			try {
+				if (accessToken) {
+					let token = accessToken.match(/^s:(.*)\..*$/)[1];
+					let { id: userId } = jwt_decode(token);
 
-				try {
 					const {
 						data: {
 							data: { id, username, profilePicture, role },
@@ -33,6 +32,7 @@ const CheckAuth = ({ children }) => {
 						},
 						returnResponse: true,
 					});
+
 					if (!response.ok)
 						throw new Error("Error while trying to login.");
 					setUser({
@@ -43,16 +43,16 @@ const CheckAuth = ({ children }) => {
 						isAuthenticated: true,
 						isLoading: false,
 					});
-				} catch (error) {
-					setUser({
-						id: "",
-						username: "",
-						isAuthenticated: false,
-						isLoading: false,
-					});
-				} finally {
-					setIsLoading(false);
 				}
+			} catch (error) {
+				setUser({
+					id: "",
+					username: "",
+					isAuthenticated: false,
+					isLoading: false,
+				});
+			} finally {
+				setIsLoading(false);
 			}
 		})();
 	}, []);

@@ -82,38 +82,40 @@ const Navbar = () => {
             )}
           </div>
            <div onClick={handleNav} className="invisible md:visible">
-            {nav ? <AiOutlineClose size={30}/> : <AiOutlineMenu size={30} />}
+            {nav ? "" : <AiOutlineMenu size={30} /> }
           </div>
-              <ul className={nav ? 'absolute left-0 text-white top-0 w-[85%] z-20 h-[100%] border-r border-r-gray-900 bg-[#4338ca] ease-in-out duration-500' : 'ease-in-out duration-500 absolute left-[-100%] bg-[#4338ca]'}>
-                  <li className='w-full text-2xl font-bold m-4'>Servername</li>
-                  <li onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c]  border-indigo-300'>
+              <ul className={nav ? 'absolute right-4 text-black top-4 border-4 w-[80%] z-20 h-100 border-r border-r-gray-900 bg-white ease-in-out duration-500' : 'ease-in-out duration-500 top-6 absolute right-[-100%] bg-white'}>
+              
+                  <li onClick={handleNav} className='absolute top-3 right-3 m-3'> <AiOutlineClose size={20}/> </li>
+
+                  <li onClick={handleNav} className='mt-8 p-4 ml-2'>
                         <NavLink to="/" style={({isActive}) => isActive ? activeStyle : undefined }>
                           Home
                         </NavLink>
                    </li>
-                  <li onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c] border-indigo-300'>                
+                  <li onClick={handleNav} className='p-4 ml-2'>                
                       <NavLink to="forum" style={({isActive}) => isActive ? activeStyle : undefined }>
                         Forum
                       </NavLink>
                   </li>
-                    <li onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c] border-indigo-300'>                
+                    <li onClick={handleNav} className='p-4 ml-2'>                
                       <NavLink to="rules" style={({isActive}) => isActive ? activeStyle : undefined }>
                         Rules
                       </NavLink>
                     </li>
-                  <li  onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c] border-indigo-300'>                
+                  <li  onClick={handleNav} className='p-4 ml-2'>                
                     <NavLink to="games" style={({isActive}) => isActive ? activeStyle : undefined }>
                       Games
                     </NavLink>
                   </li>
                         {user.isAuthenticated ? (
-                    <li onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c] border-indigo-300'>
+                    <li onClick={handleNav} className='p-6'>
                       <img src={user.profilePicture} className="w-[48px] h-[48px] object-cover object-center rounded-full " alt="" />
                       <button className="mr-4 text-sm font-medium" onClick={handleLogout}>Logout</button>
                     </li>
                       ) : (
-                    <li onClick={handleNav} className='p-6 border-b-8 bg-[#180f7c] border-indigo-300'>
-                      <NavLink to={"./login"} className="mr-4 text-lg font-medium hover:text-indigo-300 duration-300 text-white">Login</NavLink>
+                    <li onClick={handleNav} className='p-6 mt-10 mx-5 border-t-4 text-center'>
+                      <NavLink to={"./login"} className="mr-4 text-lg font-medium hover:text-indigo-300 duration-300 text-black">Login</NavLink>
                       <NavLink to={"./register"} className="py-1 px-4 bg-indigo-500 rounded-md font-medium text-white hover:bg-indigo-700 duration-300">
                         Register
                       </NavLink>

@@ -1,17 +1,13 @@
 import { lazy, Suspense, useState } from "react";
-import Navbar from "./Components/Navbar";
 import { Outlet, Route, Routes } from "react-router-dom";
-import CheckAuth from "./Contexts/CheckAuth";
-import Footer from "./Components/Footer";
-import ViewAnnouncement from "./Pages/ViewAnnouncement";
-import EditAnnouncement from "./Pages/EditAnnouncement";
 import { Toaster } from "react-hot-toast";
-import RequireAuth from "./Contexts/RequireAuth";
-import AdminOnly from "./Contexts/AdminOnly";
+import Navbar from "./Components/Navbar";
+import CheckAuth from "./Contexts/CheckAuth";
 
 const Home = lazy(() => import("./Pages/Homepage"));
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"));
 const Rules = lazy(() => import("./Pages/Rulespage"));
+const Footer = lazy(() => import("./Components/Footer"));
 const Games = lazy(() => import("./Pages/Gamespage"));
 const Login = lazy(() => import("./Pages/Authentication/LoginPage"));
 const Register = lazy(() => import("./Pages/Authentication/Registerpage"));
@@ -20,22 +16,26 @@ const Announcements = lazy(() => import("./Pages/Dashboard/Announcements"));
 const AnnouncementHome = lazy(() =>
 	import("./Pages/Dashboard/AnnouncementHome")
 );
+const EditAnnouncement = lazy(() => import("./Pages/EditAnnouncement"));
+const ViewAnnouncement = lazy(() => import("./Pages/ViewAnnouncement"));
 const Dashboard = lazy(() => import("./Pages/Dashboard"));
 const NewAnnouncement = lazy(() => import("./Pages/Dashboard/NewAnnouncement"));
 const Posts = lazy(() => import("./Pages/Forum/PostsInCategory"));
 const NotFound = lazy(() => import("./Pages/NotFoundPage"));
 const NewPost = lazy(() => import("./Pages/NewPost"));
+const AdminOnly = lazy(() => import("./Contexts/AdminOnly"));
+const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
 
 function App() {
 	const NavAndFooter = () => {
 		return (
 			<>
-				<Navbar />
 				{/* TODO: Change to a proper loading screen  */}
 				<Suspense fallback={<h1>Loading...</h1>}>
+					<Navbar />
 					<Outlet />
+					<Footer />
 				</Suspense>
-				<Footer />
 			</>
 		);
 	};
@@ -101,8 +101,8 @@ function App() {
 					<Route path="forum/category/:id" element={<Posts />} />
 					<Route element={<AnnouncementHome />} path="" />
 					<Route
-						element={<NewAnnouncement />}
 						path="newAnnouncement"
+						element={<NewAnnouncement />}
 					/>
 					<Route
 						path="forum/new"

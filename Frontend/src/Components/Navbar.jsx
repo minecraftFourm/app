@@ -8,12 +8,12 @@ const Navbar = () => {
 	const Navigate = useNavigate();
 	const user = UseUser();
 	const setUser = UseSetUser();
-	const [nav, setNav] = useState(false);
 	const activeStyle = {
 		fontWeight: "500",
 		color: "#6366f1",
 	};
 
+	const [nav, setNav] = useState(false);
 	//toggler if md
 	const handleNav = () => {
 		setNav(!nav);
@@ -32,8 +32,10 @@ const Navbar = () => {
 	};
 
 	return (
-		<div className="grid h-16 bg-white drop-shadow-lg w-full" id="header">
-			<div className="flex justify-between px-4 items-center w-full">
+		<div
+			className="relative z-20 grid h-16 bg-white drop-shadow-lg w-full"
+			id="header">
+			<div className="flex z-20 justify-between px-4 items-center w-full">
 				<div>
 					<Link
 						to={"/"}
@@ -110,25 +112,23 @@ const Navbar = () => {
 						</div>
 					)}
 				</div>
-				<div onClick={handleNav} className="invisible md:visible">
-					{nav ? (
-						<AiOutlineClose size={30} />
-					) : (
-						<AiOutlineMenu size={30} />
-					)}
+				<div onClick={handleNav} className="hidden md:block">
+					{nav ? "" : <AiOutlineMenu size={30} />}
 				</div>
 				<ul
 					className={
 						nav
-							? "absolute left-0 text-white top-0 w-[85%] z-20 h-[100%] border-r border-r-gray-900 bg-[#4338ca] ease-in-out duration-500"
-							: "ease-in-out duration-500 absolute left-[-100%] bg-[#4338ca]"
+							? "absolute right-4 sm:right-0 text-black top-4 mobile-nav-shadow max-w-[300px] w-full sm:w-full bg-white ease-in-out duration-500 z-50"
+							: "ease-in-out duration-500 top-6 absolute right-[-100%] bg-white"
 					}>
-					<li className="w-full text-2xl font-bold m-4">
-						Servername
-					</li>
 					<li
 						onClick={handleNav}
-						className="p-6 border-b-8 bg-[#180f7c]  border-indigo-300">
+						className="absolute top-3 right-3 m-3">
+						{" "}
+						<AiOutlineClose size={20} />{" "}
+					</li>
+
+					<li onClick={handleNav} className="mt-8 p-4 ml-2">
 						<NavLink
 							to="/"
 							style={({ isActive }) =>
@@ -137,9 +137,7 @@ const Navbar = () => {
 							Home
 						</NavLink>
 					</li>
-					<li
-						onClick={handleNav}
-						className="p-6 border-b-8 bg-[#180f7c] border-indigo-300">
+					<li onClick={handleNav} className="p-4 ml-2">
 						<NavLink
 							to="forum"
 							style={({ isActive }) =>
@@ -148,9 +146,7 @@ const Navbar = () => {
 							Forum
 						</NavLink>
 					</li>
-					<li
-						onClick={handleNav}
-						className="p-6 border-b-8 bg-[#180f7c] border-indigo-300">
+					<li onClick={handleNav} className="p-4 ml-2">
 						<NavLink
 							to="rules"
 							style={({ isActive }) =>
@@ -159,9 +155,7 @@ const Navbar = () => {
 							Rules
 						</NavLink>
 					</li>
-					<li
-						onClick={handleNav}
-						className="p-6 border-b-8 bg-[#180f7c] border-indigo-300">
+					<li onClick={handleNav} className="p-4 ml-2">
 						<NavLink
 							to="games"
 							style={({ isActive }) =>
@@ -173,14 +167,14 @@ const Navbar = () => {
 					{user.isAuthenticated ? (
 						<li
 							onClick={handleNav}
-							className="p-6 border-b-8 bg-[#180f7c] border-indigo-300">
+							className="p-6 flex flex-row gap-4">
 							<img
 								src={user.profilePicture}
 								className="w-[48px] h-[48px] object-cover object-center rounded-full "
 								alt=""
 							/>
 							<button
-								className="mr-4 text-sm font-medium"
+								className="mr-4 text-md font-medium text-center"
 								onClick={handleLogout}>
 								Logout
 							</button>
@@ -188,10 +182,10 @@ const Navbar = () => {
 					) : (
 						<li
 							onClick={handleNav}
-							className="p-6 border-b-8 bg-[#180f7c] border-indigo-300">
+							className="p-6 mt-10 mx-5 border-t-4 text-center">
 							<NavLink
 								to={"./login"}
-								className="mr-4 text-lg font-medium hover:text-indigo-300 duration-300 text-white">
+								className="mr-4 text-lg font-medium hover:text-indigo-300 duration-300 text-black">
 								Login
 							</NavLink>
 							<NavLink

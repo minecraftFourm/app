@@ -50,7 +50,6 @@ app.use("/game", gamesRouter);
 app.get("/protected", auth, async (req: Request, res: Response) => {
 	return res.send("Howdy!");
 });
-app.use("/game", gamesRouter);
 
 app.use("*", (req, res) => {
 	res.json({ err: "Invalid Request" }).status(StatusCodes.NOT_FOUND);

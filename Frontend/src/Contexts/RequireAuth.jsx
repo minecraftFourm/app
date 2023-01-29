@@ -7,7 +7,6 @@ const RequireAuth = ({ children }) => {
 	const User = UseUser();
 	const Navigate = useNavigate();
 
-	console.log(User);
 	useEffect(() => {
 		console.log(User.isAuthenticated);
 		if (!User.isAuthenticated && !User.isLoading) {

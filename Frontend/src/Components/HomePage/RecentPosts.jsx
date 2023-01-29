@@ -1,20 +1,36 @@
-import React from 'react'
-import { format } from 'timeago.js'
+import React from "react";
+import { Link } from "react-router-dom";
+import { format } from "timeago.js";
 
 const RecentPosts = (props) => {
-    const { title, updated, owner: { username }, id} = props
+	const {
+		title,
+		updated,
+		owner: { username, id: userId },
+		id,
+	} = props;
 
-  return (
-    <div className="flex border border-violet-500 items-center px-2 py-1" key={id}>
-        <div className="w-full">
-            <p className="line-clamp-1 text-sm font-semibold">{title}</p>
-            <footer className="w-full flex flex-row justify-between">
-                <p className="text-xs text-gray-500">{username}</p>
-                <p className="text-xs text-gray-500">{format(updated)}</p>
-            </footer>
-        </div>
-    </div>
-  )
-}
+	return (
+		<div
+			className="flex border border-violet-500 items-center px-2 py-1"
+			key={id}>
+			<div className="w-full">
+				<Link
+					to={`./forum/post/${id}`}
+					className="line-clamp-1 text-sm font-semibold">
+					{title}
+				</Link>
+				<footer className="w-full flex flex-row justify-between">
+					<Link
+						to={`/user/${userId}`}
+						className="text-xs text-gray-500">
+						{username}
+					</Link>
+					<p className="text-xs text-gray-500">{format(updated)}</p>
+				</footer>
+			</div>
+		</div>
+	);
+};
 
-export default RecentPosts
+export default RecentPosts;

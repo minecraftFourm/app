@@ -23,6 +23,7 @@ const NewAnnouncement = lazy(() => import("./Pages/Dashboard/NewAnnouncement"));
 const Posts = lazy(() => import("./Pages/Forum/PostsInCategory"));
 const NotFound = lazy(() => import("./Pages/NotFoundPage"));
 const NewPost = lazy(() => import("./Pages/NewPost"));
+const EditPost = lazy(() => import("./Pages/EditPost"));
 const AdminOnly = lazy(() => import("./Contexts/AdminOnly"));
 const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
 
@@ -64,6 +65,12 @@ function App() {
 				color: "white",
 			},
 		},
+		loading: {
+			style: {
+				background: "yellow",
+				color: "white",
+			},
+		},
 	};
 
 	return (
@@ -83,20 +90,7 @@ function App() {
 					<Route path="/forum" element={<Forum />} />
 					<Route
 						path="forum/post/:id"
-						element={
-							<AdminOnly>
-								<ViewAnnouncement />
-							</AdminOnly>
-						}
-					/>
-					<Route
-						path="forum/edit/:id"
-						element={
-							<RequireAuth>
-								{" "}
-								<EditAnnouncement />{" "}
-							</RequireAuth>
-						}
+						element={<ViewAnnouncement />}
 					/>
 					<Route path="forum/category/:id" element={<Posts />} />
 					<Route element={<AnnouncementHome />} path="" />
@@ -108,8 +102,15 @@ function App() {
 						path="forum/new"
 						element={
 							<RequireAuth>
-								{" "}
-								<NewPost />{" "}
+								<NewPost />
+							</RequireAuth>
+						}
+					/>
+					<Route
+						path="forum/edit/:id"
+						element={
+							<RequireAuth>
+								<EditPost />
 							</RequireAuth>
 						}
 					/>

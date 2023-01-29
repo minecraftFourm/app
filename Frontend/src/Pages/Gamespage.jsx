@@ -1,55 +1,73 @@
 import React, { useEffect, useState } from "react";
-import bg from "../assets/games page.png"
+import bg from "../assets/games page.png";
 import Games from "../Components/Games";
+import { LoadingIcon } from "../Components/Icons";
 import Overlay from "../Components/Overlay";
 import { useFetch } from "../Contexts/Fetch";
 
 const Gamespage = () => {
-  const [games, setGames] = useState([
-    {
-      id: 1,
-      title: 'Something 1',
-      description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum voluptatum totam rem eos cupiditate tempora veniam, sit doloribus molestias omnis nemo molestiae libero nostrum consequuntur non tempore blanditiis? Non sequi laborum optio mollitia incidunt enim laboriosam nobis commodi ex hic? Error unde numquam sit nisi veniam, et doloremque architecto aliquam!',
-      tags: ['one', 'two', 'three', 'four', 'five'],
-      picture: 'https://s3-alpha-sig.figma.com/img/b9a0/0dc9/a0ad3b84f7cca6fed3abb6d5fc3ac7c6?Expires=1674432000&Signature=FU7AzKoHFbHDqFN4llCvypixufRmp1kvaLyYymFBo~Qm3XtycxdtlQrcYgZcj3Av6ShaBxvoL-q3hl8lbK9nZqcFgRlMb1XH3aarmU86Dk4DOuMuVNWfvxenAaa6jz7ZvEG5lIsf~Bq~q3ltdU3Eh7KR3M9yAeYQDPxW76fRXpB6YqClAgDvAZgQp1ZGEXPSUZzqP26dJ38PTgk7-hcrgx4G~0IqfU5Td7lrmXO29qs88y4XZI2BUqYHM1BilHmcnFgm-g4ho8MDhnND8flNW~zZpsM~zlqhelcJ~mgMDqEaZnDMZOpmKkeoWD0paKRJeA2TiuZ8ayCwMaq-rZtkoQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'
-    },
-    {
-      id: 2,
-      title: 'Something 1',
-      description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum voluptatum totam rem eos cupiditate tempora veniam, sit doloribus molestias omnis nemo molestiae libero nostrum consequuntur non tempore blanditiis? Non sequi laborum optio mollitia incidunt enim laboriosam nobis commodi ex hic? Error unde numquam sit nisi veniam, et doloremque architecto aliquam!',
-      tags: ['one', 'two', 'three', 'four', 'five'],
-      picture: 'https://s3-alpha-sig.figma.com/img/b9a0/0dc9/a0ad3b84f7cca6fed3abb6d5fc3ac7c6?Expires=1674432000&Signature=FU7AzKoHFbHDqFN4llCvypixufRmp1kvaLyYymFBo~Qm3XtycxdtlQrcYgZcj3Av6ShaBxvoL-q3hl8lbK9nZqcFgRlMb1XH3aarmU86Dk4DOuMuVNWfvxenAaa6jz7ZvEG5lIsf~Bq~q3ltdU3Eh7KR3M9yAeYQDPxW76fRXpB6YqClAgDvAZgQp1ZGEXPSUZzqP26dJ38PTgk7-hcrgx4G~0IqfU5Td7lrmXO29qs88y4XZI2BUqYHM1BilHmcnFgm-g4ho8MDhnND8flNW~zZpsM~zlqhelcJ~mgMDqEaZnDMZOpmKkeoWD0paKRJeA2TiuZ8ayCwMaq-rZtkoQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'
-    },
-    {
-      id: 3,
-      title: 'Something 1',
-      description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum voluptatum totam rem eos cupiditate tempora veniam, sit doloribus molestias omnis nemo',
-      tags: ['one', 'two', 'three', 'four', 'five'],
-      picture: 'https://s3-alpha-sig.figma.com/img/b9a0/0dc9/a0ad3b84f7cca6fed3abb6d5fc3ac7c6?Expires=1674432000&Signature=FU7AzKoHFbHDqFN4llCvypixufRmp1kvaLyYymFBo~Qm3XtycxdtlQrcYgZcj3Av6ShaBxvoL-q3hl8lbK9nZqcFgRlMb1XH3aarmU86Dk4DOuMuVNWfvxenAaa6jz7ZvEG5lIsf~Bq~q3ltdU3Eh7KR3M9yAeYQDPxW76fRXpB6YqClAgDvAZgQp1ZGEXPSUZzqP26dJ38PTgk7-hcrgx4G~0IqfU5Td7lrmXO29qs88y4XZI2BUqYHM1BilHmcnFgm-g4ho8MDhnND8flNW~zZpsM~zlqhelcJ~mgMDqEaZnDMZOpmKkeoWD0paKRJeA2TiuZ8ayCwMaq-rZtkoQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4'
-    }
-  ]);
-  const CustomFetch = useFetch()
+	const [games, setGames] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [err, setErr] = useState(null);
+	const CustomFetch = useFetch();
 
-  return (
-  <div>
-    <section className="w-full h-[700px] mb-4 relative">
-      <img src={bg} alt="" className="w-full h-full object-cover object-center" />
-      <Overlay 
-        description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum voluptatum totam rem eos cupiditate tempora veniam, sit doloribus molestias omnis nemo molestiae libero nostrum consequuntur non tempore blanditiis? Non sequi laborum optio mollitia incidunt enim laboriosam nobis commodi ex hic? Error unde numquam sit nisi veniam, et doloremque architecto aliquam!"
-        />
-    </section>
+	useEffect(() => {
+		(async () => {
+			setIsLoading(true);
+			try {
+				const { data, response } = await CustomFetch({
+					url: "game",
+					returnResponse: true,
+				});
+				if (!response.ok) throw Error();
+				setGames(data.data);
+			} catch (error) {
+				console.log(error);
+				setErr(true);
+			} finally {
+				setIsLoading(false);
+			}
+		})();
+	}, []);
 
-    <section className="w-full h-full pb-32 px-4">
-      <h3 className="font-bold text-3xl text-center">Game List</h3>
+	return (
+		<div>
+			<section className="w-full h-[700px] mb-4 relative">
+				<img
+					src={bg}
+					alt=""
+					className="w-full h-full object-cover object-center"
+				/>
 
-      <section className="flex flex-row flex-wrap justify-center gap-24 mt-16">
-        
-        <Games 
-          items={games}
-        />
-      </section>
-    </section>
-  </div>);
+				<Overlay description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum voluptatum totam rem eos cupiditate tempora veniam, sit doloribus molestias omnis nemo molestiae libero nostrum consequuntur non tempore blanditiis? Non sequi laborum optio mollitia incidunt enim laboriosam nobis commodi ex hic? Error unde numquam sit nisi veniam, et doloremque architecto aliquam!" />
+			</section>
+
+			<section className="w-full h-full pb-32 px-4">
+				<h3 className="font-bold text-3xl text-center">Game List</h3>
+
+				{isLoading && (
+					<div className="mt-4">
+						<LoadingIcon />
+					</div>
+				)}
+
+				{err && (
+					<div className="mx-4 grid place-content-center mt-6">
+						<p className="bg-red-500 text-white px-4 py-2">
+							An error has occured while trying to load games
+							list....{" "}
+						</p>
+					</div>
+				)}
+
+				{!isLoading && !err && (
+					<section className="flex flex-row flex-wrap justify-center gap-24 mt-16">
+						<Games items={games} />
+					</section>
+				)}
+			</section>
+		</div>
+	);
 };
 
 export default Gamespage;

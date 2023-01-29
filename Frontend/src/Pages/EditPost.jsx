@@ -101,32 +101,38 @@ const EditPost = () => {
 		const content = EditorValue();
 		if (inputState.title && inputState.category && content.length > 0) {
 			setDisableSubmit(true);
-			toast.loading("Attempting to edit post...", TOAST_OPTIONS);
-			// TODO: use toast's promise API for loading
+
 			try {
-				const { data, response } = await CustomFetch({
-					url: "post",
+				const SavePost = CustomFetch({
+					url: `post/${postId}`,
 					options: {
-						method: "POST",
+						method: "PATCH",
 						body: JSON.stringify({
 							title: inputState.title,
 							content,
 							category: inputState.categoryId,
 						}),
 					},
-					returnResponse: true,
+					returnPromise: true,
 				});
 
-				toast.success("Successfully edited your post.", {
-					duration: 8000,
-					position: "bottom-left",
+				toast.promise(SavePost, {
+					loading: "Saving post...",
+					success: (data) => {
+						(async () => {
+							let { data: postData } = await data.json();
+							Navigate(`../forum/post/${postData.id}`, {
+								replace: true,
+							});
+						})();
+						return "Sucessfully saved your post!";
+					},
+					error: (err) => {
+						console.log(err);
+						return "An error occured while saving your post!";
+					},
 				});
-				Navigate(`../forum/post/${data.data.id}`);
 			} catch (error) {
-				toast.error(
-					"An error has occured while trying to edit a post.",
-					TOAST_OPTIONS
-				);
 				console.log(error);
 			} finally {
 				setDisableSubmit(false);

@@ -46,7 +46,6 @@ const NewPost = () => {
 					//  * Arranges the data.
 					let data = categoryData.data.filter((item) => {
 						// * Sorts the category. If a user is admin, they're allowed to see all categories, while users that are not admin are not allowed to see admin categories.
-						i++;
 						if (isAdmin && item.adminOnly) {
 							return { value: item.id, label: item.name };
 						} else if (!item.adminOnly) {
@@ -68,6 +67,7 @@ const NewPost = () => {
 								categoryId: item.id,
 							});
 						}
+						i++;
 
 						return { value: item.id, label: item.name };
 					});
@@ -85,10 +85,8 @@ const NewPost = () => {
 		const content = EditorValue();
 		if (inputState.title && inputState.category && content.length > 0) {
 			setDisableSubmit(true);
-			toast.loading("Attempting to create post...", TOAST_OPTIONS);
-			// TODO: use toast's promise API for loading
 			try {
-				const { data, response } = await CustomFetch({
+				const CreatePost = CustomFetch({
 					url: "post",
 					options: {
 						method: "POST",
@@ -98,19 +96,26 @@ const NewPost = () => {
 							category: inputState.categoryId,
 						}),
 					},
-					returnResponse: true,
+					returnPromise: true,
 				});
 
-				toast.success(
-					"Successfully created a new post.",
-					TOAST_OPTIONS
-				);
-				Navigate(`../forum/post/${data.data.id}`);
+				toast.promise(CreatePost, {
+					loading: "Creating post...",
+					success: (data) => {
+						(async () => {
+							let { data: postData } = await data.json();
+							Navigate(`../forum/post/${postData.id}`, {
+								replace: true,
+							});
+						})();
+						return "Sucessfully created your post!";
+					},
+					error: (err) => {
+						console.log(err);
+						return "An error occured while creating your post!";
+					},
+				});
 			} catch (error) {
-				toast.error(
-					"An error has occured while trying to create a post.",
-					TOAST_OPTIONS
-				);
 				console.log(error);
 			} finally {
 				setDisableSubmit(false);

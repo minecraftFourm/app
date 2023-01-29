@@ -8,7 +8,6 @@ const RequireAuth = ({ children }) => {
 	const Navigate = useNavigate();
 
 	useEffect(() => {
-		console.log(User.isAuthenticated);
 		if (!User.isAuthenticated && !User.isLoading) {
 			Navigate("../login");
 		}

@@ -4,6 +4,7 @@ import ForumHeader from "../../Components/ForumHeader";
 import PostComponent from "../../Components/ForumPage/Posts";
 import { AddNewIcon, LoadingIcon } from "../../Components/Icons";
 import { useFetch } from "../../Contexts/Fetch";
+import { useDebounce } from "usehooks-ts";
 
 const Posts = () => {
   const { id } = useParams();
@@ -13,26 +14,21 @@ const Posts = () => {
   const [searchParam, setSearchParam] = useState("");
   const [showPrevBtn, setShowPrevBtn] = useState(false);
   const [showNextBtn, setShowNextBtn] = useState(true);
+  const [allPosts, setAllPosts] = useState([]);
+  const [postToShow, setPostToShow] = useState([]);
 
   // Pagination: Keep track of the current page and set a limitation of posts per page
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(2);
-  // Pagination: Keep track of indexes to slice the array
+  const [postsPerPage] = useState(4);
+  // Pagination: Keep track of indexes to slice the array - this is for initial render, I calculate additional renders in the btns or useEffects
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
 
-  // The full array of filtered posts
-  const filteredPosts = data?.posts.filter((item) => {
-    return searchParam.toLowerCase() === ""
-      ? item
-      : item.title.toLowerCase().includes(searchParam.toLowerCase());
-  });
-
-  // The array of posts we are currently going to display
-  const currentPosts = filteredPosts?.slice(indexOfFirstPost, indexOfLastPost);
+  const debounceValue = useDebounce(searchParam, 700);
 
   useEffect(() => {
     (async () => {
+      console.log("inital data loaded");
       setIsLoading(true);
       const { data, response } = await CustomFetch({
         url: `category/${id}`,
@@ -46,33 +42,94 @@ const Posts = () => {
 
       setIsLoading(false);
       setData(data.data);
+      setAllPosts(data.data.posts);
+      //
+
+      // posts to show is the cut array with set items.
+      setPostToShow(data.data.posts.slice(indexOfFirstPost, indexOfLastPost));
     })();
   }, []);
 
+  useEffect(() => {
+    console.log("useEffect ran with debounce value");
+    // if we return to empty, set page to 1 and
+
+    if (searchParam.length === 0) {
+      // Might always set page to 1
+      setCurrentPage(1);
+      // reset posts to original array
+      setAllPosts(data?.posts);
+      setPostToShow(data?.posts.slice(0, postsPerPage));
+    }
+
+    if (searchParam != "") {
+      setCurrentPage(1);
+      // The full array of filtered posts
+      const filteredPosts = data?.posts.filter((item) => {
+        return searchParam.toLowerCase() === ""
+          ? item
+          : item.title.toLowerCase().includes(searchParam.toLowerCase());
+      });
+      setAllPosts(filteredPosts);
+
+      const currentPosts = filteredPosts?.slice(
+        indexOfFirstPost,
+        indexOfLastPost
+      );
+      setPostToShow(currentPosts);
+    }
+    // Triggers when "debouncedValue" changes
+  }, [debounceValue]);
+
   const previousPage = () => {
+    console.log(currentPage);
     if (currentPage !== 1) {
-      console.log(currentPage);
       setCurrentPage(currentPage - 1);
       setShowNextBtn(true);
+      const lastIndex = (currentPage - 1) * postsPerPage;
+      const firstIndex = lastIndex - postsPerPage;
+      // console.log(indexOfFirstPost, indexOfLastPost);
+
+      setPostToShow(allPosts.slice(firstIndex, lastIndex));
+
       // If we reach the start after clicking back, hide the prev btn
       if (currentPage - 1 === 1) {
         setShowPrevBtn(false);
+        const lastIndex = (currentPage - 1) * postsPerPage;
+        const firstIndex = lastIndex - postsPerPage;
+        // console.log(indexOfFirstPost, indexOfLastPost);
+
+        setPostToShow(allPosts.slice(firstIndex, lastIndex));
+        // setPostToShow(allPosts.slice(indexOfFirstPost, indexOfLastPost));
       }
     }
   };
 
   const nextPage = () => {
-    if (currentPage !== Math.ceil(filteredPosts.length / postsPerPage)) {
+    if (currentPage !== Math.ceil(allPosts.length / postsPerPage)) {
+      console.log(currentPage, "not equal to last page");
       setCurrentPage(currentPage + 1);
       setShowPrevBtn(true);
+
+      const lastIndex = (currentPage + 1) * postsPerPage;
+      const firstIndex = lastIndex - postsPerPage;
+      console.log(firstIndex, lastIndex);
+
+      setPostToShow(allPosts.slice(firstIndex, lastIndex));
+
       // If we reach the end of the posts, hide the next btn
-      if (currentPage + 1 === Math.ceil(filteredPosts.length / postsPerPage)) {
+      if (currentPage + 1 === Math.ceil(allPosts.length / postsPerPage)) {
         setShowNextBtn(false);
+        const lastIndex = (currentPage + 1) * postsPerPage;
+        const firstIndex = lastIndex - postsPerPage;
+        console.log(indexOfFirstPost, indexOfLastPost);
+
+        setPostToShow(allPosts.slice(firstIndex, lastIndex));
       }
     }
   };
 
-  console.log(data);
+  console.log(data?.posts);
 
   return (
     <div className="pb-32 bg-[#1B263B]">
@@ -101,14 +158,12 @@ const Posts = () => {
             </header>
 
             <section className="mt-8 flex flex-col gap-2 pb-8 px-2">
-              {data && <PostComponent posts={currentPosts} />}
+              {data && <PostComponent posts={postToShow} />}
               {!data && <LoadingIcon color="text-black" />}
             </section>
             <section
               className={`w-full justify-center flex flex-row gap-4 my-2 ${
-                Math.ceil(filteredPosts?.length / postsPerPage) === 1
-                  ? "hidden"
-                  : ""
+                Math.ceil(allPosts?.length / postsPerPage) === 1 ? "hidden" : ""
               }`}
             >
               <button

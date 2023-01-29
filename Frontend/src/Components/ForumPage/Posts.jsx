@@ -17,6 +17,7 @@ const Posts = (props) => {
         updated,
         ownerId,
         content,
+        title,
         owner: { profilePicture, username },
         comments,
       } = item;
@@ -36,7 +37,7 @@ const Posts = (props) => {
                 to={`/forum/post/${id}`}
                 className="line-clamp-1 text-ellipsis cursor-pointer text-gray-600"
               >
-                {convert(content).slice(0, 128)}
+                {convert(title).slice(0, 128)}
               </Link>
               <Link
                 to={`/user/${ownerId}`}

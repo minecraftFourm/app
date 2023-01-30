@@ -1,29 +1,50 @@
-import React from 'react'
-import { format } from 'timeago.js'
+import React from "react";
+import { Link } from "react-router-dom";
+import { format } from "timeago.js";
 
 const RecentComments = (props) => {
-    const items = props.items
-    const Component = () => {
-        return items.map(item => {
-        const { comment, updated, user: { username }, id } = item
+	const items = props.items;
+	const Component = () => {
+		return items.map((item) => {
+			const {
+				comment,
+				updated,
+				user: { username, profilePicture },
+				id,
+			} = item;
+			console.log(item);
+			return (
+				<div
+					className="flex border border-violet-500 gap-2 items-center px-2 py-1"
+					key={id}>
+					<img
+						src={profilePicture}
+						alt=""
+						className="rounded-full h-[32px] w-[32px]"
+					/>
+					<div className="w-full">
+						<Link
+							to={""}
+							className="line-clamp-1 text-sm font-semibold">
+							{comment}
+						</Link>
+						<footer className="w-full flex flex-row justify-between">
+							<Link
+								to={`./user/${id}`}
+								className="text-xs text-gray-500 capitalize">
+								{username}
+							</Link>
+							<p className="text-xs text-gray-500 cursor-default">
+								{format(updated)}
+							</p>
+						</footer>
+					</div>
+				</div>
+			);
+		});
+	};
 
-        return (
-            <div className="flex border border-violet-500 items-center px-2 py-1" key={id}>
-                <div className="w-full">
-                    <p className="line-clamp-1 text-sm font-semibold">{comment}</p>
-                    <footer className="w-full flex flex-row justify-between">
-                        <p className="text-xs text-gray-500 capitalize">{username}</p>
-                        <p className="text-xs text-gray-500">{format(updated)}</p>
-                    </footer>
-                </div>
-            </div>
-        )
-    })}
+	return <Component />;
+};
 
-  return (
-    <Component />
-  )
-}
-
-export default RecentComments
-
+export default RecentComments;

@@ -7,9 +7,25 @@ import Rectangle22 from '../assets/Rectangle22.png'
 import Rectangle23 from '../assets/Rectangle23.png'
 import Rectangle24 from '../assets/Rectangle24.png'
 import Rectangle25 from '../assets/Rectangle25.png'
+import { Link, useParams } from 'react-router-dom'
+
+const UserProfilePage = ({ match, history }) => {
+    let userId = match.params.id
+    let [user, setUser] = useState(null)
+
+    useEffect(() => {
+        getUser()
+    }, [userId])
+
+    let getUser = async () => {
+        if (user === 'new') return
+
+        let response = await fetch(`/user/${userId}`)
+        let data = await response.json()
+        setUser(data)
+    }
 
 
-const UserProfilePage = () => {
   return (
     <div>
         <div className='bg-[#1B263B]'>

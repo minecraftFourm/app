@@ -1,31 +1,31 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Rectangle26 from '../assets/Rectangle26.png'
 import Rectangle7 from '../assets/Rectangle7.png'
-import pretty from '../assets/pretty.png'
+// import pretty from '../assets/pretty.png'
 import Rectangle21 from '../assets/Rectangle21.png'
 import Rectangle22 from '../assets/Rectangle22.png'
 import Rectangle23 from '../assets/Rectangle23.png'
 import Rectangle24 from '../assets/Rectangle24.png'
 import Rectangle25 from '../assets/Rectangle25.png'
-import { Link, useParams } from 'react-router-dom'
-
-// const UserProfilePage = ({ match, history }) => {
-    // let userId = match.params.id
-    // let [user, setUser] = useState(null)
-
-    // useEffect(() => {
-    //     getUser()
-    // }, [userId])
-
-    // let getUser = async () => {
-
-    //     let response = await fetch(`/user/${userId}`)
-    //     let data = await response.json()
-    //     setUser(data)
-    // }
-
+import { useParams  } from 'react-router-dom'
 
 const UserProfilePage = () => {
+
+    const { id } = useParams()
+    const [user, setUser] = useState({})
+
+    useEffect(() => {
+        const fetchUser = async () => {
+          const response = await fetch(`/user/${id}`)
+          const data = await response.json()
+          setUser(data)
+        }
+        fetchUser()
+      }, [id])
+      
+
+
+// const UserProfilePage = () => {
   return (
     <div>
         <div className='bg-[#1B263B]'>
@@ -40,15 +40,15 @@ const UserProfilePage = () => {
             </div>
              <div className="absolute -bottom-24 left-2">
              <img
-            src= {pretty}  className="object-cover border-4 font-bold border-white w-36 h-36 rounded-full"/>
-            <p className='pl-12 text-white'>Pretty</p>
+            src= {user.profilePicture}  className="object-cover border-4 font-bold border-white w-36 h-36 rounded-full"/>
+            <p className='pl-12 text-white'> {user.username} </p>
             <button class="bg-red-500 hover:bg-red-700 text-white ml-9 px-2 rounded"> ADMIN</button>
             </div>
             <div className='absolute inset-x-0 -bottom-9'>
                 <p className='text-white ml-44 mr-6 p-1 border-2 border-white'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris placerat mi sed lorem commodo, vel vehicula nunc rhoncus. Nulla quis scelerisque nisi. Sed urna elit, semper nec purus vel, pretium imperdiet felis. Nam eget justo ut tortor accumsan mattis. Morbi eu sem mauris. Sed elit ex, elementum vel posuere et, pharetra eu diam.</p>
                 <div className='flex pt-6 pl-48 text-white'>
-                <p>Followers 0</p>
-                <p className='pl-2'>Following 0</p>
+                <p>Followers {user.followers} </p>
+                <p className='pl-2'>Following {user.following} </p>
             </div>
             </div>
             <div className='absolute -bottom-20 right-6 h-16 w-16 mr-3'>

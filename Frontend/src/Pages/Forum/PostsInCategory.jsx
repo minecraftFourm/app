@@ -15,129 +15,125 @@ const Posts = () => {
   const [showPrevBtn, setShowPrevBtn] = useState(false);
   const [showNextBtn, setShowNextBtn] = useState(true);
   const [allPosts, setAllPosts] = useState([]);
-  const [postToShow, setPostToShow] = useState([]);
 
   // Pagination: Keep track of the current page and set a limitation of posts per page
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(4);
+  const [postsPerPage] = useState(9);
   // Pagination: Keep track of indexes to slice the array - this is for initial render, I calculate additional renders in the btns or useEffects
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
 
-  const debounceValue = useDebounce(searchParam, 700);
+  const showThesePosts = allPosts?.slice(indexOfFirstPost, indexOfLastPost);
 
-  useEffect(() => {
-    (async () => {
-      console.log("inital data loaded");
-      setIsLoading(true);
-      const { data, response } = await CustomFetch({
-        url: `category/${id}`,
-        returnResponse: true,
-      });
+  const debounceValue = useDebounce(searchParam, 500);
 
-      if (!response.ok) {
-        // TODO: redirect to not found page.
-        return alert("Can't find category");
+  const handlePageChange = (direction) => {
+    console.log(currentPage);
+    // If the user hits the previous btn
+    if (direction === "prev") {
+      if (currentPage - 1 === 1) {
+        console.log("Reached first page");
+        setShowPrevBtn(false);
+        setShowNextBtn(true);
       }
 
-      setIsLoading(false);
-      setData(data.data);
-      setAllPosts(data.data.posts);
-      //
+      if (currentPage - 1 !== 1) {
+        setShowPrevBtn(true);
+        setShowNextBtn(true);
+      }
+    }
 
-      // posts to show is the cut array with set items.
-      setPostToShow(data.data.posts.slice(indexOfFirstPost, indexOfLastPost));
-    })();
-  }, []);
+    // If the user hits the next btn
+    if (direction === "next") {
+      if (currentPage + 1 === Math.ceil(allPosts.length / postsPerPage)) {
+        console.log("Reached last page");
+        setShowNextBtn(false);
+        setShowPrevBtn(true);
+      }
+
+      if (currentPage + 1 !== Math.ceil(allPosts.length / postsPerPage)) {
+        setShowNextBtn(true);
+        setShowPrevBtn(true);
+      }
+
+      if (currentPage + 1 !== 1) {
+      }
+    }
+  };
 
   useEffect(() => {
-    console.log("useEffect ran with debounce value");
-    // if we return to empty, set page to 1 and
+    // If there is no data, call the DB
+    if (!data) {
+      (async () => {
+        console.log("No data exist, calling the DB");
+        // console.log("inital data loaded");
+        setIsLoading(true);
+        // We can limit the amount of data pulled in the future - we can then dynamically call additional data and add it to the "data" state
+        const { data, response } = await CustomFetch({
+          url: `category/${id}`,
+          returnResponse: true,
+        });
 
-    if (searchParam.length === 0) {
-      // Might always set page to 1
-      setCurrentPage(1);
-      // reset posts to original array
-      setAllPosts(data?.posts);
-      setPostToShow(data?.posts.slice(0, postsPerPage));
+        if (!response.ok) {
+          // TODO: redirect to not found page.
+          return alert("Can't find category");
+        }
+
+        setIsLoading(false);
+        setData(data.data);
+        setAllPosts(data.data.posts);
+        //
+      })();
     }
 
-    if (searchParam != "") {
-      setCurrentPage(1);
-      // The full array of filtered posts
-      const filteredPosts = data?.posts.filter((item) => {
-        return searchParam.toLowerCase() === ""
-          ? item
-          : item.title.toLowerCase().includes(searchParam.toLowerCase());
-      });
-      setAllPosts(filteredPosts);
+    // if there is data, set the filtered data
+    if (data) {
+      console.log("Data exist, filtering data");
+      // setShowPrevBtn(false);
+      if (searchParam.length === 0) {
+        // Might always set page to 1
+        setCurrentPage(1);
+        // reset posts to original array
+        setAllPosts(data?.posts);
+        // setPostToShow(data?.posts.slice(0, postsPerPage));
+      }
 
-      const currentPosts = filteredPosts?.slice(
-        indexOfFirstPost,
-        indexOfLastPost
-      );
-      setPostToShow(currentPosts);
+      if (searchParam != "") {
+        setCurrentPage(1);
+        // The full array of filtered posts
+        const filteredPosts = data?.posts.filter((item) => {
+          return searchParam.toLowerCase() === ""
+            ? item
+            : item.title.toLowerCase().includes(searchParam.toLowerCase());
+        });
+        setAllPosts(filteredPosts);
+        setShowPrevBtn(false);
+      }
     }
-    // Triggers when "debouncedValue" changes
   }, [debounceValue]);
 
   const previousPage = () => {
     console.log(currentPage);
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-      setShowNextBtn(true);
-      const lastIndex = (currentPage - 1) * postsPerPage;
-      const firstIndex = lastIndex - postsPerPage;
-      // console.log(indexOfFirstPost, indexOfLastPost);
-
-      setPostToShow(allPosts.slice(firstIndex, lastIndex));
-
-      // If we reach the start after clicking back, hide the prev btn
-      if (currentPage - 1 === 1) {
-        setShowPrevBtn(false);
-        const lastIndex = (currentPage - 1) * postsPerPage;
-        const firstIndex = lastIndex - postsPerPage;
-        // console.log(indexOfFirstPost, indexOfLastPost);
-
-        setPostToShow(allPosts.slice(firstIndex, lastIndex));
-        // setPostToShow(allPosts.slice(indexOfFirstPost, indexOfLastPost));
-      }
-    }
+    setCurrentPage(currentPage - 1);
+    handlePageChange("prev");
   };
 
   const nextPage = () => {
-    if (currentPage !== Math.ceil(allPosts.length / postsPerPage)) {
-      console.log(currentPage, "not equal to last page");
-      setCurrentPage(currentPage + 1);
-      setShowPrevBtn(true);
-
-      const lastIndex = (currentPage + 1) * postsPerPage;
-      const firstIndex = lastIndex - postsPerPage;
-      console.log(firstIndex, lastIndex);
-
-      setPostToShow(allPosts.slice(firstIndex, lastIndex));
-
-      // If we reach the end of the posts, hide the next btn
-      if (currentPage + 1 === Math.ceil(allPosts.length / postsPerPage)) {
-        setShowNextBtn(false);
-        const lastIndex = (currentPage + 1) * postsPerPage;
-        const firstIndex = lastIndex - postsPerPage;
-        console.log(indexOfFirstPost, indexOfLastPost);
-
-        setPostToShow(allPosts.slice(firstIndex, lastIndex));
-      }
-    }
+    setCurrentPage(currentPage + 1);
+    handlePageChange("next");
   };
 
   console.log(data?.posts);
+  console.log(allPosts?.length);
+  // console.log(currentPage);
 
   return (
     <div className="pb-32 bg-[#1B263B]">
       <ForumHeader />
 
       <div className="mt-32 px-2 w-full h-full">
-        <div className="bg-white w-full h-full min-h-[512px] p-2">
-          <div className="border border-gray-400">
+        <div className="bg-white w-full h-full min-h-[792px] p-2">
+          <div className="border border-gray-400 min-h-[792px] relative">
             <header className="flex justify-between flex-row bg-gray-300 p-2 border border-b-gray-400 gap-6 items-center">
               <h1 className="text-gray-600 text-2xl font-semibold">
                 {data && data.name} {isLoading && "Loading..."}
@@ -158,11 +154,11 @@ const Posts = () => {
             </header>
 
             <section className="mt-8 flex flex-col gap-2 pb-8 px-2">
-              {data && <PostComponent posts={postToShow} />}
+              {data && <PostComponent posts={showThesePosts} />}
               {!data && <LoadingIcon color="text-black" />}
             </section>
             <section
-              className={`w-full justify-center flex flex-row gap-4 my-2 ${
+              className={`w-full justify-center flex flex-row gap-4 my-2 absolute bottom-0 ${
                 Math.ceil(allPosts?.length / postsPerPage) === 1 ? "hidden" : ""
               }`}
             >

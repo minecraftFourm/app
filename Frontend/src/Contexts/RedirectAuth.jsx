@@ -5,12 +5,12 @@ import { UseUser } from './UserContext'
 
 const RedirectAuth = () => {
     const Navigate = useNavigate();
-    const user = UseUser()
+    const User = UseUser()
 
     useEffect(() => {
-        if (user.isAuthenticated) {
-            Navigate('./')
-        }
+      if (User.isAuthenticated) {
+        Navigate('./')
+      }
     });
 
   return (

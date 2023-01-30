@@ -29,10 +29,10 @@ type getPost = {
 }
 
 export const handleNewPost = async (req: Req) => {
-    const { body: { title, content, category: categoryId }, user: { id, role: { canPostAdmin, canCreatePost } } } = req
+    const { body: { title, content, category: categoryId }, user: { id, role: { canPostAdmin, canCreatePost, isAdmin } } } = req
 
     // * If user does not have permission to create new post.
-    if (!canCreatePost) throw new CustomError('You do not have permission to create a post', StatusCodes.UNAUTHORIZED)
+    if (!(canCreatePost || isAdmin || canPostAdmin)) throw new CustomError('You do not have permission to create a post', StatusCodes.UNAUTHORIZED)
 
     if ( !title ) throw new CustomError('Post title is missing', StatusCodes.BAD_REQUEST)
     if ( !content ) throw new CustomError('Post content is missing', StatusCodes.BAD_REQUEST)

@@ -9,23 +9,23 @@ import Rectangle24 from '../assets/Rectangle24.png'
 import Rectangle25 from '../assets/Rectangle25.png'
 import { Link, useParams } from 'react-router-dom'
 
-const UserProfilePage = ({ match, history }) => {
-    let userId = match.params.id
-    let [user, setUser] = useState(null)
+// const UserProfilePage = ({ match, history }) => {
+    // let userId = match.params.id
+    // let [user, setUser] = useState(null)
 
-    useEffect(() => {
-        getUser()
-    }, [userId])
+    // useEffect(() => {
+    //     getUser()
+    // }, [userId])
 
-    let getUser = async () => {
-        if (user === 'new') return
+    // let getUser = async () => {
 
-        let response = await fetch(`/user/${userId}`)
-        let data = await response.json()
-        setUser(data)
-    }
+    //     let response = await fetch(`/user/${userId}`)
+    //     let data = await response.json()
+    //     setUser(data)
+    // }
 
 
+const UserProfilePage = () => {
   return (
     <div>
         <div className='bg-[#1B263B]'>

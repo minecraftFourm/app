@@ -57,9 +57,9 @@ app.get('/protected', auth, async (req: Request, res: Response) => {
   return res.send("Howdy!")
 })
 
-app.use('*', (req, res) => {
-    res.json({ err: 'Invalid Request' }).status(StatusCodes.NOT_FOUND)
-})
+app.use("*", (req, res) => {
+	res.status(StatusCodes.BAD_REQUEST).json({ err: "Invalid Request" });
+});
 
 app.use(errorHandler);
 // app.listen(port, () => {

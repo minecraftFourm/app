@@ -5,7 +5,7 @@
 	"type": "module",
 	"homepage": "https://minecraftFourm.github.io/gh-page",
 	"scripts": {
-		"predeploy": "npm run dist",
+		"predeploy": "npm run build",
 		"deploy": "gh-pages -d dist",
 		"dev": "npm install && vite --host 0.0.0.0",
 		"build": "vite build",

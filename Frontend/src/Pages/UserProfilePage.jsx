@@ -1,6 +1,13 @@
 import React from 'react'
 import Rectangle26 from '../assets/Rectangle26.png'
+import Rectangle7 from '../assets/Rectangle7.png'
 import pretty from '../assets/pretty.png'
+import Rectangle21 from '../assets/Rectangle21.png'
+import Rectangle22 from '../assets/Rectangle22.png'
+import Rectangle23 from '../assets/Rectangle23.png'
+import Rectangle24 from '../assets/Rectangle24.png'
+import Rectangle25 from '../assets/Rectangle25.png'
+
 
 const UserProfilePage = () => {
   return (
@@ -8,8 +15,15 @@ const UserProfilePage = () => {
         <div className='bg-[#1B263B]'>
             <div className="relative m h-50 rounded-b flex justify-center pt-20 mb-24 mx-12">
             <img src= {Rectangle26} />
-            <div className="absolute -bottom-24 left-2">
-            <img
+            <div className='absolute top-24 right-36 h-8 w-8 flex'>
+                <img src= {Rectangle21} />
+                <img src= {Rectangle22} />
+                <img src= {Rectangle23} />
+                <img src= {Rectangle24} />
+                <img src= {Rectangle25} />
+            </div>
+             <div className="absolute -bottom-24 left-2">
+             <img
             src= {pretty}  className="object-cover border-4 font-bold border-white w-36 h-36 rounded-full"/>
             <p className='pl-12 text-white'>Pretty</p>
             <button class="bg-red-500 hover:bg-red-700 text-white ml-9 px-2 rounded"> ADMIN</button>
@@ -26,32 +40,41 @@ const UserProfilePage = () => {
             </div>
         </div>
         <div className='flex bg-white mr-16 ml-48 py-2 rounded-lg'>
-            <p className='pl-2 pr-3'>Postings</p>
-            <p className='pr-3'>Activity</p>
+            <p className='pl-3 pr-5'>Postings</p>
+            <p className='pr-5'>Activity</p>
             <p>About</p>
             <p className='absolute right-20'>Edit</p>
         </div>       
         <div className='border-b-4 mx-16 my-4 border-gray-700'></div>
-        <div>
+        <div className='pb-10'>
             {/* card */}
 
-            <div class="flex justify-center">
-                <div class="rounded-lg shadow-lg bg-white w-11/12">
-                    <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light">
-                    <img class="rounded-t-lg w-11/12" src="https://mdbootstrap.com/img/new/standard/nature/182.jpg" alt=""/>
-                    </a>
-                    <div class="p-6">
-                    <h5 class="text-gray-900 text-xl font-medium mb-2">Card title</h5>
-                    <p class="text-gray-700 text-base mb-4">
+            <div className="flex justify-center">
+                <div className="rounded-sm shadow-lg bg-white w-11/12">
+                    <div className='flex bg-[#7F7EFF] py-2 rounded-sm'>
+                    <div className='font-bold pl-2 text-white'>
+                        Brand New Announcement
+                    </div>
+                    </div>
+                    <img className="rounded-t-lg w-full p-2" src={Rectangle7} alt=""/>
+                    <div className="p-6">
+                    <p className="text-gray-700 text-base mb-4">
                         Some quick example text to build on the card title and make up the bulk of the card's
-                        content.
+                        content. loren loren sinta buko ng papaya dalay dalay dusdos sisingalan ng tanga  bakit walang buko lusot laparanang may hakdog ng iba bahay kubo kahit
+                        munti ang larangan doon ay sari sari singkamas at talong bawang at sibuyas na 700 pesos isang kilo kundol patola upot kalabasa at marami pang iba ang mahal ng
+                        sibuyas
                     </p>
-                    <button type="button" class=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Button</button>
+
+                    </div>
+                    <div className='flex bg-[#7F7EFF] text-white'>
+                        <p className='pl-2'>Posted By: Admin User</p>
+                        <p className='absolute right-16'>120 Comments</p>
                     </div>
                 </div>
             </div>
         </div>
         </div>
+        
 
     </div>
     

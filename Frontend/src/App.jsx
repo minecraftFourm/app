@@ -8,6 +8,7 @@ import EditAnnouncement from "./Pages/EditAnnouncement";
 import { Toaster } from "react-hot-toast";
 import RequireAuth from "./Contexts/RequireAuth";
 import AdminOnly from "./Contexts/AdminOnly";
+import ViewPost from "./Pages/ViewPost";
 
 const Home = lazy(() => import("./Pages/Homepage"));
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"));
@@ -88,9 +89,11 @@ function App() {
 						<Route
 							path="forum/post/:id"
 							element={
-								<AdminOnly>
-									<ViewAnnouncement />
-								</AdminOnly>
+								// <AdminOnly>
+								// 	<ViewAnnouncement />
+								// </AdminOnly>
+								<ViewPost />
+
 							}
 						/>
 						<Route

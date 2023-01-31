@@ -20,11 +20,13 @@ interface Req extends Request {
 export const createCategory = async (req: Req, res: Response) => {
     const { canCreateCategory, isAdmin } = req.user.role
     const { name, adminOnly } = req.body
+    // * Checks if a category name has been provided.
+    if (!name) throw new CustomError('Category name cannot be empty', StatusCodes.BAD_REQUEST)
     // * Checks if user is admin, or has permission to create categories.
     if (!(canCreateCategory || isAdmin)) throw new CustomError('You do not have permission to create a post', StatusCodes.UNAUTHORIZED)
 
     // * Checks if the user is trying to create an admin only category, and if so, they must be an admin, if not, an error is thrown.
-    if (!(adminOnly && isAdmin)) throw new CustomError("You do not have permission to create an adminOnly category.", StatusCodes.UNAUTHORIZED)
+    if (adminOnly && !isAdmin) throw new CustomError("You do not have permission to create an adminOnly category.", StatusCodes.UNAUTHORIZED)
 
     const newCategory = await handleCreateCategory(name)
     res.json({ message: 'success', data: newCategory }).status(StatusCodes.CREATED)

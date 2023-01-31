@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useFetch } from "../Contexts/Fetch";
 import { useEditor, useEditorValue } from "../Components/Editor";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import ForumHeader from "../Components/ForumHeader";
 import { LoadingIcon } from "../Components/Icons";
@@ -9,9 +9,10 @@ import { toast } from "react-hot-toast";
 import { UseUser } from "../Contexts/UserContext";
 import { TOAST_OPTIONS } from "../config";
 
-const NewPost = () => {
+const EditPost = () => {
 	//create state for the form
 	const Navigate = useNavigate();
+	const { id: postId } = useParams();
 	const [categoryData, setCategoryData] = useState(null);
 	const [defaultCategory, setDefaultCategory] = useState(null);
 	const [inputState, setInputState] = useState({
@@ -20,7 +21,7 @@ const NewPost = () => {
 		categoryId: "",
 	});
 	const User = UseUser();
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	const [disableSubmit, setDisableSubmit] = useState(false);
 	const [post, setPost] = useState("");
 	const [err, setErr] = useState(false);
@@ -33,34 +34,49 @@ const NewPost = () => {
 		(async () => {
 			try {
 				setIsLoading(true);
-				const { data: categoryData, response } = await CustomFetch({
-					url: "category",
-					returnResponse: true,
-				});
+				const { data: postData, response: postResponse } =
+					await CustomFetch({
+						url: `post/${postId}`,
+						returnResponse: true,
+					});
 
-				if (!response.ok) throw Error();
+				const { data: categoryData, response: categoryResponse } =
+					await CustomFetch({
+						url: "category",
+						returnResponse: true,
+					});
+				if (postResponse.status === 400) throw Error();
+				// TODO: redirect to not found page
+
+				if (postData.data.category.adminOnly && !User.role.isAdmin)
+					throw Error();
+				// TODO: redirect to not unauthenticated page
+
+				if (!categoryResponse.ok || !postResponse.ok) throw Error();
+				setPost(postData.data);
+				updateState({ title: postData.data.title });
+
 				setCategoryData(() => {
 					let isAdmin =
 						User && User.role && User.role.isAdmin ? true : false;
 
-					//  * Arranges the data.
+					//  * Arranges the data,
 					let data = categoryData.data.filter((item) => {
+						// * Sets the default category
+
 						// * Sorts the category. If a user is admin, they're allowed to see all categories, while users that are not admin are not allowed to see admin categories.
 						if (isAdmin && item.adminOnly) {
-							return { value: item.id, label: item.name };
+							return true;
 						} else if (!item.adminOnly) {
-							return { value: item.id, label: item.name };
+							return true;
 						}
 					});
 
-					/*
-					 * Loops over the category and formats them in a way where the react-select package can use them.
-					 * While formatting the data, if a state exists, meaning if a user has been redirected from a different page to new post with a category id, while looping, it checks if the categoryId given mactches an id, and if it does, it sets the defaultCategory to the id.
-					 */
+					// * Loops over the category and formats them in a way where the react-select package can use them.
+					// * While formatting the data, it checks if the categoryId matches with the item's id, and if it does, it means the post belongs to that category, and sets it as a default selected category.
 					let i = 0;
 					return data.map((item) => {
-						// * Sets the default category
-						if (state && state.category === item.id) {
+						if (postData.data.categoryId === item.id) {
 							setDefaultCategory(i);
 							updateState({
 								category: item.name,
@@ -68,11 +84,11 @@ const NewPost = () => {
 							});
 						}
 						i++;
-
 						return { value: item.id, label: item.name };
 					});
 				});
 			} catch (error) {
+				console.log(error);
 				setErr(true);
 			} finally {
 				setIsLoading(false);
@@ -85,11 +101,12 @@ const NewPost = () => {
 		const content = EditorValue();
 		if (inputState.title && inputState.category && content.length > 0) {
 			setDisableSubmit(true);
+
 			try {
-				const CreatePost = CustomFetch({
-					url: "post",
+				const SavePost = CustomFetch({
+					url: `post/${postId}`,
 					options: {
-						method: "POST",
+						method: "PATCH",
 						body: JSON.stringify({
 							title: inputState.title,
 							content,
@@ -99,8 +116,8 @@ const NewPost = () => {
 					returnPromise: true,
 				});
 
-				toast.promise(CreatePost, {
-					loading: "Creating post...",
+				toast.promise(SavePost, {
+					loading: "Saving post...",
 					success: (data) => {
 						(async () => {
 							let { data: postData } = await data.json();
@@ -108,11 +125,11 @@ const NewPost = () => {
 								replace: true,
 							});
 						})();
-						return "Sucessfully created your post!";
+						return "Sucessfully saved your post!";
 					},
 					error: (err) => {
 						console.log(err);
-						return "An error occured while creating your post!";
+						return "An error occured while saving your post!";
 					},
 				});
 			} catch (error) {
@@ -122,10 +139,10 @@ const NewPost = () => {
 			}
 		} else {
 			if (!inputState.title || !inputState.categoryId || !content)
-				toast.error("Title, category, and post content are required.", {
-					duration: 4000,
-					position: "bottom-left",
-				});
+				toast.error(
+					"Title, category, and post content are required.",
+					TOAST_OPTIONS
+				);
 		}
 	};
 
@@ -153,7 +170,7 @@ const NewPost = () => {
 				{!isLoading && !err && (
 					<>
 						<h1 className="font-bold text-indigo-700 text-4xl mb-4 sm:text-2xl">
-							Create a new post:{" "}
+							Edit post:
 						</h1>
 
 						<form
@@ -202,13 +219,13 @@ const NewPost = () => {
 									}
 								}}
 							/>
-							<Editor />
+							<Editor initialValue={post.content} />
 							<div className="flex justify-center mt-2">
 								<button
 									className="hover:bg-indigo-700 cursor-pointer bg-indigo-500 text-white py-1 px-6 border border-indigo-600 transition-colors duration-300 rounded"
 									type="submit"
 									disabled={disableSubmit}>
-									Create Post
+									Save Post
 								</button>
 							</div>
 						</form>
@@ -219,4 +236,4 @@ const NewPost = () => {
 	);
 };
 
-export default NewPost;
+export default EditPost;

@@ -71,14 +71,14 @@ model Role {
 }
 
 model Category {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  posts     Post[]
-  mainCategory   MainCategory    @relation(fields: [mainCategoryId], references: [id])
-  mainCategoryId String 
-  created   DateTime @default(now())
-  updated   DateTime @updatedAt
-  adminOnly Boolean  @default(false)
+  id             String        @id @default(uuid())
+  name           String        @unique
+  posts          Post[]
+  mainCategory   MainCategory? @relation(fields: [mainCategoryId], references: [id])
+  mainCategoryId String?
+  created        DateTime      @default(now())
+  updated        DateTime      @updatedAt
+  adminOnly      Boolean       @default(false)
 }
 
 model Follower {
@@ -151,7 +151,7 @@ model Comment {
 }
 
 model Game {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   title       String
   description String?
   previewImg  String?
@@ -160,8 +160,8 @@ model Game {
 }
 
 model MainCategory {
-  id String @id @default(uuid())
-  title String
-  priority Int @default(0)
+  id         String     @id @default(uuid())
+  title      String     @unique
+  priority   Int        @unique
   categories Category[]
 }

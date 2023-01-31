@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tailwindcss/line-clamp": "^0.4.2",
-    "@tinymce/tinymce-react": "^4.2.0",
+    "@tinymce/tinymce-react": "^4.3.0",
     "dompurify": "^2.4.1",
     "html-to-text": "^9.0.3",
     "js-cookie": "^3.0.1",

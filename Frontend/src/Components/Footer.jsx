@@ -1,10 +1,8 @@
 import React from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
-    <>
-      <Outlet />
       <footer className="bg-blue-900 min-h-[150px]">
         <section className='bg-[#0D1B2A] text-white px-4 pb-4 justify-between w-full flex md:flex-col gap-24'>
           <div className='px-6 py-8'>
@@ -34,7 +32,6 @@ const Footer = () => {
           </div>
         </section>
       </footer>    
-    </>
   )
 }
 

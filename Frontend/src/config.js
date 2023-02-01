@@ -15,3 +15,8 @@ export const MAX_TITLE_LENGTH = 300;
 
 export const ANNOUNCEMENT_CATEGORY_ID = "d0ed3d28-bbe4-4e61-b473-cb0dd2257861";
 export const ANNOUNCEMENT_CATEGORY_NAME = "announcement";
+
+export const TOAST_OPTIONS = {
+	duration: 8000,
+	position: "bottom-left",
+};

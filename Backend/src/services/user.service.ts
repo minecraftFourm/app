@@ -30,6 +30,11 @@ type perms = {
 	isAdmin: undefined | boolean;
 };
 
+type perms = {
+    isStaff: undefined | boolean
+    isAdmin: undefined | boolean
+}
+
 export const handleDeleteUser = async (req: Req) => {
 	const {
 		params: { id },

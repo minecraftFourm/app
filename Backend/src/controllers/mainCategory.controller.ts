@@ -8,7 +8,15 @@ export const getCategories = async (req: Req, res: Response) => {
 	const categories = await prisma.mainCategory.findMany({
 		where: {},
 		include: {
-			categories: true,
+			categories: {
+				include: {
+					posts: {
+						include: {
+							comments: true,
+						},
+					},
+				},
+			},
 		},
 		orderBy: {
 			priority: "asc",
@@ -100,7 +108,7 @@ export const deleteCategory = async (req: Req, res: Response) => {
 export const updateCategory = async (req: Req, res: Response) => {
 	const {
 		params: { id },
-		body: { priority, title },
+		body: { priority, title, description },
 		user: {
 			role: { isAdmin, canEditCategory },
 		},
@@ -119,6 +127,7 @@ export const updateCategory = async (req: Req, res: Response) => {
 		data: {
 			priority,
 			title,
+			description,
 		},
 	});
 

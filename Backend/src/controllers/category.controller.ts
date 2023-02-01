@@ -122,7 +122,8 @@ export const editCategory = async (req: Req, res: Response) => {
 			StatusCodes.NOT_FOUND
 		);
 	// * If the category is adminOnly, it checks if the user trying to edit it is an admin.
-	if (!(category.adminOnly && isAdmin))
+
+	if (category.adminOnly && !isAdmin)
 		throw new CustomError(
 			"You do not have permission to edit this category.",
 			StatusCodes.UNAUTHORIZED

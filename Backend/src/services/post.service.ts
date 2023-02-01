@@ -9,6 +9,7 @@ export interface Req extends Request {
         id: string
         role: Role
         profilePictureId?: string
+        password: string
     },
     query: {
         title?: string 

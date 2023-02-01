@@ -163,5 +163,6 @@ model MainCategory {
   id         String     @id @default(uuid())
   title      String     @unique
   priority   Int        @unique
+  description String?
   categories Category[]
 }

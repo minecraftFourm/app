@@ -35,7 +35,7 @@ export const createCategory = async (req: Req, res: Response) => {
 		);
 
 	// * Checks if the user is trying to create an admin only category, and if so, they must be an admin, if not, an error is thrown.
-	if (!(adminOnly && isAdmin))
+	if (adminOnly && !isAdmin)
 		throw new CustomError(
 			"You do not have permission to create an adminOnly category.",
 			StatusCodes.UNAUTHORIZED
@@ -128,7 +128,12 @@ export const editCategory = async (req: Req, res: Response) => {
 			StatusCodes.UNAUTHORIZED
 		);
 
-	const updatedCategory = await handleUpdateCategory({ id, name, adminOnly, mainCategoryId });
+	const updatedCategory = await handleUpdateCategory({
+		id,
+		name,
+		adminOnly,
+		mainCategoryId,
+	});
 
 	return res
 		.json({ message: "success", data: updatedCategory })

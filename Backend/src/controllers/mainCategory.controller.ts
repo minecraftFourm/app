@@ -7,6 +7,9 @@ import { Req } from "../services/post.service";
 export const getCategories = async (req: Req, res: Response) => {
 	const categories = await prisma.mainCategory.findMany({
 		where: {},
+		include: {
+			categories: true,
+		},
 		orderBy: {
 			priority: "asc",
 		},
@@ -30,7 +33,7 @@ export const getCategory = async (req: Req, res: Response) => {
 
 export const createCategory = async (req: Req, res: Response) => {
 	const {
-		body: { title, priority },
+		body: { title, priority, description },
 		user: {
 			role: { isAdmin, canCreateCategory },
 		},
@@ -51,6 +54,7 @@ export const createCategory = async (req: Req, res: Response) => {
 		data: {
 			title,
 			priority,
+			description,
 		},
 	});
 

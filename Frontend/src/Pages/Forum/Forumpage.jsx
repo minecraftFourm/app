@@ -38,7 +38,7 @@ const Forumpage = () => {
 			{/* Forum */}
 			<div className="w-full pt-16 flex px-16 py-4 gap-8">
 				{error && <ErrorComponent />}
-				{isLoading && <LoadingIcon />}
+				{isLoading && <LoadingIcon color="#fff" />}
 				{!isLoading && !error && (
 					<>
 						<section className="w-full bg-white h-fit px-4 py-6 flex flex-col gap-6">

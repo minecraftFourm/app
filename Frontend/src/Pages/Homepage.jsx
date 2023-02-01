@@ -134,7 +134,7 @@ const Homepage = () => {
 			</section>
 			{/* TODO: Hero Content */}
 			<section className="bg-[#1B263B] w-full h-full px-16 md:px-2 py-4 pb-16">
-				{isLoading && <LoadingIcon />}
+				{isLoading && <LoadingIcon color="#fff" />}
 
 				{err && <ErrorComponent />}
 

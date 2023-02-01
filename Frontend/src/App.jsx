@@ -8,7 +8,7 @@ import EditAnnouncement from "./Pages/EditAnnouncement";
 import { Toaster } from "react-hot-toast";
 import RequireAuth from "./Contexts/RequireAuth";
 import AdminOnly from "./Contexts/AdminOnly";
-import UserProfilePage from './Pages/UserProfilePage'
+import UserProfilePage from "./Pages/UserProfilePage";
 
 const Home = lazy(() => import("./Pages/Homepage"));
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"));
@@ -86,7 +86,10 @@ function App() {
 						<Route path="/rules" element={<Rules />} />
 						<Route path="/games" element={<Games />} />
 						<Route path="/forum" element={<Forum />} />
-						<Route path="/userpage" element={<UserProfilePage/>} />
+						<Route
+							path="/userpage/:id"
+							element={<UserProfilePage />}
+						/>
 						<Route
 							path="forum/post/:id"
 							element={

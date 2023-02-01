@@ -206,7 +206,7 @@ const Homepage = () => {
 								<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">
 									Recent Users
 								</p>
-								<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
+								<div className="flex flex-col gap-2 mt-2 px-1 min-h-[300px]">
 									{data.recentUsers.length != 0 && (
 										<RecentUsers items={data.recentUsers} />
 									)}

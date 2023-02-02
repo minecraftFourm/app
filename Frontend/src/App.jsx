@@ -15,6 +15,7 @@ const Rules = lazy(() => import("./Pages/Rulespage"));
 const Games = lazy(() => import("./Pages/Gamespage"));
 const Login = lazy(() => import("./Pages/Authentication/LoginPage"));
 const Register = lazy(() => import("./Pages/Authentication/Registerpage"));
+const ChangePassword = lazy(() => import("./Pages/User/ChangePasswordPage"))
 const RedirectAuth = lazy(() => import("./Contexts/RedirectAuth"));
 const Announcements = lazy(() => import("./Pages/Dashboard/Announcements"));
 const AnnouncementHome = lazy(() =>
@@ -125,6 +126,10 @@ function App() {
 							<Route path="/register" element={<Register />} />
 						</Route>
 						<Route path="*" element={<NotFound />} />
+					</Route>
+
+					<Route element={<Nav />}>
+						<Route path="/user/changePassword" element={<RequireAuth><ChangePassword /></RequireAuth>} />
 					</Route>
 				</Routes>
 			</CheckAuth>

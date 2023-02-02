@@ -9,6 +9,7 @@ import { categoryRouter } from "./routes/category.routes";
 import { rolesRouter } from "./routes/roles.route";
 import { userRouter } from "./routes/user.routes";
 import { commentRouter } from "./routes/comment.routes";
+import { mainCategoryRouter } from "./routes/mainCategory.routes";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import { options } from "./swagger-options";
@@ -46,14 +47,19 @@ app.use("/role", rolesRouter);
 app.use("/user", userRouter);
 app.use("/comment", commentRouter);
 app.use("/game", gamesRouter);
+app.use("/mainCategory", mainCategoryRouter);
 
 app.get("/protected", auth, async (req: Request, res: Response) => {
 	return res.send("Howdy!");
 });
 app.use("/game", gamesRouter);
 
+app.get('/protected', auth, async (req: Request, res: Response) => {
+  return res.send("Howdy!")
+})
+
 app.use("*", (req, res) => {
-	res.json({ err: "Invalid Request" }).status(StatusCodes.NOT_FOUND);
+	res.status(StatusCodes.BAD_REQUEST).json({ err: "Invalid Request" });
 });
 
 app.use(errorHandler);

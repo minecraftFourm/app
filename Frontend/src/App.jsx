@@ -94,11 +94,7 @@ function App() {
 						<Route path="/forum" element={<Forum />} />
 						<Route
 							path="forum/post/:id"
-							element={
-								<AdminOnly>
-									<ViewAnnouncement />
-								</AdminOnly>
-							}
+							element={<ViewAnnouncement />}
 						/>
 						<Route
 							path="forum/edit/:id"

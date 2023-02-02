@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { useFetch } from "../Contexts/Fetch";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Keyboard, Pagination, Autoplay } from "swiper";
@@ -16,6 +16,9 @@ import RecentComments from "../Components/HomePage/RecentComments";
 import RecentUsers from "../Components/HomePage/RecentUsers";
 import { LoadingIcon } from "../Components/Icons";
 import Overlay from "../Components/Overlay";
+import { ANNOUNCEMENT_CATEGORY_ID } from "../config";
+import { Link } from "react-router-dom";
+const ErrorComponent = lazy(() => import("../Components/Error"));
 
 const Homepage = () => {
 	const CustomFetch = useFetch();
@@ -26,54 +29,69 @@ const Homepage = () => {
 		announcement: [],
 		staffTeam: [],
 	});
+	const [mcData, setMcData] = useState({
+		isLoading: false,
+		err: false,
+		players: null,
+	});
 	const [isLoading, setIsLoading] = useState(true);
-	const [err, setErr] = useState();
+	const [err, setErr] = useState(false);
 
 	useEffect(() => {
 		(async () => {
-			// *Fetches announcements, staff list, recent comments, recent users, and recently updated posts from the backend.
-			let { data: announcementData, response: announcementResponse } =
-				await CustomFetch({
-					url: "post?category=announcement&limit=6",
+			try {
+				setIsLoading(true);
+				// *Fetches announcements, staff list, recent comments, recent users, and recently updated posts from the backend.
+				let { data: announcementData, response: announcementResponse } =
+					await CustomFetch({
+						url: "post?category=announcement&limit=6",
+						returnResponse: true,
+					});
+				let { data: staffData, response: staffResponse } =
+					await CustomFetch({
+						url: "user?isStaff=t",
+						returnResponse: true,
+					});
+				let {
+					data: recentlyUpdatedData,
+					response: recentlyUpdatedResponse,
+				} = await CustomFetch({
+					url: "post?limit=6",
 					returnResponse: true,
 				});
-			let { data: staffData, response: staffResponse } =
-				await CustomFetch({
-					url: "user?isStaff=t",
-					returnResponse: true,
-				});
-			let {
-				data: recentlyUpdatedData,
-				response: recentlyUpdatedResponse,
-			} = await CustomFetch({
-				url: "post?limit=5",
-				returnResponse: true,
-			});
-			let { data: recentComments, response: recentCommentsResponse } =
-				await CustomFetch({
-					url: "comment?limit=5&sort=desc",
-					returnResponse: true,
-				});
-			let { data: recentUsers, response: recentUsersResponse } =
-				await CustomFetch({
-					url: "user?limit=5",
-					returnResponse: true,
-				});
+				let { data: recentComments, response: recentCommentsResponse } =
+					await CustomFetch({
+						url: "comment?limit=6&sort=desc",
+						returnResponse: true,
+					});
+				let { data: recentUsers, response: recentUsersResponse } =
+					await CustomFetch({
+						url: "user?limit=6&sort=desc",
+						returnResponse: true,
+					});
 
-			setData((prevValue) => {
-				return {
-					recentComments: recentComments.data,
-					recentUsers: recentUsers.data,
-					recentUpdates: recentlyUpdatedData.data,
-					announcement: announcementData.data,
-					staff: staffData.data,
-				};
-			});
-			setIsLoading(false);
-			// TODO: handle erros
+				if (!announcementResponse.ok)
+					throw new Error(announcementResponse.statusText);
+				console.log(announcementResponse);
+
+				setData((prevValue) => {
+					return {
+						recentComments: recentComments.data,
+						recentUsers: recentUsers.data,
+						recentUpdates: recentlyUpdatedData.data,
+						announcement: announcementData.data,
+						staff: staffData.data,
+					};
+				});
+			} catch (error) {
+				setErr(true);
+			} finally {
+				setIsLoading(false);
+			}
 		})();
 	}, []);
 
+	console.log(err);
 	return (
 		<>
 			<section className="relative">
@@ -115,19 +133,17 @@ const Homepage = () => {
 				</p>
 			</section>
 			{/* TODO: Hero Content */}
-			<section className="bg-[#1B263B] w-full h-full px-16 py-4 pb-16">
+			<section className="bg-[#1B263B] w-full h-full px-16 md:px-2 py-4 pb-16">
 				{isLoading && <LoadingIcon color="#fff" />}
-				{!isLoading && (
+
+				{err && <ErrorComponent />}
+
+				{!isLoading && !err && (
 					<div className="flex flex-row gap-8 justify-between w-full h-full">
 						<div className="w-full bg-white p-4 flex flex-col gap-4">
-							{data.announcement &&
-								data.announcement.map((item) => {
-									return (
-										<div key={item.id}>
-											<Announcement {...item} />
-										</div>
-									);
-								})}
+							{data.announcement && (
+								<Announcement items={data.announcement} />
+							)}
 
 							{data.announcement.length === 0 && (
 								<p className="text-center text-gray-600">
@@ -135,28 +151,27 @@ const Homepage = () => {
 								</p>
 							)}
 
-							{data.announcement > 5 && (
+							{data.announcement.length > 5 && (
 								<div className="grid place-content-center">
-									<button className="border px-4 py-1 bg-violet-500 border-violet-600 hover:bg-violet-700 duration-300 rounded-sm text-white justify-self-end">
+									<Link
+										to={`./forum/category/${ANNOUNCEMENT_CATEGORY_ID}`}
+										className="border px-4 py-1 bg-violet-500 border-violet-600 hover:bg-violet-700 duration-300 rounded-sm text-white justify-self-end">
 										Read More...
-									</button>
+									</Link>
 								</div>
 							)}
 						</div>
-						<aside className="h-fit w-[450px] bg-white p-4 flex flex-col gap-4">
+						<aside className="h-fit w-[450px] bg-white p-4 flex flex-col gap-4 lg:hidden">
 							<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400 shadow-md">
 								<p className="w-full bg-violet-500 text-white px-2 py-1 ">
 									Recent Updates
 								</p>
-								<div className="flex flex-col gap-2 mt-2 px-1 min-h-[300px]">
-									{data.recentUpdates.length != 0 &&
-										data.recentUpdates.map((item) => {
-											return (
-												<div key={item.id}>
-													<RecentPosts {...item} />
-												</div>
-											);
-										})}
+								<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
+									{data.recentUpdates.length != 0 && (
+										<RecentPosts
+											items={data.recentUpdates}
+										/>
+									)}
 
 									{data.recentUpdates.length === 0 && (
 										<p className="text-center text-sm text-gray-600">
@@ -171,8 +186,8 @@ const Homepage = () => {
 								<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">
 									Recent Comments
 								</p>
-								<div className="flex flex-col gap-2 mt-2 px-1 min-h-[300px]">
-									{data.recentComments.length != 0 && (
+								<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
+									{data.recentComments.length !== 0 && (
 										<RecentComments
 											items={data.recentComments}
 										/>
@@ -220,7 +235,7 @@ const Homepage = () => {
 						</div>
 
 						{/* TODO: Button controllers */}
-						<article className="mt-4 bg-indigo-500 mx-auto border border-slate-500 drop-shadow-lg max-w-[900px] h-[300px]">
+						<article className="mt-4 bg-indigo-500 mx-auto border border-slate-500 drop-shadow-lg max-w-[900px] h-[300px] md:h-fit">
 							<Swiper
 								slidesPerView={1}
 								loop={true}

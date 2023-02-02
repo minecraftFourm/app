@@ -151,7 +151,9 @@ const Posts = () => {
 									placeholder="Search..."
 									className="px-2 py-1 border-slate-500 w-full rounded-sm outline-none placeholder-slate-500 text-slate"
 								/>
-								<Link to="../forum/new" state={""}>
+								<Link
+									to="../forum/new"
+									state={{ category: id }}>
 									{/* TODO: send user to new post page with the right category */}
 									<AddNewIcon width="8" height="8" />
 								</Link>

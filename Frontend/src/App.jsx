@@ -2,7 +2,6 @@ import { lazy, Suspense, useState } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./Components/Navbar";
-import RequireAuth from "./Contexts/RequireAuth";
 import CheckAuth from "./Contexts/CheckAuth";
 import ViewPost from "./Pages/ViewPost";
 

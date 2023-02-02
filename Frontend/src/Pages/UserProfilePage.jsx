@@ -173,6 +173,43 @@ const UserProfilePage = () => {
 								</div>
 							</div>
 						</div>
+						<div className="flex justify-center mt-2">
+							<div className="rounded-sm shadow-lg bg-white w-11/12">
+								<div className="flex bg-[#7F7EFF] py-2 rounded-sm">
+									<div className="font-bold pl-2 text-white">
+										Brand New Announcement
+									</div>
+								</div>
+								<img
+									className="rounded-t-lg w-full p-2"
+									src={Rectangle7}
+									alt=""
+								/>
+								<div className="p-6">
+									<p className="text-gray-700 text-base mb-4">
+										Some quick example text to build on the
+										card title and make up the bulk of the
+										card's content. loren loren sinta buko
+										ng papaya dalay dalay dusdos sisingalan
+										ng tanga bakit walang buko lusot
+										laparanang may hakdog ng iba bahay kubo
+										kahit munti ang larangan doon ay sari
+										sari singkamas at talong bawang at
+										sibuyas na 700 pesos isang kilo kundol
+										patola upot kalabasa at marami pang iba
+										ang mahal ng sibuyas
+									</p>
+								</div>
+								<div className="flex bg-[#7F7EFF] text-white">
+									<p className="pl-2">
+										Posted By: Admin User
+									</p>
+									<p className="absolute right-16">
+										120 Comments
+									</p>
+								</div>
+							</div>
+						</div>
 					</div>
 				</>
 			)}

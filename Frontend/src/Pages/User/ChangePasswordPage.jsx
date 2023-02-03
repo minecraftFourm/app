@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { useDebounce } from "usehooks-ts";
 import { PASSWORD_PATTERN, PASSWORD_REQUIREMENT } from "../../config";
 import { useFetch } from "../../Contexts/Fetch";
 import { UseUser } from "../../Contexts/UserContext";
@@ -35,7 +36,7 @@ const initErrors = {
     currentPassword: null,
     newPassword: null,
     repeatNewPassword: null,
-    serverResponse: null,
+    error: null,
 };
 
 const ChangePasswordPage = () => {
@@ -43,6 +44,7 @@ const ChangePasswordPage = () => {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [repeatNewPassword, setRepeatNewPassword] = useState("");
+    const debounceValue = useDebounce(repeatNewPassword, 1000);
     const [errors, setErrors] = useState(initErrors);
     const [sending, setSending] = useState(false);
     const CustomFetch = useFetch();
@@ -76,7 +78,7 @@ const ChangePasswordPage = () => {
         } else {
             setErrors({ ...errors, repeatNewPassword: null });
         }
-    }, [repeatNewPassword]);
+    }, [debounceValue]);
 
     const isAnyErrors = () => {
         let flag = false;
@@ -92,6 +94,10 @@ const ChangePasswordPage = () => {
         if (newPassword !== repeatNewPassword) {
             flag = true;
             errs.repeatNewPassword = "New Password And Repeat Password should be equal.";
+        }
+        if (currentPassword === newPassword) {
+            flag = true;
+            errs.error = "This password is already in use. Please choose a different password.";
         }
         setErrors({ ...errors, ...errs });
         if (flag) setSending(false);
@@ -123,7 +129,7 @@ const ChangePasswordPage = () => {
             });
             setSending(false);
         } else {
-            setErrors({ ...errors, serverResponse: data.err });
+            setErrors({ ...errors, error: data.err });
             setSending(false);
         }
     };
@@ -167,11 +173,11 @@ const ChangePasswordPage = () => {
                     <span className={`text-red-700 text-sm font-normal w-full mx-1 ${errors.repeatNewPassword ? "block" : "hidden"}`}>{errors.repeatNewPassword}</span>
                 </div>
 
-                {errors.serverResponse && <p className="w-full text-center text-red-500">{errors.serverResponse}</p>}
+                {errors.error && <p className="w-full text-center text-red-500">{errors.error}</p>}
 
                 <div className="flex flex-col gap-1 mt-2 items-center">
                     <button disabled={sending} className={`duration-300 text-white py-2 px-8 text-medium rounded-md cursor-pointer ${!sending ? "bg-indigo-500 hover:bg-indigo-700" : "bg-gray-500 "}`}>
-                        Change
+                        Save Changes
                     </button>
                 </div>
             </form>

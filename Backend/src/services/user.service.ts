@@ -83,6 +83,7 @@ export const handleGetAllUsers = async (req: Req) => {
 		roleId,
 		jump = 0,
 		sort = "desc",
+		limit 
 	} = req.query;
 
 	let permissionValues: perms = {
@@ -120,6 +121,7 @@ export const handleGetAllUsers = async (req: Req) => {
 		orderBy: {
 			created: sort,
 		},
+		take: Number(limit),
 		select: {
 			id: true,
 			username: true,

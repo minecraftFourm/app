@@ -4,17 +4,20 @@ import ForumHeader from "../../Components/ForumHeader";
 import PostComponent from "../../Components/ForumPage/Posts";
 import { AddNewIcon, LoadingIcon } from "../../Components/Icons";
 import { useFetch } from "../../Contexts/Fetch";
+import { UseUser } from "../../Contexts/UserContext";
 import { useDebounce } from "usehooks-ts";
 
 const Posts = () => {
 	const { id } = useParams();
 	const CustomFetch = useFetch();
 	const [data, setData] = useState();
+	const User = UseUser();
 	const [isLoading, setIsLoading] = useState(true);
 	const [searchParam, setSearchParam] = useState("");
 	const [showPrevBtn, setShowPrevBtn] = useState(false);
 	const [showNextBtn, setShowNextBtn] = useState(true);
 	const [allPosts, setAllPosts] = useState([]);
+	const [showAddPostIcon, setShowAddPostIcon] = useState(false);
 
 	// Pagination: Keep track of the current page and set a limitation of posts per page
 	const [currentPage, setCurrentPage] = useState(1);
@@ -125,10 +128,22 @@ const Posts = () => {
 		handlePageChange("next");
 	};
 
-	console.log(data?.posts);
-	console.log(allPosts?.length);
+	useEffect(() => {
+		if (!User.isAuthenticated) {
+			setShowAddPostIcon(false)
+		}
+		else if (data.adminOnly && User.role.isAdmin) {
+			setShowAddPostIcon(true)
+		} else if (!data.adminOnly && User.role.canCreatePost) {
+			setShowAddPostIcon(true)
+		}
+	}, [])
+
+	// console.log(data?.posts);
+	// console.log(allPosts?.length);
 	// console.log(currentPage);
 
+	// console.log(User )
 	return (
 		<div className="pb-32 bg-[#1B263B]">
 			<ForumHeader />
@@ -155,7 +170,9 @@ const Posts = () => {
 									to="../forum/new"
 									state={{ category: id }}>
 									{/* TODO: send user to new post page with the right category */}
-									<AddNewIcon width="8" height="8" />
+									{showAddPostIcon && (
+											<AddNewIcon width="8" height="8" />
+										)}
 								</Link>
 							</div>
 						</header>

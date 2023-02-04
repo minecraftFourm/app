@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { useDebounce } from "usehooks-ts";
 import { PASSWORD_PATTERN, PASSWORD_REQUIREMENT } from "../../config";
 import { useFetch } from "../../Contexts/Fetch";
@@ -40,6 +41,7 @@ const initErrors = {
 };
 
 const ChangePasswordPage = () => {
+    const Navigate = useNavigate()
     const [options, setOptions] = useState(initOptions);
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -127,6 +129,7 @@ const ChangePasswordPage = () => {
                 duration: 5000,
                 position: "bottom-left",
             });
+            Navigate('/')
             setSending(false);
         } else {
             setErrors({ ...errors, error: data.err });

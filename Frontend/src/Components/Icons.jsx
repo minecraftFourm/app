@@ -45,7 +45,9 @@ export const DeleteIcon = (props) => {
 			viewBox="0 0 24 24"
 			strokeWidth={1.5}
 			stroke="currentColor"
-			className={`w-${width} h-${height} ${style}`}>
+			width={width}
+			height={height}
+			className={`${style}`}>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"

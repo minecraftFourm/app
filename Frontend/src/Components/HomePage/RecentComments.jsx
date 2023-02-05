@@ -12,7 +12,6 @@ const RecentComments = (props) => {
 				user: { username, profilePicture },
 				id,
 			} = item;
-			console.log(item);
 			return (
 				<div
 					className="flex border border-violet-500 gap-2 items-center px-2 py-1"
@@ -30,7 +29,7 @@ const RecentComments = (props) => {
 						</Link>
 						<footer className="w-full flex flex-row justify-between">
 							<Link
-								to={`./user/${id}`}
+								to={`/user/${id}`}
 								className="text-xs text-gray-500 capitalize">
 								{username}
 							</Link>

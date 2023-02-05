@@ -16,7 +16,7 @@ import RecentComments from "../Components/HomePage/RecentComments";
 import RecentUsers from "../Components/HomePage/RecentUsers";
 import { LoadingIcon } from "../Components/Icons";
 import Overlay from "../Components/Overlay";
-import { ANNOUNCEMENT_CATEGORY_ID } from "../config";
+import { ANNOUNCEMENT_CATEGORY_ID, MC_API, SERVER_IP } from "../config";
 import { Link } from "react-router-dom";
 const ErrorComponent = lazy(() => import("../Components/Error"));
 
@@ -30,9 +30,9 @@ const Homepage = () => {
 		staffTeam: [],
 	});
 	const [mcData, setMcData] = useState({
-		isLoading: false,
 		err: false,
 		players: null,
+		status: null,
 	});
 	const [isLoading, setIsLoading] = useState(true);
 	const [err, setErr] = useState(false);
@@ -72,7 +72,6 @@ const Homepage = () => {
 
 				if (!announcementResponse.ok)
 					throw new Error(announcementResponse.statusText);
-				console.log(announcementResponse);
 
 				setData((prevValue) => {
 					return {
@@ -91,7 +90,29 @@ const Homepage = () => {
 		})();
 	}, []);
 
-	console.log(err);
+	useEffect(() => {
+		(async () => {
+			try {
+				const response = await fetch(`${MC_API}${SERVER_IP}`);
+				const data = await response.json();
+				setMcData((prevValue) => {
+					return {
+						...prevValue,
+						players: data.players,
+						status: data.online,
+					};
+				});
+			} catch (err) {
+				setMcData((prevValue) => {
+					return {
+						...prevValue,
+						err: true,
+					};
+				});
+			}
+		})();
+	}, []);
+
 	return (
 		<>
 			<section className="relative">
@@ -128,9 +149,13 @@ const Homepage = () => {
 						<Overlay />
 					</SwiperSlide>
 				</Swiper>
-				<p className="absolute z-10 px-4 py-3 bottom-0 bg-blue-800 text-white font-medium rounded-tr-md drop-shadow-md">
-					30 Players Currently Online
-				</p>
+				{!mcData.err && (
+					<p className="absolute z-10 px-4 py-3 bottom-0 bg-blue-800 text-white font-medium rounded-tr-md drop-shadow-md">
+						{mcData.status
+							? `${mcData.players.online} / ${mcData.players.max} Players currently online.`
+							: "Server is currently offline."}
+					</p>
+				)}
 			</section>
 			{/* TODO: Hero Content */}
 			<section className="bg-[#1B263B] w-full h-full px-16 md:px-2 py-4 pb-16">

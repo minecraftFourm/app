@@ -61,7 +61,7 @@ export const handleGetComment = async (id: string) => {
 };
 
 export const handleGetComments = async (req: Req) => {
-	const { postId, updated, created, sort } = req.query;
+	const { postId, updated, created, sort, limit } = req.query;
 
 	const comment = await prisma.comment.findMany({
 		where: {
@@ -72,6 +72,7 @@ export const handleGetComments = async (req: Req) => {
 		orderBy: {
 			updated: sort,
 		},
+		take: Number(limit),
 		select: {
 			comment: true,
 			updated: true,

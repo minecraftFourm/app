@@ -24,7 +24,7 @@ const RecentUsers = (props) => {
 					/>
 					<div className="w-full">
 						<Link
-							to={`./user/${id}`}
+							to={`/user/${id}`}
 							className="line-clamp-1 capitalize">
 							{username}
 						</Link>

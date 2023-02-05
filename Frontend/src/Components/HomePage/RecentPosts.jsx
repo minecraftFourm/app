@@ -25,7 +25,7 @@ const RecentPosts = (props) => {
 					/>
 					<div className="w-full">
 						<Link
-							to={`./forum/post/${id}`}
+							to={`/forum/post/${id}`}
 							className="line-clamp-1 text-sm font-semibold">
 							{title}
 						</Link>

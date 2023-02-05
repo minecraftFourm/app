@@ -83,6 +83,7 @@ export const handleGetAllUsers = async (req: Req) => {
 		roleId,
 		jump = 0,
 		sort = "desc",
+		limit,
 	} = req.query;
 
 	let permissionValues: perms = {
@@ -98,6 +99,7 @@ export const handleGetAllUsers = async (req: Req) => {
 		permissionValues.isAdmin = isAdmin === "t" ? true : false;
 	}
 
+	console.log(limit);
 	const users = await prisma.user.findMany({
 		where: {
 			username: {
@@ -120,6 +122,7 @@ export const handleGetAllUsers = async (req: Req) => {
 		orderBy: {
 			created: sort,
 		},
+		take: limit ? Number(limit) : undefined,
 		select: {
 			id: true,
 			username: true,

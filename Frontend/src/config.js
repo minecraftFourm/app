@@ -20,3 +20,6 @@ export const TOAST_OPTIONS = {
 	duration: 8000,
 	position: "bottom-left",
 };
+
+export const MC_API = "https://api.mcsrvstat.us/2/"
+export const SERVER_IP = "hypixel.net"

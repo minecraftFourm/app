@@ -33,11 +33,9 @@ function App() {
 		return (
 			<>
 				{/* TODO: Change to a proper loading screen  */}
-				<Suspense fallback={<h1>Loading...</h1>}>
-					<Navbar />
-					<Outlet />
-					<Footer />
-				</Suspense>
+				<Navbar />
+				<Outlet />
+				<Footer />
 			</>
 		);
 	};
@@ -46,9 +44,7 @@ function App() {
 		return (
 			<>
 				<Navbar />
-				<Suspense fallback={<h1>Loading...</h1>}>
-					<Outlet />
-				</Suspense>
+				<Outlet />
 			</>
 		);
 	};
@@ -76,67 +72,74 @@ function App() {
 
 	return (
 		<div className="overflow-hidden">
-			<CheckAuth>
-				<Toaster toastOptions={toastOptions} />
+			<Suspense>
+				<CheckAuth>
+					<Toaster toastOptions={toastOptions} />
 
-				<Routes>
-					{/* TODO: Add adminOnly middlewear */}
-					<Route path="/dashboard" element={<Dashboard />}>
-						<Route
-							element={<Announcements />}
-							path="announcement"
-						/>
-					</Route>
-
-					<Route element={<NavAndFooter />}>
-						<Route path="/" element={<Home />} />
-						<Route path="/rules" element={<Rules />} />
-						<Route path="/games" element={<Games />} />
-						<Route path="/forum" element={<Forum />} />
-						<Route
-							path="forum/post/:id"
-							element={
-								// <AdminOnly>
-								// 	<ViewAnnouncement />
-								// </AdminOnly>
-								<ViewPost />
-							}
-						/>
-						<Route
-							path="forum/edit/:id"
-							element={
-								<RequireAuth>
-									{" "}
-									<EditAnnouncement />{" "}
-								</RequireAuth>
-							}
-						/>
-						<Route path="forum/category/:id" element={<Posts />} />
-						<Route element={<AnnouncementHome />} path="" />
-						<Route
-							element={<NewAnnouncement />}
-							path="newAnnouncement"
-						/>
-						<Route
-							path="forum/new"
-							element={
-								<RequireAuth>
-									{" "}
-									<NewPost />{" "}
-								</RequireAuth>
-							}
-						/>
-					</Route>
-
-					<Route element={<Nav />}>
-						<Route element={<RedirectAuth />}>
-							<Route path="/login" element={<Login />} />
-							<Route path="/register" element={<Register />} />
+					<Routes>
+						{/* TODO: Add adminOnly middlewear */}
+						<Route path="/dashboard" element={<Dashboard />}>
+							<Route
+								element={<Announcements />}
+								path="announcement"
+							/>
 						</Route>
-						<Route path="*" element={<NotFound />} />
-					</Route>
-				</Routes>
-			</CheckAuth>
+
+						<Route element={<NavAndFooter />}>
+							<Route path="/" element={<Home />} />
+							<Route path="/rules" element={<Rules />} />
+							<Route path="/games" element={<Games />} />
+							<Route path="/forum" element={<Forum />} />
+							<Route
+								path="forum/post/:id"
+								element={
+									// <AdminOnly>
+									// 	<ViewAnnouncement />
+									// </AdminOnly>
+									<ViewPost />
+								}
+							/>
+							<Route
+								path="forum/edit/:id"
+								element={
+									<RequireAuth>
+										<EditAnnouncement />
+									</RequireAuth>
+								}
+							/>
+							<Route
+								path="forum/category/:id"
+								element={<Posts />}
+							/>
+							<Route element={<AnnouncementHome />} path="" />
+							<Route
+								element={<NewAnnouncement />}
+								path="newAnnouncement"
+							/>
+							<Route
+								path="forum/new"
+								element={
+									<RequireAuth>
+										{" "}
+										<NewPost />{" "}
+									</RequireAuth>
+								}
+							/>
+						</Route>
+
+						<Route element={<Nav />}>
+							<Route element={<RedirectAuth />}>
+								<Route path="/login" element={<Login />} />
+								<Route
+									path="/register"
+									element={<Register />}
+								/>
+							</Route>
+							<Route path="*" element={<NotFound />} />
+						</Route>
+					</Routes>
+				</CheckAuth>
+			</Suspense>
 		</div>
 	);
 }

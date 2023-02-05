@@ -99,7 +99,6 @@ export const handleGetAllUsers = async (req: Req) => {
 		permissionValues.isAdmin = isAdmin === "t" ? true : false;
 	}
 
-	console.log(limit);
 	const users = await prisma.user.findMany({
 		where: {
 			username: {

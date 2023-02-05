@@ -4,20 +4,20 @@ import ForumHeader from "../../Components/ForumHeader";
 import PostComponent from "../../Components/ForumPage/Posts";
 import { AddNewIcon, LoadingIcon } from "../../Components/Icons";
 import { useFetch } from "../../Contexts/Fetch";
-import { UseUser } from "../../Contexts/UserContext";
 import { useDebounce } from "usehooks-ts";
+import { UseUser } from "../../Contexts/UserContext";
 
 const Posts = () => {
 	const { id } = useParams();
 	const CustomFetch = useFetch();
 	const [data, setData] = useState();
-	const User = UseUser();
 	const [isLoading, setIsLoading] = useState(true);
 	const [searchParam, setSearchParam] = useState("");
 	const [showPrevBtn, setShowPrevBtn] = useState(false);
 	const [showNextBtn, setShowNextBtn] = useState(true);
+	const [showAddIcon, setShowAddIcon] = useState(false);
 	const [allPosts, setAllPosts] = useState([]);
-	const [showAddPostIcon, setShowAddPostIcon] = useState(false);
+	const User = UseUser();
 
 	// Pagination: Keep track of the current page and set a limitation of posts per page
 	const [currentPage, setCurrentPage] = useState(1);
@@ -31,11 +31,11 @@ const Posts = () => {
 	const debounceValue = useDebounce(searchParam, 500);
 
 	const handlePageChange = (direction) => {
-		console.log(currentPage);
+		// console.log(currentPage);
 		// If the user hits the previous btn
 		if (direction === "prev") {
 			if (currentPage - 1 === 1) {
-				console.log("Reached first page");
+				// console.log("Reached first page");
 				setShowPrevBtn(false);
 				setShowNextBtn(true);
 			}
@@ -49,7 +49,7 @@ const Posts = () => {
 		// If the user hits the next btn
 		if (direction === "next") {
 			if (currentPage + 1 === Math.ceil(allPosts.length / postsPerPage)) {
-				console.log("Reached last page");
+				// console.log("Reached last page");
 				setShowNextBtn(false);
 				setShowPrevBtn(true);
 			}
@@ -65,13 +65,25 @@ const Posts = () => {
 	};
 
 	useEffect(() => {
+		if (data && User.isAuthenticated) {
+			// * If user is authenticated, and has permission to post, or if the category is an adminOnly category and the user has admin permissions.
+			const { adminOnly } = data;
+			const { role: { isAdmin, canCreatePost }} = User
+			if ((adminOnly && isAdmin) || !adminOnly && canCreatePost ) setShowAddIcon(true);
+		}
+		else {
+			setShowAddIcon(false)
+		}
+	}, [data]);
+
+	useEffect(() => {
 		// If there is no data, call the DB
 		if (!data) {
 			(async () => {
-				console.log("No data exist, calling the DB");
+				// console.log("No data exist, calling the DB");
 				// console.log("inital data loaded");
 				setIsLoading(true);
-				// We can limit the amount of data pulled in the future - we can then dynamically call additional data and add it to the "data" state
+				// TODO: We can limit the amount of data pulled in the future - we can then dynamically call additional data and add it to the "data" state
 				const { data, response } = await CustomFetch({
 					url: `category/${id}`,
 					returnResponse: true,
@@ -89,21 +101,21 @@ const Posts = () => {
 			})();
 		}
 
-		// if there is data, set the filtered data
+		//* if there is data, set the filtered data
 		if (data) {
-			console.log("Data exist, filtering data");
+			// console.log("Data exist, filtering data");
 			// setShowPrevBtn(false);
 			if (searchParam.length === 0) {
-				// Might always set page to 1
+				//* Might always set page to 1
 				setCurrentPage(1);
-				// reset posts to original array
+				//* reset posts to original array
 				setAllPosts(data?.posts);
-				// setPostToShow(data?.posts.slice(0, postsPerPage));
+				//* setPostToShow(data?.posts.slice(0, postsPerPage));
 			}
 
 			if (searchParam != "") {
 				setCurrentPage(1);
-				// The full array of filtered posts
+				//* The full array of filtered posts
 				const filteredPosts = data?.posts.filter((item) => {
 					return searchParam.toLowerCase() === ""
 						? item
@@ -118,7 +130,7 @@ const Posts = () => {
 	}, [debounceValue]);
 
 	const previousPage = () => {
-		console.log(currentPage);
+		// console.log(currentPage);
 		setCurrentPage(currentPage - 1);
 		handlePageChange("prev");
 	};
@@ -128,22 +140,10 @@ const Posts = () => {
 		handlePageChange("next");
 	};
 
-	useEffect(() => {
-		if (!User.isAuthenticated) {
-			setShowAddPostIcon(false)
-		}
-		else if (data.adminOnly && User.role.isAdmin) {
-			setShowAddPostIcon(true)
-		} else if (!data.adminOnly && User.role.canCreatePost) {
-			setShowAddPostIcon(true)
-		}
-	}, [])
-
 	// console.log(data?.posts);
 	// console.log(allPosts?.length);
 	// console.log(currentPage);
 
-	// console.log(User )
 	return (
 		<div className="pb-32 bg-[#1B263B]">
 			<ForumHeader />
@@ -166,14 +166,14 @@ const Posts = () => {
 									placeholder="Search..."
 									className="px-2 py-1 border-slate-500 w-full rounded-sm outline-none placeholder-slate-500 text-slate"
 								/>
-								<Link
-									to="../forum/new"
-									state={{ category: id }}>
-									{/* TODO: send user to new post page with the right category */}
-									{showAddPostIcon && (
-											<AddNewIcon width="8" height="8" />
-										)}
-								</Link>
+								{showAddIcon && (
+									<Link
+										to="../forum/new"
+										state={{ category: id }}>
+										{/* TODO: send user to new post page with the right category */}
+										<AddNewIcon width="8" height="8" />
+									</Link>
+								)}
 							</div>
 						</header>
 

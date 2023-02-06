@@ -157,6 +157,9 @@ const LoginPage = () => {
 				isAuthenticated: true,
 				id: data.id,
 				username: data.username,
+				profilePicture: data.profilePicture,
+				role: data.role,
+				isLoading: false,
 			});
 			resetForm();
 			Navigate("/", {

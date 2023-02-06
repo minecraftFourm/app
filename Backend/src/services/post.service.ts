@@ -217,6 +217,7 @@ export const handleGetPost = async ({ id }: getPost) => {
             owner: {
                 select: {
                     username: true,
+                    profilePicture: true,
                     email: true,
                     role: true,
                     created: true

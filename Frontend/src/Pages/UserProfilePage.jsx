@@ -15,6 +15,7 @@ const UserProfilePage = () => {
 	const { id } = useParams();
 	const [user, setUser] = useState({});
 	const [error, setError] = useState(null);
+	const [tab, setTab] = useState();
 	const [isLoading, setIsLoading] = useState(true);
 	const CustomFetch = useFetch();
 
@@ -37,6 +38,10 @@ const UserProfilePage = () => {
 		})();
 	}, [id]);
 
+	const updateTab = (newTab) => {
+		setTab(() => newTab);
+	};
+
 	return (
 		<div className="bg-[#1B263B]">
 			{isLoading && <LoadingIcon />}
@@ -57,29 +62,24 @@ const UserProfilePage = () => {
 								className="object-cover font-bold w-36 h-36 rounded-full"
 							/>
 							<p className="pl-7 text-white font-bold text-3xl">
-								{" "}
-								{user.username}{" "}
+								{user.username}
 							</p>
-							<button className="bg-red-500 hover:bg-red-700 text-white ml-9 px-5 py-1 font-bold rounded text-xs shadow-2xl">
-								{" "}
-								ADMIN
+							<button
+								style={{ backgroundColor: user.role.color }}
+								className=" text-white ml-9 px-5 py-1 font-bold rounded text-xs shadow-2xl">
+								{user.role.title}
 							</button>
 						</div>
 						<div className="absolute inset-x-0 -bottom-9">
-							<p className="text-white ml-44 mr-6 p-1 border-2 border-gray-700 rounded-sm">
-								Lorem ipsum dolor sit amet, consectetur
-								adipiscing elit. Mauris placerat mi sed lorem
-								commodo, vel vehicula nunc rhoncus. Nulla quis
-								scelerisque nisi. Sed urna elit, semper nec
-								purus vel, pretium imperdiet felis. Nam eget
-								justo ut tortor accumsan mattis. Morbi eu sem
-								mauris. Sed elit ex, elementum vel posuere et,
-								pharetra eu diam.
-							</p>
+							{user.bio && (
+								<p className="text-white ml-44 mr-6 p-1 border-2 border-gray-700 rounded-sm">
+									{user.bio}
+								</p>
+							)}
 							<div className="flex pt-6 ml-48 text-white">
-								<p>Followers {user.followers} </p>
+								<p>Followers {user.followers.length}</p>
 								<p className="pl-5">
-									Following {user.following}{" "}
+									Following {user.following.length}
 								</p>
 							</div>
 						</div>
@@ -89,136 +89,175 @@ const UserProfilePage = () => {
 							</button>
 						</div>
 					</div>
-					<div className="flex bg-white mr-16 ml-48 py-2 pl-3 rounded-sm text-gray-500">
-						<p className="pl-3 pr-5 hover:text-[#7F7EFF]">Postings</p>
-						<p className="pr-5 hover:text-[#7F7EFF]">Activity</p>
-						<p className="hover:text-[#7F7EFF]">About</p>
-						<p className="absolute right-20 hover:text-[#7F7EFF]">Edit</p>
+					<div className="flex flex-row bg-white mr-16 ml-48 py-2 pl-3 gap-4 rounded-sm text-gray-500">
+						<p
+							onClick={() => updateTab("postings")}
+							className="hover:text-[#7F7EFF] cursor-pointer">
+							Postings
+						</p>
+						<p
+							onClick={() => updateTab("activity")}
+							className="hover:text-[#7F7EFF] cursor-pointer">
+							Activity
+						</p>
+						<p
+							onClick={() => updateTab("about")}
+							className="hover:text-[#7F7EFF] cursor-pointer">
+							About
+						</p>
+						{/* TODO: Add permission support */}
+						<p
+							onClick={() => updateTab("edit")}
+							className="cursor-pointer hover:text-[#7F7EFF]">
+							Edit
+						</p>
 					</div>
 					<div className="border-b-4 mx-16 my-4 border-gray-700"></div>
 					<div className="pb-10">
 						{/* card */}
-
-						<div className="flex justify-center">
-							<div className="rounded-sm shadow-lg bg-white w-11/12">
-								<div className="flex bg-[#7F7EFF] py-2 rounded-sm">
-									<div className="pl-2 text-white">
-										Brand New Announcement
-									</div>
-									<div className="absolute right-16 text-white">
-										30 minutes ago
-									</div>
-								</div>
-								<img
-									className="rounded-t-lg w-full p-2"
-									src={Rectangle7}
-									alt=""
-								/>
-								<div className="p-6">
-									<p className="text-gray-700 text-base mb-4">
-										Some quick example text to build on the
-										card title and make up the bulk of the
-										card's content. loren loren sinta buko
-										ng papaya dalay dalay dusdos sisingalan
-										ng tanga bakit walang buko lusot
-										laparanang may hakdog ng iba bahay kubo
-										kahit munti ang larangan doon ay sari
-										sari singkamas at talong bawang at
-										sibuyas na 700 pesos isang kilo kundol
-										patola upot kalabasa at marami pang iba
-										ang mahal ng sibuyas
-									</p>
-								</div>
-								<div className="flex bg-gray-300 text-gray-500 p-2">
-									<p className="pl-2">
-										Posted By: Admin User
-									</p>
-									<p className="absolute right-16">
-										120 Comments
-									</p>
-								</div>
-							</div>
-						</div>
-						<div className="flex justify-center mt-2">
-							<div className="rounded-sm shadow-lg bg-white w-11/12">
-								<div className="flex bg-[#7F7EFF] py-2 rounded-sm">
-									<div className="pl-2 text-white">
-										Brand New Announcement
-									</div>
-									<div className="absolute right-16 text-white">
-										30 minutes ago
+						{tab === "postings" && (
+							<>
+								<div className="flex justify-center">
+									<div className="rounded-sm shadow-lg bg-white w-11/12">
+										<div className="flex bg-[#7F7EFF] py-2 rounded-sm">
+											<div className="pl-2 text-white">
+												Brand New Announcement
+											</div>
+											<div className="absolute right-16 text-white">
+												30 minutes ago
+											</div>
+										</div>
+										<img
+											className="rounded-t-lg w-full p-2"
+											src={Rectangle7}
+											alt=""
+										/>
+										<div className="p-6">
+											<p className="text-gray-700 text-base mb-4">
+												Some quick example text to build
+												on the card title and make up
+												the bulk of the card's content.
+												loren loren sinta buko ng papaya
+												dalay dalay dusdos sisingalan ng
+												tanga bakit walang buko lusot
+												laparanang may hakdog ng iba
+												bahay kubo kahit munti ang
+												larangan doon ay sari sari
+												singkamas at talong bawang at
+												sibuyas na 700 pesos isang kilo
+												kundol patola upot kalabasa at
+												marami pang iba ang mahal ng
+												sibuyas
+											</p>
+										</div>
+										<div className="flex bg-gray-300 text-gray-500 p-2">
+											<p className="pl-2">
+												Posted By: Admin User
+											</p>
+											<p className="absolute right-16">
+												120 Comments
+											</p>
+										</div>
 									</div>
 								</div>
-								<img
-									className="rounded-t-lg w-full p-2"
-									src={Rectangle7}
-									alt=""
-								/>
-								<div className="p-6">
-									<p className="text-gray-700 text-base mb-4">
-										Some quick example text to build on the
-										card title and make up the bulk of the
-										card's content. loren loren sinta buko
-										ng papaya dalay dalay dusdos sisingalan
-										ng tanga bakit walang buko lusot
-										laparanang may hakdog ng iba bahay kubo
-										kahit munti ang larangan doon ay sari
-										sari singkamas at talong bawang at
-										sibuyas na 700 pesos isang kilo kundol
-										patola upot kalabasa at marami pang iba
-										ang mahal ng sibuyas
-									</p>
-								</div>
-								<div className="flex bg-gray-300 text-gray-500 p-2">
-									<p className="pl-2">
-										Posted By: Admin User
-									</p>
-									<p className="absolute right-16">
-										120 Comments
-									</p>
-								</div>
-							</div>
-						</div>
-						<div className="flex justify-center mt-2">
-							<div className="rounded-sm shadow-lg bg-white w-11/12">
-								<div className="flex bg-[#7F7EFF] py-2 rounded-sm">
-									<div className="pl-2 text-white">
-										Brand New Announcement
+								<div className="flex justify-center mt-2">
+									<div className="rounded-sm shadow-lg bg-white w-11/12">
+										<div className="flex bg-[#7F7EFF] py-2 rounded-sm">
+											<div className="pl-2 text-white">
+												Brand New Announcement
+											</div>
+											<div className="absolute right-16 text-white">
+												30 minutes ago
+											</div>
+										</div>
+										<img
+											className="rounded-t-lg w-full p-2"
+											src={Rectangle7}
+											alt=""
+										/>
+										<div className="p-6">
+											<p className="text-gray-700 text-base mb-4">
+												Some quick example text to build
+												on the card title and make up
+												the bulk of the card's content.
+												loren loren sinta buko ng papaya
+												dalay dalay dusdos sisingalan ng
+												tanga bakit walang buko lusot
+												laparanang may hakdog ng iba
+												bahay kubo kahit munti ang
+												larangan doon ay sari sari
+												singkamas at talong bawang at
+												sibuyas na 700 pesos isang kilo
+												kundol patola upot kalabasa at
+												marami pang iba ang mahal ng
+												sibuyas
+											</p>
+										</div>
+										<div className="flex bg-gray-300 text-gray-500 p-2">
+											<p className="pl-2">
+												Posted By: Admin User
+											</p>
+											<p className="absolute right-16">
+												120 Comments
+											</p>
+										</div>
 									</div>
-									<div className="absolute right-16 text-white">
-										30 minutes ago
+								</div>
+								<div className="flex justify-center mt-2">
+									<div className="rounded-sm shadow-lg bg-white w-11/12">
+										<div className="flex bg-[#7F7EFF] py-2 rounded-sm">
+											<div className="pl-2 text-white">
+												Brand New Announcement
+											</div>
+											<div className="absolute right-16 text-white">
+												30 minutes ago
+											</div>
+										</div>
+										<img
+											className="rounded-t-lg w-full p-2"
+											src={Rectangle7}
+											alt=""
+										/>
+										<div className="p-6">
+											<p className="text-gray-700 text-base mb-4">
+												Some quick example text to build
+												on the card title and make up
+												the bulk of the card's content.
+												loren loren sinta buko ng papaya
+												dalay dalay dusdos sisingalan ng
+												tanga bakit walang buko lusot
+												laparanang may hakdog ng iba
+												bahay kubo kahit munti ang
+												larangan doon ay sari sari
+												singkamas at talong bawang at
+												sibuyas na 700 pesos isang kilo
+												kundol patola upot kalabasa at
+												marami pang iba ang mahal ng
+												sibuyas
+											</p>
+										</div>
+										<div className="flex bg-gray-300 text-gray-500 p-2">
+											<p className="pl-2">
+												Posted By: Admin User
+											</p>
+											<p className="absolute right-16">
+												120 Comments
+											</p>
+										</div>
 									</div>
 								</div>
-								<img
-									className="rounded-t-lg w-full p-2"
-									src={Rectangle7}
-									alt=""
-								/>
-								<div className="p-6">
-									<p className="text-gray-700 text-base mb-4">
-										Some quick example text to build on the
-										card title and make up the bulk of the
-										card's content. loren loren sinta buko
-										ng papaya dalay dalay dusdos sisingalan
-										ng tanga bakit walang buko lusot
-										laparanang may hakdog ng iba bahay kubo
-										kahit munti ang larangan doon ay sari
-										sari singkamas at talong bawang at
-										sibuyas na 700 pesos isang kilo kundol
-										patola upot kalabasa at marami pang iba
-										ang mahal ng sibuyas
-									</p>
-								</div>
-								<div className="flex bg-gray-300 text-gray-500 p-2">
-									<p className="pl-2">
-										Posted By: Admin User
-									</p>
-									<p className="absolute right-16">
-										120 Comments
-									</p>
-								</div>
-							</div>
-						</div>
+							</>
+						)}
+						{tab === "activity" && (
+							<>
+								<h4>Activity Tab</h4>
+							</>
+						)}
+						{tab === "about" && (
+							<>
+								<h4>About Tab</h4>
+							</>
+						)}
 					</div>
 				</>
 			)}

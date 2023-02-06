@@ -54,19 +54,19 @@ const UserProfilePage = () => {
 						<div className="absolute -bottom-24 left-2">
 							<img
 								src={user.profilePicture}
-								className="object-cover border-4 font-bold border-white w-36 h-36 rounded-full"
+								className="object-cover font-bold w-36 h-36 rounded-full"
 							/>
-							<p className="pl-12 text-white">
+							<p className="pl-7 text-white font-bold text-3xl">
 								{" "}
 								{user.username}{" "}
 							</p>
-							<button className="bg-red-500 hover:bg-red-700 text-white ml-9 px-2 rounded">
+							<button className="bg-red-500 hover:bg-red-700 text-white ml-9 px-5 py-1 font-bold rounded text-xs shadow-2xl">
 								{" "}
 								ADMIN
 							</button>
 						</div>
 						<div className="absolute inset-x-0 -bottom-9">
-							<p className="text-white ml-44 mr-6 p-1 border-2 border-white">
+							<p className="text-white ml-44 mr-6 p-1 border-2 border-gray-700 rounded-sm">
 								Lorem ipsum dolor sit amet, consectetur
 								adipiscing elit. Mauris placerat mi sed lorem
 								commodo, vel vehicula nunc rhoncus. Nulla quis
@@ -76,24 +76,24 @@ const UserProfilePage = () => {
 								mauris. Sed elit ex, elementum vel posuere et,
 								pharetra eu diam.
 							</p>
-							<div className="flex pt-6 pl-48 text-white">
+							<div className="flex pt-6 ml-48 text-white">
 								<p>Followers {user.followers} </p>
-								<p className="pl-2">
+								<p className="pl-5">
 									Following {user.following}{" "}
 								</p>
 							</div>
 						</div>
-						<div className="absolute -bottom-20 right-6 h-16 w-16 mr-3">
-							<button className="bg-[#7F7EFF] hover:bg-[#7F7EFF] text-white font-bold px-6 rounded">
+						<div className="absolute -bottom-20 right-7 h-16 w-16 mr-3">
+							<button className="bg-[#7F7EFF] hover:bg-[#7F7EFF] text-white py-1 px-7 font-bold rounded-sm">
 								Follow
 							</button>
 						</div>
 					</div>
-					<div className="flex bg-white mr-16 ml-48 py-2 rounded-lg">
-						<p className="pl-3 pr-5">Postings</p>
-						<p className="pr-5">Activity</p>
-						<p>About</p>
-						<p className="absolute right-20">Edit</p>
+					<div className="flex bg-white mr-16 ml-48 py-2 pl-3 rounded-sm text-gray-500">
+						<p className="pl-3 pr-5 hover:text-[#7F7EFF]">Postings</p>
+						<p className="pr-5 hover:text-[#7F7EFF]">Activity</p>
+						<p className="hover:text-[#7F7EFF]">About</p>
+						<p className="absolute right-20 hover:text-[#7F7EFF]">Edit</p>
 					</div>
 					<div className="border-b-4 mx-16 my-4 border-gray-700"></div>
 					<div className="pb-10">
@@ -102,8 +102,11 @@ const UserProfilePage = () => {
 						<div className="flex justify-center">
 							<div className="rounded-sm shadow-lg bg-white w-11/12">
 								<div className="flex bg-[#7F7EFF] py-2 rounded-sm">
-									<div className="font-bold pl-2 text-white">
+									<div className="pl-2 text-white">
 										Brand New Announcement
+									</div>
+									<div className="absolute right-16 text-white">
+										30 minutes ago
 									</div>
 								</div>
 								<img
@@ -126,7 +129,7 @@ const UserProfilePage = () => {
 										ang mahal ng sibuyas
 									</p>
 								</div>
-								<div className="flex bg-[#7F7EFF] text-white">
+								<div className="flex bg-gray-300 text-gray-500 p-2">
 									<p className="pl-2">
 										Posted By: Admin User
 									</p>
@@ -139,8 +142,11 @@ const UserProfilePage = () => {
 						<div className="flex justify-center mt-2">
 							<div className="rounded-sm shadow-lg bg-white w-11/12">
 								<div className="flex bg-[#7F7EFF] py-2 rounded-sm">
-									<div className="font-bold pl-2 text-white">
+									<div className="pl-2 text-white">
 										Brand New Announcement
+									</div>
+									<div className="absolute right-16 text-white">
+										30 minutes ago
 									</div>
 								</div>
 								<img
@@ -163,7 +169,7 @@ const UserProfilePage = () => {
 										ang mahal ng sibuyas
 									</p>
 								</div>
-								<div className="flex bg-[#7F7EFF] text-white">
+								<div className="flex bg-gray-300 text-gray-500 p-2">
 									<p className="pl-2">
 										Posted By: Admin User
 									</p>
@@ -176,8 +182,11 @@ const UserProfilePage = () => {
 						<div className="flex justify-center mt-2">
 							<div className="rounded-sm shadow-lg bg-white w-11/12">
 								<div className="flex bg-[#7F7EFF] py-2 rounded-sm">
-									<div className="font-bold pl-2 text-white">
+									<div className="pl-2 text-white">
 										Brand New Announcement
+									</div>
+									<div className="absolute right-16 text-white">
+										30 minutes ago
 									</div>
 								</div>
 								<img
@@ -200,7 +209,7 @@ const UserProfilePage = () => {
 										ang mahal ng sibuyas
 									</p>
 								</div>
-								<div className="flex bg-[#7F7EFF] text-white">
+								<div className="flex bg-gray-300 text-gray-500 p-2">
 									<p className="pl-2">
 										Posted By: Admin User
 									</p>

@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import Navbar from "./Components/Navbar";
 import CheckAuth from "./Contexts/CheckAuth";
 import ViewPost from "./Pages/ViewPost";
+import { io } from "socket.io-client";
 
 const Home = lazy(() => import("./Pages/Homepage"));
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"));
@@ -27,6 +28,10 @@ const NewPost = lazy(() => import("./Pages/NewPost"));
 const EditPost = lazy(() => import("./Pages/EditPost"));
 const AdminOnly = lazy(() => import("./Contexts/AdminOnly"));
 const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
+const socket = io.connect("http://localhost:5000", {
+	transports: ["websocket"],
+});
+// socket.emit("join", "Hello World from client");
 
 function App() {
 	const NavAndFooter = () => {

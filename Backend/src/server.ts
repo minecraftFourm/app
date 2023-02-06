@@ -1,6 +1,6 @@
-import { app, port } from "./app";
+import { server, port } from "./app";
 
 // TODO: check if DB URL exists
-app.listen(port, () => {
+server.listen(port, () => {
 	console.log(`Server running at ${port}`);
 });

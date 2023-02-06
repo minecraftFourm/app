@@ -20,8 +20,27 @@ const cors = require("cors");
 const cloudinary = require("cloudinary").v2;
 dotenv.config();
 
+const http = require("http");
+const { Server } = require("socket.io");
+
 export const port = process.env.PORT || 5000;
 export const app = express();
+export const server = http.createServer(app);
+
+const io = new Server(server);
+
+io.on("connection", (socket: any) => {
+	// console.log("User connected.");
+	// socket.on("disconnect", () => {
+	// 	console.log("user disconnected.");
+	// });
+
+	socket.on("message", function (data: any) {
+		console.log(socket.id);
+		console.log(data);
+		socket.broadcast.emit("message", `${socket.id} said ${data}`);
+	});
+});
 
 // Return "https" URLs by setting secure: true
 cloudinary.config({
@@ -54,9 +73,9 @@ app.get("/protected", auth, async (req: Request, res: Response) => {
 });
 app.use("/game", gamesRouter);
 
-app.get('/protected', auth, async (req: Request, res: Response) => {
-  return res.send("Howdy!")
-})
+app.get("/protected", auth, async (req: Request, res: Response) => {
+	return res.send("Howdy!");
+});
 
 app.use("*", (req, res) => {
 	res.status(StatusCodes.BAD_REQUEST).json({ err: "Invalid Request" });

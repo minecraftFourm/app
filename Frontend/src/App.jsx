@@ -86,9 +86,14 @@ function App() {
 						<Route path="/rules" element={<Rules />} />
 						<Route path="/games" element={<Games />} />
 						<Route path="/forum" element={<Forum />} />
+						<Route path="/user/:id" element={<UserProfilePage />} />
 						<Route
-							path="/userpage/:id"
-							element={<UserProfilePage />}
+							path="/user"
+							element={
+								<RequireAuth>
+									<UserProfilePage />
+								</RequireAuth>
+							}
 						/>
 						<Route
 							path="forum/post/:id"

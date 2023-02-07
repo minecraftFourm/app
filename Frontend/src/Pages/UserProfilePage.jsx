@@ -10,21 +10,24 @@ import Rectangle24 from "../assets/Rectangle24.png";
 import Rectangle25 from "../assets/Rectangle25.png";
 import { useParams } from "react-router-dom";
 import { useFetch } from "../Contexts/Fetch";
+import { UseUser } from "../Contexts/UserContext";
 
 const UserProfilePage = () => {
 	const { id } = useParams();
 	const [user, setUser] = useState({});
 	const [error, setError] = useState(null);
-	const [tab, setTab] = useState();
+	const [tab, setTab] = useState("postings");
 	const [isLoading, setIsLoading] = useState(true);
 	const CustomFetch = useFetch();
+	const User = UseUser();
 
 	useEffect(() => {
 		(async () => {
 			try {
+				const userId = id ? id : User.id;
 				setIsLoading(true);
 				const { data, response } = await CustomFetch({
-					url: `user/${id}`,
+					url: `user/${userId}`,
 					returnResponse: true,
 				});
 				if (!response.ok) throw new Error();
@@ -47,8 +50,11 @@ const UserProfilePage = () => {
 			{isLoading && <LoadingIcon />}
 			{!isLoading && !error && (
 				<>
-					<div className="relative m h-50 rounded-b flex justify-center pt-20 mb-24 mx-12">
-						<img src={Rectangle26} />
+					<div className="relative h-50 rounded-b flex justify-center pt-20 mb-24 mx-12">
+						<img
+							src={Rectangle26}
+							className="object-cover w-full h-full"
+						/>
 						<div className="absolute top-24 right-36 h-8 w-8 flex">
 							<img src={Rectangle21} />
 							<img src={Rectangle22} />
@@ -89,7 +95,7 @@ const UserProfilePage = () => {
 							</button>
 						</div>
 					</div>
-					<div className="flex flex-row bg-white mr-16 ml-48 py-2 pl-3 gap-4 rounded-sm text-gray-500">
+					<div className="flex flex-row gap-3 bg-white mx-8 py-1 px-2">
 						<p
 							onClick={() => updateTab("postings")}
 							className="hover:text-[#7F7EFF] cursor-pointer">
@@ -108,7 +114,7 @@ const UserProfilePage = () => {
 						{/* TODO: Add permission support */}
 						<p
 							onClick={() => updateTab("edit")}
-							className="cursor-pointer hover:text-[#7F7EFF]">
+							className="cursor-pointer hover:text-[#7F7EFF] ml-auto">
 							Edit
 						</p>
 					</div>

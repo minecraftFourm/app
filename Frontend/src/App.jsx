@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import InformationBar from "./Components/InformationBar";
 import Navbar from "./Components/Navbar";
 import CheckAuth from "./Contexts/CheckAuth";
 import ViewPost from "./Pages/ViewPost";
@@ -31,22 +32,24 @@ const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
 function App() {
 	const NavAndFooter = () => {
 		return (
-			<>
-				{/* TODO: Change to a proper loading screen  */}
-				<Navbar />
-				<Outlet />
-				<Footer />
-			</>
-		);
+            <>
+                {/* TODO: Change to a proper loading screen  */}
+                <InformationBar />
+                <Navbar />
+                <Outlet />
+                <Footer />
+            </>
+        );
 	};
 
 	const Nav = () => {
 		return (
-			<>
-				<Navbar />
-				<Outlet />
-			</>
-		);
+            <>
+                <InformationBar />
+                <Navbar />
+                <Outlet />
+            </>
+        );
 	};
 
 	const toastOptions = {

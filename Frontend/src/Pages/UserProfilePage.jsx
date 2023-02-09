@@ -11,6 +11,7 @@ import Rectangle25 from "../assets/Rectangle25.png";
 import { useParams } from "react-router-dom";
 import { useFetch } from "../Contexts/Fetch";
 import { UseUser } from "../Contexts/UserContext";
+import Overlay from "../Components/Overlay";
 
 const UserProfilePage = () => {
 	const { id } = useParams();
@@ -20,7 +21,15 @@ const UserProfilePage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const CustomFetch = useFetch();
 	const User = UseUser();
+	const [banner, setBanner] = useState(null);
 
+	const bannerList = [
+		Rectangle21,
+		Rectangle22,
+		Rectangle23,
+		Rectangle24,
+		Rectangle25,
+	];
 	useEffect(() => {
 		(async () => {
 			try {
@@ -49,75 +58,116 @@ const UserProfilePage = () => {
 		<div className="bg-[#1B263B]">
 			{isLoading && <LoadingIcon />}
 			{!isLoading && !error && (
-				<>
-					<div className="relative h-50 rounded-b flex justify-center pt-20 mb-24 mx-12">
+				<div className="pt-16 px-8 w-full">
+					<div className="relative h-[250px] w-full flex justify-end mb-2">
 						<img
-							src={Rectangle26}
-							className="object-cover w-full h-full"
+							src={banner}
+							alt=""
+							className="w-full h-full object-cover"
 						/>
-						<div className="absolute top-24 right-36 h-8 w-8 flex">
-							<img src={Rectangle21} />
-							<img src={Rectangle22} />
-							<img src={Rectangle23} />
-							<img src={Rectangle24} />
-							<img src={Rectangle25} />
-						</div>
-						<div className="absolute -bottom-24 left-2">
+						<Overlay title="" />
+						<div className="absolute top-0 right-0 flex flex-row gap-1">
 							<img
-								src={user.profilePicture}
-								className="object-cover font-bold w-36 h-36 rounded-full"
+								src={Rectangle22}
+								onClick={() => {
+									setBanner(Rectangle22);
+								}}
+								className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
 							/>
-							<p className="pl-7 text-white font-bold text-3xl">
-								{user.username}
-							</p>
-							<button
-								style={{ backgroundColor: user.role.color }}
-								className=" text-white ml-9 px-5 py-1 font-bold rounded text-xs shadow-2xl">
-								{user.role.title}
-							</button>
+							<img
+								src={Rectangle21}
+								onClick={() => {
+									setBanner(Rectangle21);
+								}}
+								className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
+							/>
+							<img
+								src={Rectangle23}
+								onClick={() => {
+									setBanner(Rectangle23);
+								}}
+								className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
+							/>
+							<img
+								src={Rectangle24}
+								onClick={() => {
+									setBanner(Rectangle24);
+								}}
+								className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
+							/>
+							<img
+								src={Rectangle25}
+								onClick={() => {
+									setBanner(Rectangle25);
+								}}
+								className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
+							/>
 						</div>
-						<div className="absolute inset-x-0 -bottom-9">
-							{user.bio && (
-								<p className="text-white ml-44 mr-6 p-1 border-2 border-gray-700 rounded-sm">
-									{user.bio}
-								</p>
-							)}
-							<div className="flex pt-6 ml-48 text-white">
-								<p>Followers {user.followers.length}</p>
-								<p className="pl-5">
-									Following {user.following.length}
-								</p>
+
+						<div className="absolute -bottom-24 w-full flex flex-row gap-0">
+							<div className="w-[200px] flex flex-col items-center">
+								<img
+									src={user.profilePicture}
+									className="w-[162px] h-[162px] object-cover rounded-full"
+									alt={`${user.username}'s profile picture`}
+								/>
+								<div className="flex flex-col items-center">
+									<h3 className="text-white capitalize text-lg font-medium">
+										{user.username}
+									</h3>
+									<p
+										style={{
+											backgroundColor: user.role.color,
+										}}
+										className="text-white w-fit px-4 rounded-sm">
+										{user.role.title}
+									</p>
+								</div>
 							</div>
-						</div>
-						<div className="absolute -bottom-20 right-7 h-16 w-16 mr-3">
-							<button className="bg-[#7F7EFF] hover:bg-[#7F7EFF] text-white py-1 px-7 font-bold rounded-sm">
-								Follow
-							</button>
+							<p className="text-gray-300 text-sm py-1 px-2 border border-gray-800 w-full mx-4 h-fit line-clamp-2">
+								{user.bio}
+							</p>
 						</div>
 					</div>
-					<div className="flex flex-row gap-3 bg-white mx-8 py-1 px-2">
-						<p
-							onClick={() => updateTab("postings")}
-							className="hover:text-[#7F7EFF] cursor-pointer">
-							Postings
-						</p>
-						<p
-							onClick={() => updateTab("activity")}
-							className="hover:text-[#7F7EFF] cursor-pointer">
-							Activity
-						</p>
-						<p
-							onClick={() => updateTab("about")}
-							className="hover:text-[#7F7EFF] cursor-pointer">
-							About
-						</p>
-						{/* TODO: Add permission support */}
-						<p
-							onClick={() => updateTab("edit")}
-							className="cursor-pointer hover:text-[#7F7EFF] ml-auto">
-							Edit
-						</p>
+
+					<div className="w-full flex flex-col mt-32 gap-2">
+						<button className="bg-[#7F7EFF] self-end hover:bg-[#7F7EFF] text-white py-1 px-7 w-fit font-bold rounded-sm">
+							Follow
+						</button>
+
+						<div className="flex flex-row gap-3 w-full bg-white py-1 px-2">
+							<p
+								onClick={() => updateTab("postings")}
+								className={`hover:text-[#7F7EFF] transition-colors duration-300 cursor-pointer ${
+									tab === "postings" ? "text-[#7F7EFF]" : ""
+								}`}>
+								Postings
+							</p>
+							<p
+								onClick={() => updateTab("activity")}
+								className={`hover:text-[#7F7EFF] transition-colors duration-300 cursor-pointer ${
+									tab === "activity" ? "text-[#7F7EFF]" : ""
+								}`}>
+								Activity
+							</p>
+							<p
+								onClick={() => updateTab("about")}
+								className={`hover:text-[#7F7EFF] transition-colors duration-300 cursor-pointer ${
+									tab === "about" ? "text-[#7F7EFF]" : ""
+								}`}>
+								About
+							</p>
+							{/* TODO: Add permission support */}
+							<p
+								onClick={() => updateTab("edit")}
+								className={`${
+									tab === "edit" ? "text-[#7F7EFF]" : ""
+								}cursor-pointer hover:text-[#7F7EFF] transition-colors duration-300 ml-auto`}>
+								Edit
+							</p>
+						</div>
 					</div>
+
 					<div className="border-b-4 mx-16 my-4 border-gray-700"></div>
 					<div className="pb-10">
 						{/* card */}
@@ -265,7 +315,7 @@ const UserProfilePage = () => {
 							</>
 						)}
 					</div>
-				</>
+				</div>
 			)}
 		</div>
 	);

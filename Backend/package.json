@@ -5,7 +5,8 @@
   "main": "app.ts",
   "scripts": {
     "dev": "nodemon",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "test": "jest --verbose"
   },
   "keywords": [],
   "author": "",

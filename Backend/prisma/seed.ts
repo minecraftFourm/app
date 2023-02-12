@@ -8,6 +8,7 @@ import roles from "../src/db/defaultConfig/roles";
 import categories from "../src/db/defaultConfig/categories";
 import mainCategories from "../src/db/defaultConfig/mainCategories";
 import users from "../src/db/defaultConfig/users";
+import posts from "../src/db/defaultConfig/posts";
 
 const main = async () => {
 	const salt = crypto.randomBytes(128);
@@ -18,6 +19,7 @@ const main = async () => {
 	const defaultMainCategories = await mainCategories();
 	const defaultCategories = await categories();
 	const defaultUsers = await users();
+	const defaultPosts = await posts();
 
 	// const announcementCategory = await prisma.category.upsert({
 	// 	where: { id: ANNOUNCEMENT_CATEGORY_ID },

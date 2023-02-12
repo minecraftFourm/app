@@ -34,3 +34,5 @@ const posts = async () => {
 		},
 	});
 };
+
+export default posts;

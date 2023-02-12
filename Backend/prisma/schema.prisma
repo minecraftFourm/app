@@ -166,3 +166,10 @@ model MainCategory {
   description String?
   categories Category[]
 }
+
+model Setting {
+  id String @id @default(uuid())
+  serverName String @unique
+  maintenance Boolean
+  infobar String
+}

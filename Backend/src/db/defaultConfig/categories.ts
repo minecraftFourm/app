@@ -96,6 +96,17 @@ const categories = async () => {
 		},
 	});
 
+	const bugCategory = await prisma.category.upsert({
+		where: { id: "2afcb215-7b89-4ff1-b82f-85c0febd808b" },
+		update: {},
+		create: {
+			id: "2afcb215-7b89-4ff1-b82f-85c0febd808b",
+			name: "Server Bug Reports",
+			adminOnly: false,
+			mainCategoryId: CONTACT_CATEGORY_ID,
+		},
+	});
+
 	return 0;
 };
 

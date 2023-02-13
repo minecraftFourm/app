@@ -13,7 +13,7 @@ import {
 	USERNAME_PATTERN,
 } from "../config";
 import CustomError from "../middlewears/custom-error";
-import { StatusCodes } from "http-status-codes";
+import {ReasonPhrases, StatusCodes } from "http-status-codes";
 
 type UserBody = {
 	username: string;
@@ -164,7 +164,9 @@ export const createUser = async (user: UserBody, res: Response) => {
 
 		return newUser;
 	} catch (error: any) {
-		throw new CustomError(error.message, error.code);
+		if(error.code === "P2003") {
+			throw new CustomError(ReasonPhrases.INTERNAL_SERVER_ERROR, StatusCodes.INTERNAL_SERVER_ERROR);
+		}
 	}
 };
 

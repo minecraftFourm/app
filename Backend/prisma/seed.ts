@@ -1,18 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-import crypto from "crypto";
-import * as argon from "argon2";
-import games from "../src/db/defaultConfig/games";
-import { ADMIN_ROLE_ID, DEFAULT_PROFILE_PICTURE } from "../src/config";
-import roles from "../src/db/defaultConfig/roles";
-import categories from "../src/db/defaultConfig/categories";
-import mainCategories from "../src/db/defaultConfig/mainCategories";
-import users from "../src/db/defaultConfig/users";
-import posts from "../src/db/defaultConfig/posts";
+import controllers from "../src/controllers";
 
 const main = async () => {
-	const salt = crypto.randomBytes(128);
-	const password = await argon.hash("adminuser", { salt });
+	const { categories, roles, users, comments, games, posts, mainCategories } =
+		controllers;
 
 	const defaultGames = await games();
 	const defaultRoles = await roles();
@@ -20,16 +12,7 @@ const main = async () => {
 	const defaultCategories = await categories();
 	const defaultUsers = await users();
 	const defaultPosts = await posts();
-
-	// const announcementCategory = await prisma.category.upsert({
-	// 	where: { id: ANNOUNCEMENT_CATEGORY_ID },
-	// 	update: {},
-	// 	create: {
-	// 		id: ANNOUNCEMENT_CATEGORY_ID,
-	// 		name: "Announcement",
-	// 		adminOnly: true,
-	// 	},
-	// });
+	const defaultComments = await comments();
 };
 
 main()

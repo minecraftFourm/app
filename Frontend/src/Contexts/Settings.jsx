@@ -1,8 +1,9 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { SETTINGS_ID } from "../config";
 import { useFetch } from "./Fetch";
 
 const SettingsProvider = createContext();
+export const useSettings = () => useContext(SettingsProvider);
 
 const Settings = ({ children }) => {
 	const CustomFetch = useFetch();

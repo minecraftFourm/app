@@ -51,6 +51,7 @@ const UserProfilePage = () => {
   }, [id]);
 
   const updateTab = (newTab) => {
+    // console.log(newTab);
     setTab(() => newTab);
   };
 
@@ -58,64 +59,42 @@ const UserProfilePage = () => {
     <div className="bg-[#1B263B]">
       {isLoading && <LoadingIcon />}
       {!isLoading && !error && (
-        <div className="pt-16 px-8 w-full">
+        <div className="pt-16 px-8 w-full flex flex-col">
           <div className="relative h-[250px] w-full flex justify-end mb-2">
-            <img src={banner} alt="" className="w-full h-full object-cover" />
+            <img src={banner} alt="" className="w-full h-full object-contain" />
             <Overlay title="" />
             <div className="absolute top-0 right-0 flex flex-row gap-1">
-              <img
-                src={Rectangle22}
-                onClick={() => {
-                  setBanner(Rectangle22);
-                }}
-                className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
-              />
-              <img
-                src={Rectangle21}
-                onClick={() => {
-                  setBanner(Rectangle21);
-                }}
-                className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
-              />
-              <img
-                src={Rectangle23}
-                onClick={() => {
-                  setBanner(Rectangle23);
-                }}
-                className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
-              />
-              <img
-                src={Rectangle24}
-                onClick={() => {
-                  setBanner(Rectangle24);
-                }}
-                className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
-              />
-              <img
-                src={Rectangle25}
-                onClick={() => {
-                  setBanner(Rectangle25);
-                }}
-                className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
-              />
+              {/* Need to change the banner list to data pulled from DB - currently saved on FE */}
+              {bannerList.map((item) => {
+                return (
+                  <img
+                    key={item}
+                    src={item}
+                    onClick={() => {
+                      setBanner(item);
+                    }}
+                    className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
+                  />
+                );
+              })}
             </div>
 
-            <div className="absolute -bottom-32 w-full flex flex-row gap-0">
-              <div className="w-[250px] flex flex-col items-center border-2 border-indigo-500">
+            <div className="absolute -bottom-32 sm:-bottom-0 w-full flex flex-row gap-0">
+              <div className="sm:w-full w-[250px] flex flex-col items-center border-2 border-green-500">
                 <img
                   src={user.profilePicture}
-                  className="w-[200px] h-[200px] object-cover rounded-full"
+                  className="w-[200px] h-[200px] sm:w-[40px] sm:h-[40px] object-cover rounded-full"
                   alt={`${user.username}'s profile picture`}
                 />
                 <div className="flex flex-col items-center">
-                  <h3 className="text-white capitalize text-lg font-medium">
+                  <h3 className="text-white capitalize text-lg sm:text-md font-medium">
                     {user.username}
                   </h3>
                   <p
                     style={{
                       backgroundColor: user.role.color,
                     }}
-                    className="text-white w-fit px-4 rounded-sm"
+                    className="text-white w-full px-4 rounded-sm"
                   >
                     {user.role.title}
                   </p>
@@ -127,36 +106,36 @@ const UserProfilePage = () => {
             </div>
           </div>
 
-          <div className="w-full flex flex-col gap-2 border-2 border-indigo-300">
+          <div className="w-[85%] sm:w-full flex flex-col gap-2 self-end border-2 border-green-500 z-10">
             <button className="bg-[#7F7EFF] self-end hover:bg-[#7F7EFF] text-white py-1 px-7 w-fit font-bold rounded-sm">
               Follow
             </button>
 
-            <div className="flex flex-row gap-3 w-3/4 bg-white py-2 px-4 self-end mt-10">
-              <p
+            <div className="flex flex-row gap-3 w-full sm:w-full bg-white py-2 px-4 self-end mt-10 rounded-sm">
+              <button
                 onClick={() => updateTab("postings")}
                 className={`hover:text-[#7F7EFF] transition-colors duration-300 cursor-pointer ${
                   tab === "postings" ? "text-[#7F7EFF]" : ""
                 }`}
               >
                 Postings
-              </p>
-              <p
-                onClick={() => updateTab("activity")}
+              </button>
+              <button
                 className={`hover:text-[#7F7EFF] transition-colors duration-300 cursor-pointer ${
                   tab === "activity" ? "text-[#7F7EFF]" : ""
                 }`}
+                onClick={() => updateTab("activity")}
               >
                 Activity
-              </p>
-              <p
+              </button>
+              <button
                 onClick={() => updateTab("about")}
                 className={`hover:text-[#7F7EFF] transition-colors duration-300 cursor-pointer ${
                   tab === "about" ? "text-[#7F7EFF]" : ""
                 }`}
               >
                 About
-              </p>
+              </button>
               {/* TODO: Add permission support */}
               <p
                 onClick={() => updateTab("edit")}
@@ -175,8 +154,8 @@ const UserProfilePage = () => {
             {tab === "postings" && (
               <>
                 <div className="flex justify-center">
-                  <div className="rounded-sm shadow-lg bg-white ">
-                    <div className="flex bg-[#7F7EFF] py-2 rounded-sm">
+                  <div className="rounded-md shadow-lg bg-white ">
+                    <div className="flex bg-[#7F7EFF] py-2 rounded-t-md shadow-lg">
                       <div className="pl-2 text-white">
                         Brand New Announcement
                       </div>
@@ -201,7 +180,7 @@ const UserProfilePage = () => {
                         iba ang mahal ng sibuyas
                       </p>
                     </div>
-                    <div className="flex bg-gray-300 text-gray-500 p-2">
+                    <div className="flex bg-gray-300 text-gray-500 p-2 rounded-b-md">
                       <p className="pl-2">Posted By: Admin User</p>
                       <p className="absolute right-16">120 Comments</p>
                     </div>

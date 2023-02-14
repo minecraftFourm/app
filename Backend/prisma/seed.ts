@@ -1,10 +1,18 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-import controllers from "../src/controllers";
+import controllers from "../src/db/defaultConfig";
 
 const main = async () => {
-	const { categories, roles, users, comments, games, posts, mainCategories } =
-		controllers;
+	const {
+		categories,
+		roles,
+		users,
+		comments,
+		games,
+		posts,
+		mainCategories,
+		settings,
+	} = controllers;
 
 	const defaultGames = await games();
 	const defaultRoles = await roles();
@@ -13,6 +21,7 @@ const main = async () => {
 	const defaultUsers = await users();
 	const defaultPosts = await posts();
 	const defaultComments = await comments();
+	const defaultSettings = await settings();
 };
 
 main()

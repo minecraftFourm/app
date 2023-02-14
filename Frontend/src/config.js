@@ -21,5 +21,6 @@ export const TOAST_OPTIONS = {
 	position: "bottom-left",
 };
 
-export const MC_API = "https://api.mcsrvstat.us/2/"
-export const SERVER_IP = "hypixel.net"
+export const SETTINGS_ID = "f4a52bb2-29a7-4e6a-9326-f7c2db81127a";
+export const MC_API = "https://api.mcsrvstat.us/2/";
+export const SERVER_IP = "hypixel.net";

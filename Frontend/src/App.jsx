@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import Navbar from "./Components/Navbar";
 import CheckAuth from "./Contexts/CheckAuth";
 import ViewPost from "./Pages/ViewPost";
+import Settings from "./Contexts/Settings";
 
 const Home = lazy(() => import("./Pages/Homepage"));
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"));
@@ -78,14 +79,16 @@ function App() {
 					<Toaster toastOptions={toastOptions} />
 
 					<Routes>
-						{/* TODO: Add adminOnly middlewear */}
 						<Route path="/dashboard" element={<Dashboard />}>
 							<Route
 								element={<Announcements />}
 								path="announcement"
 							/>
 						</Route>
-						<Route path="/maintenance" element={<MaintenancePage />} />
+						<Route
+							path="/maintenance"
+							element={<MaintenancePage />}
+						/>
 
 						<Route element={<NavAndFooter />}>
 							<Route path="/" element={<Home />} />
@@ -94,12 +97,7 @@ function App() {
 							<Route path="/forum" element={<Forum />} />
 							<Route
 								path="forum/post/:id"
-								element={
-									// <AdminOnly>
-									// 	<ViewAnnouncement />
-									// </AdminOnly>
-									<ViewPost />
-								}
+								element={<ViewPost />}
 							/>
 							<Route
 								path="forum/edit/:id"

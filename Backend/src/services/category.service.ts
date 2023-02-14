@@ -87,7 +87,7 @@ export const handleUpdateCategory = async ({
 		data: {
 			name,
 			adminOnly,
-			mainCategoryId,
+			id: mainCategoryId,
 		},
 	});
 

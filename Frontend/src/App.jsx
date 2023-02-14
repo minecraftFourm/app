@@ -25,6 +25,7 @@ const Posts = lazy(() => import("./Pages/Forum/PostsInCategory"));
 const NotFound = lazy(() => import("./Pages/NotFoundPage"));
 const NewPost = lazy(() => import("./Pages/NewPost"));
 const EditPost = lazy(() => import("./Pages/EditPost"));
+const MaintenancePage = lazy(() => import("./Pages/MaintenancePage"));
 const AdminOnly = lazy(() => import("./Contexts/AdminOnly"));
 const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
 
@@ -84,6 +85,7 @@ function App() {
 								path="announcement"
 							/>
 						</Route>
+						<Route path="/maintenance" element={<MaintenancePage />} />
 
 						<Route element={<NavAndFooter />}>
 							<Route path="/" element={<Home />} />

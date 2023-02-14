@@ -85,13 +85,13 @@ function App() {
 								path="announcement"
 							/>
 						</Route>
+						<Route path="/maintenance" element={<MaintenancePage />} />
 
 						<Route element={<NavAndFooter />}>
 							<Route path="/" element={<Home />} />
 							<Route path="/rules" element={<Rules />} />
 							<Route path="/games" element={<Games />} />
 							<Route path="/forum" element={<Forum />} />
-							<Route path="/maintenance" element={<MaintenancePage />} />
 							<Route
 								path="forum/post/:id"
 								element={

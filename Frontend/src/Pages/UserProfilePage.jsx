@@ -53,8 +53,6 @@ const UserProfilePage = () => {
 
   // console.log(user);
 
-  const loadMorePost = async () => {};
-
   const updateTab = (newTab) => {
     // console.log(newTab);
     setTab(() => newTab);

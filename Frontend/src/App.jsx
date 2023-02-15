@@ -27,6 +27,7 @@ const NewPost = lazy(() => import("./Pages/NewPost"));
 const EditPost = lazy(() => import("./Pages/EditPost"));
 const AdminOnly = lazy(() => import("./Contexts/AdminOnly"));
 const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
+const User = lazy(() => import("./Pages/UserProfilePage"));
 
 function App() {
   const NavAndFooter = () => {
@@ -104,6 +105,7 @@ function App() {
                   </RequireAuth>
                 }
               />
+              <Route path="user/:id" element={<User />} />
               <Route path="forum/category/:id" element={<Posts />} />
               <Route element={<AnnouncementHome />} path="" />
               <Route element={<NewAnnouncement />} path="newAnnouncement" />

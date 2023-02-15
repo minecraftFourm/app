@@ -1,4 +1,5 @@
 import React from "react";
+import parse from "html-react-parser";
 
 const UserAnnouncement = (props) => {
   console.log(props);
@@ -12,7 +13,7 @@ const UserAnnouncement = (props) => {
           <div className="pl-2 text-white">{title}</div>
           <div className="absolute right-16 text-white">30 minutes ago</div>
         </div>
-        {content}
+        {parse(content)}
         {/* <img className="rounded-t-lg w-full p-2" src={Rectangle7} alt="" />
         <div className="p-6">
           <p className="text-gray-700 text-base mb-4">

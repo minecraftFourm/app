@@ -1,132 +1,140 @@
-import React, { useEffect } from "react";
+import React, { lazy, useEffect } from "react";
 import ForumHeader from "../../Components/ForumHeader";
+import FormPageContent from "../../Components/ForumPage/FourmPageContent";
+import RecentComments from "../../Components/HomePage/RecentComments";
+import RecentPosts from "../../Components/HomePage/RecentPosts";
+import RecentUsers from "../../Components/HomePage/RecentUsers";
+import { LoadingIcon } from "../../Components/Icons";
 import { useFetch } from "../../Contexts/Fetch";
+const ErrorComponent = lazy(() => import("../../Components/Error"));
 
 const Forumpage = () => {
-  const CustomFetch = useFetch();
+	const CustomFetch = useFetch();
+	const [category, setCategory] = React.useState(null);
+	const [isLoading, setIsLoading] = React.useState(true);
+	const [error, setError] = React.useState(null);
+	const [comments, setComments] = React.useState(null);
+	const [posts, setPosts] = React.useState(null);
+	const [users, setUsers] = React.useState(null);
 
-  useEffect(() => {
-    (async () => {
-      const { data, response } = await CustomFetch({ url: 'category', returnResponse: true });
-    })();
-  }, [])
-  return (
-    <div className="pb-32 bg-[#1B263B] ">
-      {/* Hero */}
-      <ForumHeader />
+	useEffect(() => {
+		(async () => {
+			try {
+				const { data, response } = await CustomFetch({
+					url: "mainCategory",
+					returnResponse: true,
+				});
 
-      {/* Forum */}
-      <div className="w-full h-[1200px] pt-16 flex px-16 py-4 gap-8">
-        <section className="w-full bg-white h-full px-4 py-6 flex flex-col gap-6">
+				const { data: commentsData } = await CustomFetch({
+					url: "comment?limit=5",
+				});
+				setComments(commentsData.data);
 
-        <section className="w-full h-fit border border-slate-400 rounded-md overflow-hidden bg-violet-500">
-            <div className="bg-white px-2 py-2">
-              <h3 className="font-semibold text-lg">Official Updates</h3>
-              <p className="text-sm">Official news, announcements, and information posted by `ServerName` Administrators regarding the network</p>
-            </div>
-            <section className="py-4 px-2 flex flex-col gap-2">
+				// TODO: Needs to be sort based on how much comments it has
+				const { data: postsData } = await CustomFetch({
+					url: "post?limit=5",
+				});
+				setPosts(postsData.data);
 
-              <div className="w-full flex flex-row justify-between bg-white p-2 items-center rounded-md cursor-pointer">
-                <div className="flex gap-4 items-center flex-row">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="text-violet-500 w-8 h-8">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-                  </svg>
-                  <h4 className="font-medium">News & Announcement</h4>
-                </div>
-                <div className="flex flex-row justify-between gap-8 items-center">
-                  <div className="flex flex-col items-center">
-                    <h5 className="text-violet-500">Posts</h5>
-                    <p className="font-semibold">100</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <h5 className="text-violet-500">Messages</h5>
-                    <p className="font-semibold">1.3k</p>
-                  </div>
-                </div>  
-              </div>
+				const { data: userData, response: userResponse } =
+					await CustomFetch({ url: "user?limit=5", returnResponse: true });
 
-              <div className="w-full flex flex-row justify-between bg-white p-2 items-center rounded-md cursor-pointer">
-                <div className="flex gap-4 items-center flex-row">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="text-violet-500 w-8 h-8">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-                  </svg>
+				if (userResponse.ok) {
+					// * Sorts the user based on the amount of posts they have in descending order.
+					const user = userData.data;
+					const sortedList = user.sort((a, b) => {
+						return b.post.length - a.post.length;
+					})
+					setUsers(sortedList)
+				}
 
-                  <h4 className="font-medium">Moderation Information and Changes</h4>
-                </div>
-                <div className="flex flex-row justify-between gap-8 items-center">
-                  <div className="flex flex-col items-center">
-                    <h5 className="text-violet-500">Posts</h5>
-                    <p className="font-semibold">100</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <h5 className="text-violet-500">Messages</h5>
-                    <p className="font-semibold">1.3k</p>
-                  </div>
-                </div>  
-              </div>
+				if (!response.ok) throw new Error();
+				setCategory(data.data);
+			} catch (error) {
+				console.log(error);
+				setError(error);
+			} finally {
+				setIsLoading(false);
+			}
+		})();
+	}, []);
 
-            </section>
-          </section>
+	return (
+		<div className="pb-32 bg-[#1B263B] ">
+			{/* Hero */}
+			<ForumHeader />
 
+			{/* Forum */}
+			<div className="w-full pt-16 flex px-16 py-4 gap-8">
+				{error && <ErrorComponent />}
+				{isLoading && <LoadingIcon color="#fff" />}
+				{!isLoading && !error && (
+					<>
+						<section className="w-full bg-white h-fit px-4 py-6 flex flex-col gap-6">
+							{category && (
+								<FormPageContent category={category} />
+							)}
+						</section>
+						<aside className="h-fit w-[450px] lg:hidden bg-white pt-6 pb-2 px-2 flex flex-col gap-4">
+							<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
+								<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">
+									Recent Comments
+								</p>
+								<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
+									{comments.length !== 0 && (
+										<RecentComments items={comments} />
+									)}
 
-          {/*  */}
+									{comments.length === 0 && (
+										<p className="text-center text-sm text-gray-600">
+											There are currently no recent
+											comments.
+										</p>
+									)}
+								</div>
+							</div>
 
-          <section className="w-full h-fit border border-slate-400 rounded-md overflow-hidden bg-violet-500">
-            <div className="bg-white px-2 py-2">
-              <h3 className="font-semibold text-lg">`ServerName` Community</h3>
-              <p className="text-sm">Check out all the other forum sections dedicated to community creations, events, and non-`serverName` related discussions!</p>
-            </div>
-            <section className="py-4 px-2 flex flex-col gap-2">
+							<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
+								<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">
+									Top Posts
+								</p>
+								<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
+									{posts.length !== 0 && (
+										<RecentPosts items={posts} />
+									)}
 
-              <div className="w-full flex flex-row justify-between bg-white p-2 items-center rounded-md cursor-pointer">
-                <div className="flex gap-4 items-center flex-row">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="text-violet-500 w-8 h-8">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-                  </svg>
+									{posts.length === 0 && (
+										<p className="text-center text-sm text-gray-600">
+											There are currently no recent
+											comments.
+										</p>
+									)}
+								</div>
+							</div>
 
-                  <h4 className="font-medium">Introduce yourself</h4>
-                </div>
-                <div className="flex flex-row justify-between gap-8 items-center">
-                  <div className="flex flex-col items-center">
-                    <h5 className="text-violet-500">Posts</h5>
-                    <p className="font-semibold">100</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <h5 className="text-violet-500">Messages</h5>
-                    <p className="font-semibold">1.3k</p>
-                  </div>
-                </div>  
-              </div>
+							<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400">
+								<p className="w-full bg-violet-500 text-white px-2 py-1 drop-shadow-lg">
+									Top Users
+								</p>
+								<div className="flex flex-col gap-2 mt-2 px-1 min-h-[250px]">
+									{users.length !== 0 && (
+										<RecentUsers items={users} />
+									)}
 
-              <div className="w-full flex flex-row justify-between bg-white p-2 items-center rounded-md cursor-pointer">
-                <div className="flex gap-4 items-center flex-row">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="text-violet-500 w-8 h-8">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-                  </svg>
-
-                  <h4 className="font-medium">`ServerName` Events</h4>
-                </div>
-                <div className="flex flex-row justify-between gap-8 items-center">
-                  <div className="flex flex-col items-center">
-                    <h5 className="text-violet-500">Posts</h5>
-                    <p className="font-semibold">100</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <h5 className="text-violet-500">Messages</h5>
-                    <p className="font-semibold">1.3k</p>
-                  </div>
-                </div>  
-              </div>
-
-            </section>
-          </section>
-
-
-        </section>
-        <aside className="h-[900px] w-[450px] bg-white pt-6 pb-2 px-2 flex flex-col gap-4"></aside>
-      </div>
-    </div>
-  );
+									{users.length === 0 && (
+										<p className="text-center text-sm text-gray-600">
+											There are currently no recent
+											comments.
+										</p>
+									)}
+								</div>
+							</div>
+						</aside>
+					</>
+				)}
+			</div>
+		</div>
+	);
 };
 
 export default Forumpage;

@@ -37,15 +37,18 @@ const Forumpage = () => {
 				setPosts(postsData.data);
 
 				const { data: userData, response: userResponse } =
-					await CustomFetch({ url: "user?limit=5", returnResponse: true });
+					await CustomFetch({
+						url: "user?limit=5",
+						returnResponse: true,
+					});
 
 				if (userResponse.ok) {
 					// * Sorts the user based on the amount of posts they have in descending order.
 					const user = userData.data;
 					const sortedList = user.sort((a, b) => {
 						return b.post.length - a.post.length;
-					})
-					setUsers(sortedList)
+					});
+					setUsers(sortedList);
 				}
 
 				if (!response.ok) throw new Error();
@@ -65,7 +68,7 @@ const Forumpage = () => {
 			<ForumHeader />
 
 			{/* Forum */}
-			<div className="w-full pt-16 flex px-16 py-4 gap-8">
+			<div className="w-full pt-16 flex sm:px-2 ms:px-8 px-16 py-4 gap-8">
 				{error && <ErrorComponent />}
 				{isLoading && <LoadingIcon color="#fff" />}
 				{!isLoading && !error && (

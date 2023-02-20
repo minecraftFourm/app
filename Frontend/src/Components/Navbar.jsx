@@ -112,7 +112,9 @@ const Navbar = () => {
 						</div>
 					)}
 				</div>
-				<div onClick={handleNav} className="hidden md:block">
+				<div
+					onClick={handleNav}
+					className="hidden md:block cursor-pointer">
 					{nav ? "" : <AiOutlineMenu size={30} />}
 				</div>
 				<ul
@@ -123,9 +125,8 @@ const Navbar = () => {
 					}>
 					<li
 						onClick={handleNav}
-						className="absolute top-3 right-3 m-3">
-						{" "}
-						<AiOutlineClose size={20} />{" "}
+						className="absolute top-3 right-3 m-3 cursor-pointer">
+						<AiOutlineClose size={20} />
 					</li>
 
 					<li onClick={handleNav} className="mt-8 p-4 ml-2">

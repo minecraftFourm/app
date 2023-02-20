@@ -91,7 +91,7 @@ const Posts = (props) => {
 							</Link>
 						</div>
 					</div>
-					<p className="self-center text-sm text-gray-400 font-medium min-w-fit flex-1">
+					<p className="self-center text-sm sm:hidden text-gray-400 font-medium min-w-fit flex-1">
 						{comments.length}{" "}
 						{comments.length === 0
 							? "Replies"

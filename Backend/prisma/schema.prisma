@@ -141,7 +141,7 @@ enum reactionType {
 
 model Comment {
   id      String   @id @default(uuid())
-  post    Post     @relation(fields: [postId], references: [id])
+  post    Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId  String
   comment String
   userId  String

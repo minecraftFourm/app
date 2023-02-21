@@ -16,6 +16,7 @@ import { options } from "./swagger-options";
 import { StatusCodes } from "http-status-codes";
 import { gamesRouter } from "./routes/game.routes";
 import { settingRouter } from "./routes/setting.route";
+import { rulesRouter } from "./routes/rule.routes";
 const morgan = require("morgan");
 const cors = require("cors");
 const cloudinary = require("cloudinary").v2;
@@ -49,16 +50,17 @@ app.use("/user", userRouter);
 app.use("/comment", commentRouter);
 app.use("/game", gamesRouter);
 app.use("/mainCategory", mainCategoryRouter);
-app.use('/setting', settingRouter);
+app.use("/setting", settingRouter);
+app.use("/rule", rulesRouter);
 
 app.get("/protected", auth, async (req: Request, res: Response) => {
 	return res.send("Howdy!");
 });
 app.use("/game", gamesRouter);
 
-app.get('/protected', auth, async (req: Request, res: Response) => {
-  return res.send("Howdy!")
-})
+app.get("/protected", auth, async (req: Request, res: Response) => {
+	return res.send("Howdy!");
+});
 
 app.use("*", (req, res) => {
 	res.status(StatusCodes.BAD_REQUEST).json({ err: "Invalid Request" });

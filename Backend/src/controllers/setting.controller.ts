@@ -10,6 +10,6 @@ export const getSettings = async (req: Req, res: Response) => {
 
 export const getSetting = async (req: Req, res: Response) => {
 	const { id } = req.params;
-	const setting = await prisma.setting.findUnique({ where: { id: id } });
+	const setting = await prisma.setting.findUnique({ where: { id } });
 	res.json({ message: "success", data: setting }).status(StatusCodes.OK);
 };

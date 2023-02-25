@@ -68,11 +68,13 @@ const Posts = () => {
 		if (data && User.isAuthenticated) {
 			// * If user is authenticated, and has permission to post, or if the category is an adminOnly category and the user has admin permissions.
 			const { adminOnly } = data;
-			const { role: { isAdmin, canCreatePost }} = User
-			if ((adminOnly && isAdmin) || !adminOnly && canCreatePost ) setShowAddIcon(true);
-		}
-		else {
-			setShowAddIcon(false)
+			const {
+				role: { isAdmin, canCreatePost },
+			} = User;
+			if ((adminOnly && isAdmin) || (!adminOnly && canCreatePost))
+				setShowAddIcon(true);
+		} else {
+			setShowAddIcon(false);
 		}
 	}, [data]);
 
@@ -151,7 +153,7 @@ const Posts = () => {
 			<div className="mt-32 px-2 w-full h-full">
 				<div className="bg-white w-full h-full min-h-[792px] p-2">
 					<div className="border border-gray-400 min-h-[792px] relative">
-						<header className="flex justify-between flex-row bg-gray-300 p-2 gap-6 items-center">
+						<header className="flex justify-between flex-row bg-gray-300 p-2 gap-6 items-center sm:flex-col-reverse sm:gap-0 sm:items-start">
 							<h1 className="text-gray-600 text-2xl font-semibold">
 								{data && data.name} {isLoading && "Loading..."}
 							</h1>

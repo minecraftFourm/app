@@ -18,6 +18,7 @@ export const generalUserSelect = {
 	following: true,
 	post: true,
 	role: true,
+	reactions: true,
 };
 
 type pictureStats = {

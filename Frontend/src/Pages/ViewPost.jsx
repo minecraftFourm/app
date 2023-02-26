@@ -5,6 +5,8 @@ import ForumHeader from "../Components/ForumHeader";
 import { useFetch } from "../Contexts/Fetch";
 import { LoadingIcon } from "../Components/Icons";
 import { format } from "timeago.js";
+import Comments from "../Components/ForumPage/Comments";
+import { UseUser } from "../Contexts/UserContext";
 
 const ViewPost = () => {
 	const { id } = useParams();
@@ -12,6 +14,7 @@ const ViewPost = () => {
 	const [post, setPost] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [err, setErr] = useState(null);
+	const User = UseUser();
 
 	useEffect(() => {
 		(async () => {
@@ -35,7 +38,7 @@ const ViewPost = () => {
 	console.log(post);
 
 	return (
-		<div className="bg-[#1B263B]">
+		<div className="bg-[#1B263B] pb-16">
 			<ForumHeader />
 			{isLoading && (
 				<div className="mt-4">
@@ -63,9 +66,11 @@ const ViewPost = () => {
 										src={post.owner.profilePicture}
 										alt={`profile picture of ${post.owner.username}`}></img>
 									<div className="w-full h-fit flex flex-col flex-wrap items-center justify-center mt-2">
-										<p className="text-3xl font-bold capitalize">
+										<Link
+											to={`/user/${post.ownerId}`}
+											className="text-3xl font-bold capitalize">
 											{post.owner.username}
-										</p>
+										</Link>
 
 										<div>
 											<p
@@ -108,9 +113,65 @@ const ViewPost = () => {
 									dangerouslySetInnerHTML={{
 										__html: post.content,
 									}}></div>
-								<p className="text-gray-500 text-sm">
-									{format(post.updated)}
-								</p>
+								<div className="w-full justify-between flex flex-row text-gray-500">
+									<p className="text-gray-500 text-sm">
+										{format(post.updated)}
+									</p>
+									<div className="flex flex-row gap-3">
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											strokeWidth={1.5}
+											stroke="currentColor"
+											className="w-6 h-6 cursor-pointer">
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
+											/>
+										</svg>
+
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											strokeWidth={1.5}
+											stroke="currentColor"
+											className="w-6 h-6 cursor-pointer">
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5"
+											/>
+										</svg>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div className="mt-8 px-2">
+							<div className="w-full flex flex-row justify-between gap-2 items-center px-2 text-violet-500">
+								<h4 className="text-2xl font-bold">Comments</h4>
+								{User.isAuthenticated && (
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										strokeWidth={1.5}
+										stroke="currentColor"
+										className="w-8 h-8 cursor-pointer hover:text-violet-600 duration-300">
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											d="M12 4.5v15m7.5-7.5h-15"
+										/>
+									</svg>
+								)}
+							</div>
+
+							<div>
+								<Comments comments={post.comments} />
 							</div>
 						</div>
 					</div>

@@ -1,14 +1,18 @@
 import React from "react";
 import { toast } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { format } from "timeago.js";
 import { useFetch } from "../../Contexts/Fetch";
 import { UseUser } from "../../Contexts/UserContext";
+import { useCopyToClipboard } from "usehooks-ts";
+import { DOMAIN_NAME } from "../../config";
 
 const Comments = (props) => {
 	const { comments, reloadComments } = props;
 	const { role: UserRole, isAuthenticated, id: CurrentUserID } = UseUser();
 	const CustomFetch = useFetch();
+	const [value, copy] = useCopyToClipboard();
+	const location = useLocation();
 
 	const deleteComment = async (commentId) => {
 		const DeleteComment = CustomFetch({
@@ -36,6 +40,15 @@ const Comments = (props) => {
 		});
 	};
 
+	const copyLink = (id) => {
+		copy(DOMAIN_NAME + location.pathname + `#${id}`);
+		toast("Successfully Copied Link", {
+			duration: 2000,
+			className: "bg-gray-800 text-white",
+			position: "bottom-left",
+		});
+	};
+
 	const Component = () => {
 		return comments.map((comment) => {
 			const {
@@ -52,7 +65,7 @@ const Comments = (props) => {
 					id: userId,
 				},
 			} = comment;
-			console.log(comment);
+
 			return (
 				<div
 					key={id}
@@ -136,7 +149,8 @@ const Comments = (props) => {
 									viewBox="0 0 24 24"
 									strokeWidth={1.5}
 									stroke="currentColor"
-									className="w-6 h-6 cursor-pointer">
+									className="w-6 h-6 cursor-pointer active:text-violet-500"
+									onClick={() => copyLink(id)}>
 									<path
 										strokeLinecap="round"
 										strokeLinejoin="round"

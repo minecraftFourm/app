@@ -131,6 +131,23 @@ const Posts = () => {
 		}
 	}, [debounceValue]);
 
+	const updateCategoryDetails = async () => {
+		setIsLoading(true);
+		const { data, response } = await CustomFetch({
+			url: `category/${id}`,
+			returnResponse: true,
+		});
+
+		if (!response.ok) {
+			// TODO: redirect to not found page.
+			return alert("Can't find category");
+		}
+
+		setIsLoading(false);
+		setData(data.data);
+		setAllPosts(data.data.posts);
+	};
+
 	const previousPage = () => {
 		// console.log(currentPage);
 		setCurrentPage(currentPage - 1);
@@ -180,7 +197,12 @@ const Posts = () => {
 						</header>
 
 						<section className="mt-8 flex flex-col gap-2 pb-8 px-2">
-							{data && <PostComponent posts={showThesePosts} />}
+							{data && (
+								<PostComponent
+									posts={showThesePosts}
+									refreshPosts={updateCategoryDetails}
+								/>
+							)}
 							{!data && <LoadingIcon color="text-black" />}
 						</section>
 						<section

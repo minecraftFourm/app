@@ -12,6 +12,7 @@ export const USERNAME_REQUIREMENT =
 	"Minimum 5 characters, cannot end with special characters, Maximum length is 32 characters.";
 
 export const MAX_TITLE_LENGTH = 300;
+export const DOMAIN_NAME = "http://localhost:3000";
 
 export const ANNOUNCEMENT_CATEGORY_ID = "d0ed3d28-bbe4-4e61-b473-cb0dd2257861";
 export const ANNOUNCEMENT_CATEGORY_NAME = "announcement";
@@ -21,5 +22,6 @@ export const TOAST_OPTIONS = {
 	position: "bottom-left",
 };
 
-export const MC_API = "https://api.mcsrvstat.us/2/"
-export const SERVER_IP = "hypixel.net"
+export const SETTINGS_ID = "f4a52bb2-29a7-4e6a-9326-f7c2db81127a";
+export const MC_API = "https://api.mcsrvstat.us/2/";
+export const SERVER_IP = "hypixel.net";

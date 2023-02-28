@@ -83,7 +83,12 @@ const NewPost = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const content = EditorValue();
-		if (inputState.title && inputState.category && content.length > 0) {
+		if (
+			inputState.title &&
+			inputState.category &&
+			content &&
+			content.length > 0
+		) {
 			setDisableSubmit(true);
 			try {
 				const CreatePost = CustomFetch({

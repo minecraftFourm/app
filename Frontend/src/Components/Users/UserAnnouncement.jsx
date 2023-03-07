@@ -1,5 +1,6 @@
 import React from "react";
 import parse from "html-react-parser";
+import { format } from "timeago.js";
 
 const UserAnnouncement = (props) => {
   console.log(props);
@@ -11,7 +12,7 @@ const UserAnnouncement = (props) => {
       <div className="rounded-md shadow-lg bg-white ">
         <div className="flex bg-[#7F7EFF] py-2 rounded-t-md shadow-lg">
           <div className="pl-2 text-white">{title}</div>
-          <div className="absolute right-16 text-white">30 minutes ago</div>
+          <div className="pr-2 ml-auto text-white">{format(updated)}</div>
         </div>
         {parse(content)}
         {/* <img className="rounded-t-lg w-full p-2" src={Rectangle7} alt="" />
@@ -26,8 +27,8 @@ const UserAnnouncement = (props) => {
           </p>
         </div> */}
         <div className="flex bg-gray-300 text-gray-500 p-2 rounded-b-md">
-          <p className="pl-2">Posted By: Admin User</p>
-          <p className="absolute right-16">120 Comments</p>
+          <p className="pl-2">Posted By: {props.userName}</p>
+          {/* <p className="absolute right-16">120 Comments</p> */}
         </div>
       </div>
     </div>

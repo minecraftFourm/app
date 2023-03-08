@@ -6,6 +6,7 @@ import Navbar from "./Components/Navbar";
 import CheckAuth from "./Contexts/CheckAuth";
 import ViewPost from "./Pages/ViewPost";
 import Settings from "./Contexts/Settings";
+import Profile from "./Pages/Profile";
 
 const Home = lazy(() => import("./Pages/Homepage"));
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"));
@@ -34,24 +35,24 @@ const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
 function App() {
 	const NavAndFooter = () => {
 		return (
-            <>
-                {/* TODO: Change to a proper loading screen  */}
-                <InformationBar />
-                <Navbar />
-                <Outlet />
-                <Footer />
-            </>
-        );
+			<>
+				{/* TODO: Change to a proper loading screen  */}
+				<InformationBar />
+				<Navbar />
+				<Outlet />
+				<Footer />
+			</>
+		);
 	};
 
 	const Nav = () => {
 		return (
-            <>
-                <InformationBar />
-                <Navbar />
-                <Outlet />
-            </>
-        );
+			<>
+				<InformationBar />
+				<Navbar />
+				<Outlet />
+			</>
+		);
 	};
 
 	const toastOptions = {
@@ -98,6 +99,15 @@ function App() {
 							<Route path="/rules" element={<Rules />} />
 							<Route path="/games" element={<Games />} />
 							<Route path="/forum" element={<Forum />} />
+							<Route path="/user/:id" element={<Profile />} />
+							<Route
+								path="/profile"
+								element={
+									<RequireAuth>
+										<Profile />
+									</RequireAuth>
+								}
+							/>
 							<Route
 								path="forum/post/:id"
 								element={<ViewPost />}
@@ -106,7 +116,7 @@ function App() {
 								path="forum/edit/:id"
 								element={
 									<RequireAuth>
-										<EditAnnouncement />
+										<EditPost />
 									</RequireAuth>
 								}
 							/>

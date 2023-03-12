@@ -7,6 +7,7 @@ const Announcement = ({ ...props }) => {
 	const Items = props.items;
 	const Component = () => {
 		return Items.map((item) => {
+			console.log(item);
 			const {
 				id,
 				title,

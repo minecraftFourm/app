@@ -293,7 +293,48 @@ export const handleEditUser = async (req: Req) => {
 export const handleGetUser = async (id: string) => {
 	const user = await prisma.user.findUnique({
 		where: { id },
-		select: generalUserSelect,
+		select: {
+			id: true,
+			username: true,
+			email: true,
+			profilePicture: true,
+			bio: true,
+			created: true,
+			followers: {
+				select: {
+					user: {
+						select: generalUserSelect,
+					},
+				},
+			},
+			following: {
+				select: {
+					user: {
+						select: generalUserSelect,
+					},
+				},
+			},
+			post: {
+				select: {
+					id: true,
+					title: true,
+					content: true,
+					comments: true,
+					updated: true,
+					reactions: true,
+					category: true,
+					owner: true,
+				},
+			},
+			role: {
+				select: {
+					id: true,
+					title: true,
+					color: true,
+					isStaff: true,
+				},
+			},
+		},
 	});
 
 	if (!user) throw new CustomError("User not found", StatusCodes.NOT_FOUND);

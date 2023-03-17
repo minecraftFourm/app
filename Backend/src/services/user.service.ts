@@ -323,8 +323,20 @@ export const handleGetUser = async (id: string) => {
 					updated: true,
 					reactions: true,
 					category: true,
-					owner: true,
+					owner: {
+						select: generalUserSelect,
+					},
 				},
+			},
+			comments: {
+				select: {
+					comment: true,
+					updated: true,
+					post: true,
+					postId: true,
+					id: true,
+				},
+				orderBy: { updated: "asc" },
 			},
 			role: {
 				select: {

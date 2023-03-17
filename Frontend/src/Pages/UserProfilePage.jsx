@@ -11,10 +11,12 @@ import { useFetch } from "../Contexts/Fetch";
 import { UseUser } from "../Contexts/UserContext";
 import Overlay from "../Components/Overlay";
 import Announcement from "../Components/HomePage/Announcement";
+import DisplayActivities from "../Components/Users/DisplayActivities";
 
 const UserProfilePage = () => {
 	const { id } = useParams();
 	const [user, setUser] = useState({});
+	const [activity, setActivity] = useState({});
 	const [error, setError] = useState(null);
 	const [tab, setTab] = useState("postings");
 	const [isLoading, setIsLoading] = useState(true);
@@ -42,6 +44,13 @@ const UserProfilePage = () => {
 				});
 				if (!response.ok) throw new Error();
 				setUser(data.data);
+				// *An array of the user's posts, and comments arranged in acending order of update
+				// TODO: add a way of changing the order
+				const activities = [...data.data.comments, ...data.data.post];
+				activities.sort((a, b) => {
+					return new Date(a.updated) - new Date(b.updated);
+				});
+				setActivity(activities);
 			} catch (error) {
 				console.log(error);
 				setError(true);
@@ -50,8 +59,6 @@ const UserProfilePage = () => {
 			}
 		})();
 	}, [id]);
-
-	// console.log(user);
 
 	const updateTab = (newTab) => {
 		// console.log(newTab);
@@ -171,7 +178,18 @@ const UserProfilePage = () => {
 						)}
 						{tab === "activity" && (
 							<>
-								<h4>Activity Tab</h4>
+								{activity && (
+									<DisplayActivities
+										activity={activity}
+										owner={user}
+									/>
+								)}
+								{!activity && (
+									<p className="text-white w-full text-center text-lg font-medium">
+										{user.username} currently has no
+										activity.
+									</p>
+								)}
 							</>
 						)}
 						{tab === "about" && (

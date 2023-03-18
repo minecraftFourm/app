@@ -27,6 +27,10 @@ model User {
   comments         Comment[]
   refreshToken     String      @default("")
   reactions        reactions[]
+  showMail         Boolean     @default(true)
+  instagram        String      @default("")
+  discord          String      @default("")
+  mc_username      String      @default("")
 }
 
 model Role {
@@ -65,8 +69,8 @@ model Role {
 
   canDeleteOtherComment Boolean @default(false)
   canEditOtherComment   Boolean @default(false)
-  canManageRules Boolean @default(false)
-  
+  canManageRules        Boolean @default(false)
+
   created DateTime @default(now())
   updated DateTime @updatedAt
 }

@@ -6,7 +6,7 @@ import Navbar from "./Components/Navbar";
 import CheckAuth from "./Contexts/CheckAuth";
 import ViewPost from "./Pages/ViewPost";
 import Settings from "./Contexts/Settings";
-import Profile from "./Pages/Profile";
+import Profile from "./Pages/UserProfilePage";
 
 const Home = lazy(() => import("./Pages/Homepage"));
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"));
@@ -31,6 +31,7 @@ const EditPost = lazy(() => import("./Pages/EditPost"));
 const MaintenancePage = lazy(() => import("./Pages/MaintenancePage"));
 const AdminOnly = lazy(() => import("./Contexts/AdminOnly"));
 const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
+const User = lazy(() => import("./Pages/UserProfilePage"));
 
 function App() {
 	const NavAndFooter = () => {

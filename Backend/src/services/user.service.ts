@@ -15,6 +15,10 @@ export const generalUserSelect = {
 	bio: true,
 	created: true,
 	followers: true,
+	discord: true,
+	mc_username: true,
+	instagram: true,
+	showMail: true,
 	following: true,
 	post: true,
 	role: true,
@@ -130,6 +134,10 @@ export const handleGetAllUsers = async (req: Req) => {
 			profilePicture: true,
 			bio: true,
 			created: true,
+			discord: true,
+			mc_username: true,
+			instagram: true,
+			showMail: true,
 			followers: {
 				select: {
 					user: {
@@ -294,7 +302,60 @@ export const handleEditUser = async (req: Req) => {
 export const handleGetUser = async (id: string) => {
 	const user = await prisma.user.findUnique({
 		where: { id },
-		select: generalUserSelect,
+		select: {
+			id: true,
+			username: true,
+			email: true,
+			profilePicture: true,
+			bio: true,
+			created: true,
+			followers: {
+				select: {
+					user: {
+						select: generalUserSelect,
+					},
+				},
+			},
+			following: {
+				select: {
+					user: {
+						select: generalUserSelect,
+					},
+				},
+			},
+			post: {
+				select: {
+					id: true,
+					title: true,
+					content: true,
+					comments: true,
+					updated: true,
+					reactions: true,
+					category: true,
+					owner: {
+						select: generalUserSelect,
+					},
+				},
+			},
+			comments: {
+				select: {
+					comment: true,
+					updated: true,
+					post: true,
+					postId: true,
+					id: true,
+				},
+				orderBy: { updated: "asc" },
+			},
+			role: {
+				select: {
+					id: true,
+					title: true,
+					color: true,
+					isStaff: true,
+				},
+			},
+		},
 	});
 
 	if (!user) throw new CustomError("User not found", StatusCodes.NOT_FOUND);

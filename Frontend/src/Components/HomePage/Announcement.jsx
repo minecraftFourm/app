@@ -13,9 +13,8 @@ const Announcement = ({ ...props }) => {
 				title,
 				updated,
 				content,
-				owner: { username },
+				owner: { username, id: ownerId },
 				comments,
-				ownerId,
 			} = item;
 
 			return (
@@ -38,7 +37,7 @@ const Announcement = ({ ...props }) => {
 							}}></div>
 					</section>
 					<footer className="w-full flex flex-row justify-between items-center bg-gray-200 text-gray-700 px-2 py-2">
-						<Link to={`user/${ownerId}`} className="text-sm">
+						<Link to={`/user/${ownerId}`} className="text-sm">
 							Posted by {username}
 						</Link>
 						<span className="text-sm font-light">

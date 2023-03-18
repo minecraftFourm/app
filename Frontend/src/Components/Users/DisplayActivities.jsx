@@ -60,7 +60,7 @@ const DisplayActivities = (props) => {
 						key={id}>
 						<header className="w-full flex flex-row items-center justify-between bg-violet-500 text-white px-2 py-1">
 							<Link
-								to={`forum/post/${id}`}
+								to={`/forum/post/${id}`}
 								className="font-medium">
 								{title}
 							</Link>
@@ -76,7 +76,7 @@ const DisplayActivities = (props) => {
 								}}></div>
 						</section>
 						<footer className="w-full flex flex-row justify-between items-center bg-gray-200 text-gray-700 px-2 py-2">
-							<Link to={`user/${ownerId}`} className="text-sm">
+							<Link to={`/user/${ownerId}`} className="text-sm">
 								Posted by {username}
 							</Link>
 							<span className="text-sm font-light">

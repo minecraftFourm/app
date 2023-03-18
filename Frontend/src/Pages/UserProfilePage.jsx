@@ -48,7 +48,7 @@ const UserProfilePage = () => {
 				// TODO: add a way of changing the order
 				const activities = [...data.data.comments, ...data.data.post];
 				activities.sort((a, b) => {
-					return new Date(a.updated) - new Date(b.updated);
+					return new Date(b.updated) - new Date(a.updated);
 				});
 				setActivity(activities);
 			} catch (error) {

@@ -32,7 +32,7 @@ const ForumPageCategory = (props) => {
 							{name}
 						</Link>
 					</div>
-					<div className="flex flex-row justify-between gap-8 items-center">
+					<div className="flex-row justify-between gap-8 items-center sm:hidden flex">
 						<div className="flex flex-col items-center">
 							<h5 className="text-violet-500">Posts</h5>
 							<p className="font-semibold">

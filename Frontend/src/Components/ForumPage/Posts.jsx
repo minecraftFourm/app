@@ -11,7 +11,7 @@ import { toast } from "react-hot-toast";
 // const { convert } = require('html-to-text');
 
 const Posts = (props) => {
-	const { posts: data } = props;
+	const { posts: data, refreshPosts } = props;
 	const CustomFetch = useFetch();
 	const currentUser = UseUser();
 
@@ -57,6 +57,7 @@ const Posts = (props) => {
 						loading: "Deleting post...",
 						success: (data) => {
 							if (!data.ok) throw Error();
+							refreshPosts();
 							return "Sucessfully deleted post!";
 						},
 						error: (err) => {
@@ -91,7 +92,7 @@ const Posts = (props) => {
 							</Link>
 						</div>
 					</div>
-					<p className="self-center text-sm text-gray-400 font-medium min-w-fit flex-1">
+					<p className="self-center text-sm sm:hidden text-gray-400 font-medium min-w-fit flex-1">
 						{comments.length}{" "}
 						{comments.length === 0
 							? "Replies"

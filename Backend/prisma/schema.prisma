@@ -180,8 +180,8 @@ model Setting {
 }
 
 model Rule {
-  id          String  @id @default(uuid())
-  title       String  @unique
-  content     String?
+  id      String  @id @default(uuid())
+  title    String  @unique
+  content String?
   description String?
 }

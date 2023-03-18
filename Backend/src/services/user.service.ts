@@ -15,6 +15,10 @@ export const generalUserSelect = {
 	bio: true,
 	created: true,
 	followers: true,
+	discord: true,
+	mc_username: true,
+	instagram: true,
+	showMail: true,
 	following: true,
 	post: true,
 	role: true,
@@ -129,6 +133,10 @@ export const handleGetAllUsers = async (req: Req) => {
 			profilePicture: true,
 			bio: true,
 			created: true,
+			discord: true,
+			mc_username: true,
+			instagram: true,
+			showMail: true,
 			followers: {
 				select: {
 					user: {

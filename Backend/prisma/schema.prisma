@@ -27,6 +27,10 @@ model User {
   comments         Comment[]
   refreshToken     String      @default("")
   reactions        reactions[]
+  showMail         Boolean     @default(true)
+  instagram        String      @default("")
+  discord          String      @default("")
+  mc_username      String      @default("")
 }
 
 model Role {
@@ -65,6 +69,7 @@ model Role {
 
   canDeleteOtherComment Boolean @default(false)
   canEditOtherComment   Boolean @default(false)
+  canManageRules        Boolean @default(false)
 
   created DateTime @default(now())
   updated DateTime @updatedAt
@@ -141,7 +146,7 @@ enum reactionType {
 
 model Comment {
   id      String   @id @default(uuid())
-  post    Post     @relation(fields: [postId], references: [id])
+  post    Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId  String
   comment String
   userId  String
@@ -160,9 +165,23 @@ model Game {
 }
 
 model MainCategory {
-  id         String     @id @default(uuid())
-  title      String     @unique
-  priority   Int        @unique
+  id          String     @id @default(uuid())
+  title       String     @unique
+  priority    Int        @unique
   description String?
-  categories Category[]
+  categories  Category[]
+}
+
+model Setting {
+  id          String  @id @default(uuid())
+  serverName  String  @unique
+  maintenance Boolean
+  infobar     String
+}
+
+model Rule {
+  id          String  @id @default(uuid())
+  title       String  @unique
+  content     String?
+  description String?
 }

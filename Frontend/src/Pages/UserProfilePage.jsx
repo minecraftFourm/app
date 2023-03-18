@@ -121,11 +121,15 @@ const UserProfilePage = () => {
 
 					<div className="w-[85%] sm:w-full lg:w-[75%] flex flex-col gap-2 self-end  z-10">
 						<div className="flex flex-row text-white  w-full">
-							<p className="mr-6">Followers 250</p>
-							<p>Following 100</p>
-							<button className="bg-[#7F7EFF] ml-auto hover:bg-[#7F7EFF] text-white py-1 px-7 w-fit font-bold rounded-sm">
-								Follow
-							</button>
+							<p className="mr-6">
+								Followers {user.followers.length}
+							</p>
+							<p>Following {user.following.length}</p>
+							{User.isAuthenticated && (
+								<button className="bg-[#7F7EFF] ml-auto hover:bg-[#7F7EFF] text-white py-1 px-7 w-fit font-bold rounded-sm">
+									Follow
+								</button>
+							)}
 						</div>
 
 						<div className="flex flex-row gap-3 w-full sm:w-full bg-white py-2 px-4 self-end mt-10 rounded-sm">
@@ -151,13 +155,16 @@ const UserProfilePage = () => {
 								About
 							</button>
 							{/* TODO: Add permission support */}
-							<p
-								onClick={() => updateTab("edit")}
-								className={`${
-									tab === "edit" ? "text-[#7F7EFF]" : ""
-								}cursor-pointer hover:text-[#7F7EFF] transition-colors duration-300 ml-auto`}>
-								Edit
-							</p>
+							{/* User is authenticated, and the Active User's id is equal to the user's profile id meaning they're the owner of the profile. */}
+							{User.isAuthenticated && User.id === user.id && (
+								<p
+									onClick={() => updateTab("edit")}
+									className={`${
+										tab === "edit" ? "text-[#7F7EFF]" : ""
+									}cursor-pointer hover:text-[#7F7EFF] transition-colors duration-300 ml-auto`}>
+									Edit
+								</p>
+							)}
 						</div>
 					</div>
 

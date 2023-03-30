@@ -1,15 +1,15 @@
 import DOMPurify from "dompurify";
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import ForumHeader from "../Components/ForumHeader";
-import { useFetch } from "../Contexts/Fetch";
-import { LoadingIcon } from "../Components/Icons";
+import ForumHeader from "../../../Components/ForumHeader";
+import { useFetch } from "../../../Contexts/Fetch";
+import { LoadingIcon } from "../../../Components/Icons";
 import { format } from "timeago.js";
-import Comments from "../Components/ForumPage/Comments";
-import { UseUser } from "../Contexts/UserContext";
+import Comments from "../../../Components/ForumPage/Comments";
+import { UseUser } from "../../../Contexts/UserContext";
 import { toast } from "react-hot-toast";
 import { useCopyToClipboard } from "usehooks-ts";
-import { DOMAIN_NAME } from "../config";
+import { DOMAIN_NAME } from "../../../config";
 
 const ViewPost = () => {
 	const { id } = useParams();

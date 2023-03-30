@@ -1,13 +1,12 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import InformationBar from "./Components/InformationBar";
-import Navbar from "./Components/Navbar";
-import CheckAuth from "./Contexts/CheckAuth";
-import ViewPost from "./Pages/ViewPost";
-import Settings from "./Contexts/Settings";
-import Profile from "./Pages/UserProfilePage";
 
+const InfoBar = lazy(() => import("./Components/InformationBar"));
+const Navbar = lazy(() => import("./Components/Navbar"));
+const CheckAuth = lazy(() => import("./Contexts/CheckAuth"));
+const ViewPost = lazy(() => import("./Pages/Forum/Post/ViewPost"));
+const Profile = lazy(() => import("./Pages/ProfilePage"));
 const Home = lazy(() => import("./Pages/Homepage"));
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"));
 const Rules = lazy(() => import("./Pages/Rulespage"));
@@ -17,41 +16,31 @@ const Login = lazy(() => import("./Pages/Authentication/LoginPage"));
 const Register = lazy(() => import("./Pages/Authentication/Registerpage"));
 const RedirectAuth = lazy(() => import("./Contexts/RedirectAuth"));
 const Announcements = lazy(() => import("./Pages/Dashboard/Announcements"));
-const AnnouncementHome = lazy(() =>
-	import("./Pages/Dashboard/AnnouncementHome")
-);
-const EditAnnouncement = lazy(() => import("./Pages/EditAnnouncement"));
-const ViewAnnouncement = lazy(() => import("./Pages/ViewAnnouncement"));
 const Dashboard = lazy(() => import("./Pages/Dashboard"));
-const NewAnnouncement = lazy(() => import("./Pages/Dashboard/NewAnnouncement"));
 const Posts = lazy(() => import("./Pages/Forum/PostsInCategory"));
 const NotFound = lazy(() => import("./Pages/NotFoundPage"));
-const NewPost = lazy(() => import("./Pages/NewPost"));
-const EditPost = lazy(() => import("./Pages/EditPost"));
+const NewPost = lazy(() => import("./Pages/Forum/Post/NewPost"));
+const EditPost = lazy(() => import("./Pages/Forum/Post/EditPost"));
 const MaintenancePage = lazy(() => import("./Pages/MaintenancePage"));
-const AdminOnly = lazy(() => import("./Contexts/AdminOnly"));
 const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
-const User = lazy(() => import("./Pages/UserProfilePage"));
+
+// import InformationBar from "./Components/InformationBar";
+// import Navbar from "./Components/Navbar";
+// import CheckAuth from "./Contexts/CheckAuth";
+// import ViewPost from "./Pages/ViewPost";
+// import Profile from "./Pages/UserProfilePage";
+// import Settings from "./Contexts/Settings";
+// const AdminOnly = lazy(() => import("./Contexts/AdminOnly"));
+// const EditAnnouncement = lazy(() => import("./Pages/EditAnnouncement"));
+// const ViewAnnouncement = lazy(() => import("./Pages/ViewAnnouncement"));
+// const User = lazy(() => import("./Pages/UserProfilePage"));
 
 function App() {
-	const NavAndFooter = () => {
+	const FooterComponent = () => {
 		return (
 			<>
-				{/* TODO: Change to a proper loading screen  */}
-				<InformationBar />
-				<Navbar />
 				<Outlet />
 				<Footer />
-			</>
-		);
-	};
-
-	const Nav = () => {
-		return (
-			<>
-				<InformationBar />
-				<Navbar />
-				<Outlet />
 			</>
 		);
 	};
@@ -80,6 +69,9 @@ function App() {
 	return (
 		<div className="overflow-hidden">
 			<Suspense>
+				<InfoBar />
+				<Navbar />
+
 				<CheckAuth>
 					<Toaster toastOptions={toastOptions} />
 
@@ -95,9 +87,11 @@ function App() {
 							element={<MaintenancePage />}
 						/>
 
-						<Route element={<NavAndFooter />}>
+						<Route element={<FooterComponent />}>
 							<Route path="/" element={<Home />} />
 							<Route path="/rules" element={<Rules />} />
+							{/* TODO: Rules display page. */}
+							<Route path="/rules/:id" element={<Rules />} />
 							<Route path="/games" element={<Games />} />
 							<Route path="/forum" element={<Forum />} />
 							<Route path="/user/:id" element={<Profile />} />
@@ -125,23 +119,17 @@ function App() {
 								path="forum/category/:id"
 								element={<Posts />}
 							/>
-							<Route element={<AnnouncementHome />} path="" />
-							<Route
-								element={<NewAnnouncement />}
-								path="newAnnouncement"
-							/>
 							<Route
 								path="forum/new"
 								element={
 									<RequireAuth>
-										{" "}
-										<NewPost />{" "}
+										<NewPost />
 									</RequireAuth>
 								}
 							/>
 						</Route>
 
-						<Route element={<Nav />}>
+						<Route>
 							<Route element={<RedirectAuth />}>
 								<Route path="/login" element={<Login />} />
 								<Route

@@ -57,9 +57,12 @@ const Rulespage = () => {
 		<div className="bg-[#1B263B]">
 			<ForumHeader />
 
-			<p className="text-white font-semibold w-full text-center mx-auto p-4 ">
-				There is currently no active rule available.
-			</p>
+			{!rules ||
+				(rules && rules.length === 0 && (
+					<p className="text-white font-semibold w-full text-center mx-auto p-4 ">
+						There is currently no active rule available.
+					</p>
+				))}
 			{rules && rules.length != 0 && (
 				<div className="h-fit mx-6 md:mx-2 sm:mx-0 sm:px-2 mt-16 p-4 flex flex-row gap-4">
 					<div className="bg-white min-w-[200px] pb-2 h-fit md:hidden min-h-[130px]">

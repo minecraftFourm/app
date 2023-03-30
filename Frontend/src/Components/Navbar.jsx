@@ -86,11 +86,13 @@ const Navbar = () => {
 				<div className="md:hidden">
 					{user.isAuthenticated ? (
 						<div className="flex flex-row items-center gap-2">
-							<img
-								src={user.profilePicture}
-								className="w-[48px] h-[48px] object-cover object-center rounded-full "
-								alt=""
-							/>
+							<Link to={`user/${user.id}`}>
+								<img
+									src={user.profilePicture}
+									className="w-[48px] h-[48px] object-cover object-center rounded-full "
+									alt=""
+								/>
+							</Link>
 							<button
 								className="mr-4 text-sm font-medium"
 								onClick={handleLogout}>
@@ -169,11 +171,13 @@ const Navbar = () => {
 						<li
 							onClick={handleNav}
 							className="p-6 flex flex-row gap-4">
-							<img
-								src={user.profilePicture}
-								className="w-[48px] h-[48px] object-cover object-center rounded-full "
-								alt=""
-							/>
+							<Link to={`user/${user.id}`}>
+								<img
+									src={user.profilePicture}
+									className="w-[48px] h-[48px] object-cover object-center rounded-full "
+									alt=""
+								/>
+							</Link>
 							<button
 								className="mr-4 text-md font-medium text-center"
 								onClick={handleLogout}>

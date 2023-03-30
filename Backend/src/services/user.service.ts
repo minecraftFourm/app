@@ -1,4 +1,4 @@
-import { StatusCodes } from "http-status-codes";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 import { PASSWORD_PATTERN } from "../config";
 import prisma from "../db/prisma.client";
 import CustomError from "../middlewears/custom-error";
@@ -6,6 +6,7 @@ import { Req } from "./post.service";
 import crypto from "crypto";
 import * as argon from "argon2";
 const cloudinary = require("cloudinary").v2;
+import { Prisma } from "@prisma/client";
 
 export const generalUserSelect = {
 	id: true,
@@ -25,11 +26,30 @@ export const generalUserSelect = {
 	reactions: true,
 };
 
+const minimalUserSelect = {
+	id: true,
+	username: true,
+	profilePicture: true,
+	bio: true,
+	role: {
+		select: {
+			id: true,
+			title: true,
+			color: true,
+		},
+	},
+};
+
 type pictureStats = {
 	url?: string;
 	public_id?: string;
 };
 
+type User = {
+	following?: Array<Object>;
+	followers?: Array<Object>;
+	id?: string;
+};
 type perms = {
 	isStaff: undefined | boolean;
 	isAdmin: undefined | boolean;
@@ -140,15 +160,15 @@ export const handleGetAllUsers = async (req: Req) => {
 			showMail: true,
 			followers: {
 				select: {
-					user: {
-						select: generalUserSelect,
+					referringUser: {
+						select: minimalUserSelect,
 					},
 				},
 			},
 			following: {
 				select: {
-					user: {
-						select: generalUserSelect,
+					referringUser: {
+						select: minimalUserSelect,
 					},
 				},
 			},
@@ -177,6 +197,113 @@ export const handleGetAllUsers = async (req: Req) => {
 	return users;
 };
 
+export const handleFollowUser = async (req: Req) => {
+	type userType = {
+		refer?: string;
+		userId?: string;
+	};
+
+	const {
+		user: {
+			id: activeUser,
+			followers: activeUserFollowers,
+			following: activeUserFollowing,
+		},
+		body: { id: otherUserId },
+	} = req;
+
+	if (!otherUserId)
+		throw new CustomError(
+			"The ID of the user must be provided.",
+			StatusCodes.BAD_REQUEST
+		);
+	if (activeUser === otherUserId)
+		throw new CustomError(
+			"You can't follow yourself.",
+			StatusCodes.BAD_REQUEST
+		);
+
+	const isFollowing = activeUserFollowing?.some(
+		(e: userType) => e.refer === otherUserId && e.userId === activeUser
+	);
+
+	// await prisma.follower.deleteMany();
+	// await prisma.following.deleteMany();
+
+	// ActiveUser updates their following list
+	// OtherUser updates their followers list
+
+	try {
+		if (!isFollowing) {
+			console.log("following");
+			const addUserToFollowersList = await prisma.user.update({
+				where: { id: otherUserId },
+				data: {
+					followers: {
+						create: {
+							refer: activeUser,
+						},
+					},
+				},
+			});
+
+			const addUserToFollowingList = await prisma.user.update({
+				where: { id: activeUser },
+				data: {
+					following: {
+						create: {
+							refer: otherUserId,
+						},
+					},
+				},
+			});
+			return { messsage: "success", mode: "Follow" };
+		} else {
+			const removeUserFromFollowersList = await prisma.user.update({
+				where: { id: otherUserId },
+				data: {
+					followers: {
+						delete: {
+							userId_refer: {
+								refer: activeUser,
+								userId: otherUserId,
+							},
+						},
+					},
+				},
+			});
+
+			const addUserToFollowingList = await prisma.user.update({
+				where: { id: activeUser },
+				data: {
+					following: {
+						delete: {
+							userId_refer: {
+								refer: otherUserId,
+								userId: activeUser,
+							},
+						},
+					},
+				},
+			});
+
+			return { messsage: "success", mode: "Unfollow" };
+		}
+	} catch (error: any) {
+		if (error.code === "P2025")
+			throw new CustomError(
+				"Invalid ID provided.",
+				StatusCodes.BAD_REQUEST
+			);
+		else {
+			throw new CustomError(
+				ReasonPhrases.BAD_REQUEST,
+				StatusCodes.BAD_REQUEST
+			);
+		}
+	}
+};
+
 export const handleEditUser = async (req: Req) => {
 	const {
 		params: { id },
@@ -188,6 +315,10 @@ export const handleEditUser = async (req: Req) => {
 			username,
 			password: currentUserPassword,
 			newPassword,
+			showMail,
+			instagram,
+			discord,
+			mc_username,
 		},
 		user: {
 			profilePictureId,
@@ -278,6 +409,7 @@ export const handleEditUser = async (req: Req) => {
 		};
 	}
 
+	// TODO: discord, mc_username, showMail, and instagram values should be editable.
 	const user = await prisma.user.update({
 		where: {
 			id,
@@ -309,17 +441,21 @@ export const handleGetUser = async (id: string) => {
 			profilePicture: true,
 			bio: true,
 			created: true,
+			showMail: true,
+			instagram: true,
+			discord: true,
+			mc_username: true,
 			followers: {
 				select: {
-					user: {
-						select: generalUserSelect,
+					referringUser: {
+						select: minimalUserSelect,
 					},
 				},
 			},
 			following: {
 				select: {
-					user: {
-						select: generalUserSelect,
+					referringUser: {
+						select: minimalUserSelect,
 					},
 				},
 			},
@@ -347,14 +483,7 @@ export const handleGetUser = async (id: string) => {
 				},
 				orderBy: { updated: "asc" },
 			},
-			role: {
-				select: {
-					id: true,
-					title: true,
-					color: true,
-					isStaff: true,
-				},
-			},
+			role: true,
 		},
 	});
 

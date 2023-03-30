@@ -5,6 +5,7 @@ import { Req } from "../services/post.service";
 import {
 	handleDeleteUser,
 	handleEditUser,
+	handleFollowUser,
 	handleGetAllUsers,
 	handleGetUser,
 } from "../services/user.service";
@@ -30,4 +31,8 @@ export const editUser = async (req: Req, res: Response) => {
 export const deleteUser = async (req: Req, res: Response) => {
 	const user = handleDeleteUser(req);
 	return res.json({ message: "success" }).status(StatusCodes.NO_CONTENT);
+};
+
+export const followUser = async (req: Req, res: Response) => {
+	return res.json(await handleFollowUser(req));
 };

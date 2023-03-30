@@ -10,6 +10,8 @@ export interface Req extends Request {
 		role: Role;
 		profilePictureId?: string;
 		password: string;
+		followers?: Array<Object>;
+		following?: Array<Object>;
 	};
 	query: {
 		title?: string;

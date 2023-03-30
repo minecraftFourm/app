@@ -11,26 +11,29 @@ datasource db {
 }
 
 model User {
-  id               String      @id @default(uuid())
+  id               String     @id @default(uuid())
   username         String
   password         String
-  email            String      @unique()
-  profilePicture   String      @default("")
-  profilePictureId String      @default("")
-  role             Role        @relation(fields: [roleId], references: [id])
+  email            String     @unique()
+  profilePicture   String     @default("")
+  profilePictureId String     @default("")
+  role             Role       @relation(fields: [roleId], references: [id])
   roleId           String
-  followers        Follower[]
-  following        Following[]
-  bio              String      @default("")
-  created          DateTime    @default(now())
-  post             Post[]
-  comments         Comment[]
-  refreshToken     String      @default("")
-  reactions        reactions[]
-  showMail         Boolean     @default(true)
-  instagram        String      @default("")
-  discord          String      @default("")
-  mc_username      String      @default("")
+  followers        Follower[] @relation(name: "user")
+  followersRefer   Follower[] @relation(name: "followerRefer")
+  followingRefer   Following[] @relation(name: "followingRefer")
+
+  following    Following[]
+  bio          String      @default("")
+  created      DateTime    @default(now())
+  post         Post[]
+  comments     Comment[]
+  refreshToken String      @default("")
+  reactions    reactions[]
+  showMail     Boolean     @default(true)
+  instagram    String?
+  discord      String?
+  mc_username  String?
 }
 
 model Role {
@@ -87,15 +90,22 @@ model Category {
 }
 
 model Follower {
-  id     String @id @default(uuid())
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refer         String
+  referringUser User   @relation(name: "followerRefer", fields: [refer], references: [id], onDelete: Cascade)
+
+  user   User   @relation(name: "user", fields: [userId], references: [id], onDelete: Cascade)
   userId String
+
+  @@id([userId, refer])
 }
 
 model Following {
-  id     String @id @default(uuid())
+  refer         String
+  referringUser User   @relation(name: "followingRefer", fields: [refer], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+
+  @@id([userId, refer])
 }
 
 model Post {
@@ -176,12 +186,12 @@ model Setting {
   id          String  @id @default(uuid())
   serverName  String  @unique
   maintenance Boolean
-  infobar     String
+  infobar     String?
 }
 
 model Rule {
-  id      String  @id @default(uuid())
-  title    String  @unique
-  content String?
+  id          String  @id @default(uuid())
+  title       String  @unique
+  content     String?
   description String?
 }

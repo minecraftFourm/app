@@ -9,7 +9,7 @@ const RecentComments = (props) => {
 			const {
 				comment,
 				updated,
-				user: { username, profilePicture },
+				user: { username, profilePicture, id: userId },
 				id,
 			} = item;
 			return (
@@ -29,7 +29,7 @@ const RecentComments = (props) => {
 						</Link>
 						<footer className="w-full flex flex-row justify-between">
 							<Link
-								to={`/user/${id}`}
+								to={`/user/${userId}`}
 								className="text-xs text-gray-500 capitalize">
 								{username}
 							</Link>

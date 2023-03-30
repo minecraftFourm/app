@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy } from "react";
 import Rectangle26 from "../assets/Rectangle26.png";
 import Rectangle7 from "../assets/Rectangle7.png";
 // import pretty from '../assets/pretty.png'
@@ -6,23 +6,28 @@ import { LoadingIcon } from "../Components/Icons";
 import UserBackground1 from "../assets/user-background-1.jpg";
 import UserBackground2 from "../assets/user-background-2.jpg";
 import UserBackground3 from "../assets/user-background-3.jpg";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFetch } from "../Contexts/Fetch";
 import { UseUser } from "../Contexts/UserContext";
 import Overlay from "../Components/Overlay";
 import Announcement from "../Components/HomePage/Announcement";
+import { toast } from "react-hot-toast";
 import DisplayActivities from "../Components/Users/DisplayActivities";
+import DisplayUsers from "../Components/Users/DisplayUsers";
+const EditUser = lazy(() => import("../Components/Users/EditUser"));
 
 const UserProfilePage = () => {
 	const { id } = useParams();
 	const [user, setUser] = useState({});
 	const [activity, setActivity] = useState({});
+	const [followingStatus, setFollowingStatus] = useState(false);
 	const [error, setError] = useState(null);
 	const [tab, setTab] = useState("postings");
 	const [isLoading, setIsLoading] = useState(true);
 	const CustomFetch = useFetch();
 	const User = UseUser();
 	const [banner, setBanner] = useState(null);
+	const Navigate = useNavigate();
 
 	// const bannerList = [
 	//   Rectangle21,
@@ -36,23 +41,11 @@ const UserProfilePage = () => {
 	useEffect(() => {
 		(async () => {
 			try {
-				const userId = id ? id : User.id;
 				setIsLoading(true);
-				const { data, response } = await CustomFetch({
-					url: `user/${userId}`,
-					returnResponse: true,
-				});
-				if (!response.ok) throw new Error();
-				setUser(data.data);
-				// *An array of the user's posts, and comments arranged in acending order of update
-				// TODO: add a way of changing the order
-				const activities = [...data.data.comments, ...data.data.post];
-				activities.sort((a, b) => {
-					return new Date(a.updated) - new Date(b.updated);
-				});
-				setActivity(activities);
+				await fetchData();
 			} catch (error) {
 				console.log(error);
+				Navigate("/notfound");
 				setError(true);
 			} finally {
 				setIsLoading(false);
@@ -60,9 +53,76 @@ const UserProfilePage = () => {
 		})();
 	}, [id]);
 
+	const fetchData = async () => {
+		const userId = id ? id : User.id;
+		const { data, response } = await CustomFetch({
+			url: `user/${userId}`,
+			returnResponse: true,
+		});
+
+		if (!response.ok) throw new Error();
+		setUser(data.data);
+
+		// *An array of the user's posts, and comments arranged in acending order of update
+		// TODO: add a way of changing the order
+		const activities = [...data.data.comments, ...data.data.post];
+		activities.sort((a, b) => {
+			return new Date(b.updated) - new Date(a.updated);
+		});
+		setActivity(activities);
+
+		// Checks if the active user is authenticated and is a follower of the user being displayed.
+		if (data.data.followers && User.isAuthenticated) {
+			const isFollowing = data.data.followers.some((user) => {
+				console.log(user.referringUser.id === User.id);
+				return user.referringUser.id === User.id;
+			});
+			setFollowingStatus(isFollowing);
+		}
+	};
+
+	useEffect(() => {
+		const tab = sessionStorage.getItem("tab");
+		if (tab) {
+			setTab(() => tab);
+		}
+	}, []);
+
 	const updateTab = (newTab) => {
 		// console.log(newTab);
+		sessionStorage.setItem("tab", newTab);
 		setTab(() => newTab);
+	};
+
+	const followUser = async () => {
+		const Request = CustomFetch({
+			url: "user/follow",
+			options: {
+				method: "PATCH",
+				body: JSON.stringify({
+					id: id,
+				}),
+			},
+			returnPromise: true,
+		});
+
+		toast.promise(Request, {
+			loading: `${followingStatus ? "Unfollowing" : "Following"} user.`,
+			success: (data) => {
+				(async () => {
+					await fetchData();
+				})();
+				return `Sucessfully ${
+					followingStatus ? "Unfollowed" : "Followed"
+				} user!`;
+			},
+			error: (err) => {
+				console.log(err);
+				return `An error occured while ${
+					followingStatus ? "unfollowing" : "following"
+				} your post!`;
+			},
+		});
 	};
 
 	return (
@@ -120,14 +180,16 @@ const UserProfilePage = () => {
 					</div>
 
 					<div className="w-[85%] sm:w-full lg:w-[75%] flex flex-col gap-2 self-end  z-10">
-						<div className="flex flex-row text-white  w-full">
-							<p className="mr-6">
+						<div className="flex flex-row text-white w-full">
+							<p className="mx-6">
 								Followers {user.followers.length}
 							</p>
 							<p>Following {user.following.length}</p>
-							{User.isAuthenticated && (
-								<button className="bg-[#7F7EFF] ml-auto hover:bg-[#7F7EFF] text-white py-1 px-7 w-fit font-bold rounded-sm">
-									Follow
+							{User.isAuthenticated && User.id !== user.id && (
+								<button
+									onClick={followUser}
+									className="bg-[#7F7EFF] ml-auto hover:bg-[#7F7EFF] text-white py-1 px-7 w-fit rounded-sm">
+									{followingStatus ? "Unfollow" : "Follow"}
 								</button>
 							)}
 						</div>
@@ -199,10 +261,73 @@ const UserProfilePage = () => {
 								)}
 							</>
 						)}
+						{tab === "edit" && <EditUser user={User} />}
 						{tab === "about" && (
-							<>
-								<h4>About Tab</h4>
-							</>
+							<div className="text-white my-2">
+								<h4 className="text-sm font-medium">Bio:</h4>
+								<p className="ml-4">{user.bio}</p>
+
+								<h4 className="text-xl mt-4 font-medium">
+									Socials:
+								</h4>
+
+								<ul className="text-sm ml-4">
+									{user.mc_username && (
+										<li>
+											<span className="font-medium">
+												Minecraft Username:
+											</span>{" "}
+											{user.mc_username}
+										</li>
+									)}
+									{user.discord && (
+										<li>
+											<span className="font-medium">
+												Discord:
+											</span>{" "}
+											{user.discord}
+										</li>
+									)}
+									{user.instagram && (
+										<li>
+											<span className="font-medium">
+												Instagram:
+											</span>{" "}
+											{user.instagram}
+										</li>
+									)}
+									{user.email && user.showMail && (
+										<li>
+											<span className="font-medium">
+												Email:
+											</span>{" "}
+											<a mailto={user.email}>
+												{user.email}
+											</a>
+										</li>
+									)}
+								</ul>
+
+								{user.following.length != 0 && (
+									<div>
+										<h4 className="text-xl mt-4 font-medium">
+											Following ({user.following.length}):
+										</h4>
+										{/* TODO: Turn it into a slider */}
+										<DisplayUsers users={user.following} />
+									</div>
+								)}
+
+								{user.followers.length != 0 && (
+									<div>
+										<h4 className="text-xl mt-4 font-medium">
+											Followers ({user.followers.length}):
+										</h4>
+										{/* TODO: Turn it into a slider */}
+										<DisplayUsers users={user.followers} />
+									</div>
+								)}
+							</div>
 						)}
 					</div>
 				</div>

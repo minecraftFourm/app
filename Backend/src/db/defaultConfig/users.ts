@@ -30,6 +30,9 @@ const users = async () => {
 			roleId: ADMIN_ROLE_ID,
 			profilePicture: DEFAULT_PROFILE_PICTURE,
 			bio: "Default Admin user",
+			instagram: "SomethingCool",
+			discord: "Snowine#3440",
+			mc_username: "Snowine",
 		},
 	});
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy } from "react";
 import Rectangle26 from "../assets/Rectangle26.png";
 import Rectangle7 from "../assets/Rectangle7.png";
 // import pretty from '../assets/pretty.png'
@@ -14,6 +14,7 @@ import Announcement from "../Components/HomePage/Announcement";
 import { toast } from "react-hot-toast";
 import DisplayActivities from "../Components/Users/DisplayActivities";
 import DisplayUsers from "../Components/Users/DisplayUsers";
+const EditUser = lazy(() => import("../Components/Users/EditUser"));
 
 const UserProfilePage = () => {
 	const { id } = useParams();
@@ -260,6 +261,7 @@ const UserProfilePage = () => {
 								)}
 							</>
 						)}
+						{tab === "edit" && <EditUser user={User} />}
 						{tab === "about" && (
 							<div className="text-white my-2">
 								<h4 className="text-sm font-medium">Bio:</h4>
@@ -309,8 +311,9 @@ const UserProfilePage = () => {
 								{user.following.length != 0 && (
 									<div>
 										<h4 className="text-xl mt-4 font-medium">
-											Following:
+											Following ({user.following.length}):
 										</h4>
+										{/* TODO: Turn it into a slider */}
 										<DisplayUsers users={user.following} />
 									</div>
 								)}
@@ -318,8 +321,9 @@ const UserProfilePage = () => {
 								{user.followers.length != 0 && (
 									<div>
 										<h4 className="text-xl mt-4 font-medium">
-											Followers:
+											Followers ({user.followers.length}):
 										</h4>
+										{/* TODO: Turn it into a slider */}
 										<DisplayUsers users={user.followers} />
 									</div>
 								)}

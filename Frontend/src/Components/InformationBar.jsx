@@ -15,7 +15,7 @@ const InformationBar = () => {
 	const [show, setShow] = useState(false);
 
 	useEffect(() => {
-		if (settings && settings.infobar.length != 0) {
+		if (settings && settings.infobar) {
 			setInfo(() => {
 				return {
 					status: true,

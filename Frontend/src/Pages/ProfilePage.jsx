@@ -132,25 +132,27 @@ const UserProfilePage = () => {
 				<div className="pt-16 px-8 w-full flex flex-col">
 					<div className="relative h-[250px] w-full flex justify-end mb-2">
 						<img
-							src={banner}
+							src={user.banner.url && user.banner.url}
 							alt=""
 							className="w-full h-full object-cover"
 						/>
 						<Overlay title="" />
 						<div className="absolute top-0 right-0 flex flex-row gap-1">
 							{/* Need to change the banner list to data pulled from DB - currently saved on FE */}
-							{bannerList.map((item) => {
-								return (
-									<img
-										key={item}
-										src={item}
-										onClick={() => {
-											setBanner(item);
-										}}
-										className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
-									/>
-								);
-							})}
+							{User.isAuthenticated &&
+								User.id === user.id &&
+								bannerList.map((item) => {
+									return (
+										<img
+											key={item}
+											src={item}
+											onClick={() => {
+												setBanner(item);
+											}}
+											className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
+										/>
+									);
+								})}
 						</div>
 
 						<div className="absolute -bottom-32 sm:-bottom-0 w-full flex flex-row gap-0">

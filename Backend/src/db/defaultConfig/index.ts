@@ -6,6 +6,7 @@ import posts from "./posts";
 import roles from "./roles";
 import users from "./users";
 import defaultSettings from "./setting";
+import banner from "./banners";
 
 export default {
 	categories,
@@ -16,4 +17,5 @@ export default {
 	games,
 	posts,
 	mainCategories,
+	banner,
 };

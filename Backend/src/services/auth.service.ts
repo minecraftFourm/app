@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import {
 	ACCESS_TOKEN_EXIPIRY,
+	DEFAULT_BANNER_ID,
 	DEFAULT_PROFILE_PICTURE,
 	DEFAULT_ROLE_ID,
 	EMAIL_PATTERN,
@@ -148,6 +149,7 @@ export const createUser = async (user: UserBody, res: Response) => {
 				username,
 				password,
 				email,
+				bannerId: DEFAULT_BANNER_ID,
 				roleId: DEFAULT_ROLE_ID,
 				profilePicture: DEFAULT_PROFILE_PICTURE,
 			},

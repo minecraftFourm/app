@@ -23,6 +23,7 @@ export const generalUserSelect = {
 	following: true,
 	post: true,
 	role: true,
+	banner: true,
 	reactions: true,
 };
 
@@ -445,6 +446,7 @@ export const handleGetUser = async (id: string) => {
 			instagram: true,
 			discord: true,
 			mc_username: true,
+			banner: true,
 			followers: {
 				select: {
 					referringUser: {

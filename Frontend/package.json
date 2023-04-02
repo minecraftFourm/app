@@ -3,7 +3,7 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
-	"homepage": "https://minecraftFourm.github.io/",
+	"homepage": "https://minecraftFourm.github.io/app",
 	"scripts": {
 		"dev": "npm install && vite --host 0.0.0.0",
 		"build": "vite build",

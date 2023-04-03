@@ -303,7 +303,7 @@ const UserProfilePage = () => {
 											<span className="font-medium">
 												Email:
 											</span>{" "}
-											<a mailto={user.email}>
+											<a href={`mailto:${user.email}`}>
 												{user.email}
 											</a>
 										</li>

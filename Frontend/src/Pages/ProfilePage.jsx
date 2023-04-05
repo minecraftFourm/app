@@ -23,6 +23,7 @@ const UserProfilePage = () => {
 	const [followingStatus, setFollowingStatus] = useState(false);
 	const [error, setError] = useState(null);
 	const [tab, setTab] = useState("postings");
+	const [bannerList, setBannerList] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const CustomFetch = useFetch();
 	const User = UseUser();
@@ -36,7 +37,7 @@ const UserProfilePage = () => {
 	//   Rectangle24,
 	//   Rectangle25,
 	// ];
-	const bannerList = [UserBackground1, UserBackground2, UserBackground3];
+	// const bannerList = [UserBackground1, UserBackground2, UserBackground3];
 
 	useEffect(() => {
 		(async () => {
@@ -52,6 +53,20 @@ const UserProfilePage = () => {
 			}
 		})();
 	}, [id]);
+
+	useEffect(() => {
+		(async () => {
+			const { response, data } = await CustomFetch({
+				url: "banner",
+				returnResponse: true,
+			});
+
+			if (!response.ok) {
+				// ! handle error
+			}
+			setBannerList(data.data);
+		})();
+	}, []);
 
 	const fetchData = async () => {
 		const userId = id ? id : User.id;
@@ -92,6 +107,33 @@ const UserProfilePage = () => {
 		// console.log(newTab);
 		sessionStorage.setItem("tab", newTab);
 		setTab(() => newTab);
+	};
+
+	const updateBanner = async (bannerId) => {
+		const Request = CustomFetch({
+			url: `user/${id}`,
+			options: {
+				method: "PATCH",
+				body: JSON.stringify({
+					banner: bannerId,
+				}),
+			},
+			returnPromise: true,
+		});
+
+		toast.promise(Request, {
+			loading: "Updating banner...",
+			success: (data) => {
+				(async () => {
+					await fetchData();
+				})();
+				return `Sucessfully updated banner!`;
+			},
+			error: (err) => {
+				console.log(err);
+				return `An error occured while trying to update your banner!`;
+			},
+		});
 	};
 
 	const followUser = async () => {
@@ -137,18 +179,17 @@ const UserProfilePage = () => {
 							className="w-full h-full object-cover"
 						/>
 						<Overlay title="" />
-						<div className="absolute top-0 right-0 flex flex-row gap-1">
+						<div className="absolute top-0 right-0 p-2 flex flex-row gap-1">
 							{/* Need to change the banner list to data pulled from DB - currently saved on FE */}
 							{User.isAuthenticated &&
 								User.id === user.id &&
 								bannerList.map((item) => {
+									const { id, url } = item;
 									return (
 										<img
-											key={item}
-											src={item}
-											onClick={() => {
-												setBanner(item);
-											}}
+											key={id}
+											src={url}
+											onClick={() => updateBanner(id)}
 											className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
 										/>
 									);

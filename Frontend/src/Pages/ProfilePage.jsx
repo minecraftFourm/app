@@ -182,7 +182,7 @@ const UserProfilePage = () => {
 						<div className="absolute top-0 right-0 p-2 flex flex-row gap-1">
 							{/* Need to change the banner list to data pulled from DB - currently saved on FE */}
 							{User.isAuthenticated &&
-								User.id === user.id &&
+								(User.id === user.id || User.role.isAdmin) &&
 								bannerList.map((item) => {
 									const { id, url } = item;
 									return (

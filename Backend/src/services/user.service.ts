@@ -320,6 +320,7 @@ export const handleEditUser = async (req: Req) => {
 			instagram,
 			discord,
 			mc_username,
+			banner,
 		},
 		user: {
 			profilePictureId,
@@ -422,6 +423,12 @@ export const handleEditUser = async (req: Req) => {
 			profilePicture: profilePictureInfo.url,
 			profilePictureId: profilePictureInfo?.public_id,
 			roleId,
+			bannerId: banner ? banner : undefined,
+			showMail: showMail ? showMail : undefined,
+			instagram: instagram ? instagram : undefined,
+			discord: discord ? discord : undefined,
+			mc_username: mc_username ? mc_username : undefined,
+
 			...(updatePassword.status && {
 				password: updatePassword.newPassword,
 			}),

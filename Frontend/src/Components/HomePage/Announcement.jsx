@@ -30,7 +30,7 @@ const Announcement = ({ ...props }) => {
 					</header>
 					<section className="flex flex-col gap-4 p-2 min-h-[100px]">
 						<div
-							className="text-sm w-full h-full line-clamp-15"
+							className="h-full line-clamp-15"
 							dangerouslySetInnerHTML={{
 								__html: DOMPurify.sanitize(content),
 							}}></div>

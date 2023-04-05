@@ -11,29 +11,37 @@ datasource db {
 }
 
 model User {
-  id               String     @id @default(uuid())
+  id               String      @id @default(uuid())
   username         String
   password         String
-  email            String     @unique()
-  profilePicture   String     @default("")
-  profilePictureId String     @default("")
-  role             Role       @relation(fields: [roleId], references: [id])
+  email            String      @unique()
+  profilePicture   String      @default("")
+  profilePictureId String      @default("")
+  role             Role        @relation(fields: [roleId], references: [id])
   roleId           String
-  followers        Follower[] @relation(name: "user")
-  followersRefer   Follower[] @relation(name: "followerRefer")
+  followers        Follower[]  @relation(name: "user")
+  followersRefer   Follower[]  @relation(name: "followerRefer")
   followingRefer   Following[] @relation(name: "followingRefer")
+  banner           Banner      @relation(fields: [bannerId], references: [id])
+  bannerId        String
+  following        Following[]
+  bio              String      @default("")
+  created          DateTime    @default(now())
+  post             Post[]
+  comments         Comment[]
+  refreshToken     String      @default("")
+  reactions        reactions[]
+  showMail         Boolean     @default(true)
+  instagram        String?
+  discord          String?
+  mc_username      String?
+}
 
-  following    Following[]
-  bio          String      @default("")
-  created      DateTime    @default(now())
-  post         Post[]
-  comments     Comment[]
-  refreshToken String      @default("")
-  reactions    reactions[]
-  showMail     Boolean     @default(true)
-  instagram    String?
-  discord      String?
-  mc_username  String?
+model Banner {
+  id   String @id @default(uuid())
+  name String
+  url  String
+  user User[]
 }
 
 model Role {
@@ -102,8 +110,8 @@ model Follower {
 model Following {
   refer         String
   referringUser User   @relation(name: "followingRefer", fields: [refer], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
 
   @@id([userId, refer])
 }

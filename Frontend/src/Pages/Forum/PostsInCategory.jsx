@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ForumHeader from "../../Components/ForumHeader";
 import PostComponent from "../../Components/ForumPage/Posts";
 import { AddNewIcon, LoadingIcon } from "../../Components/Icons";
@@ -18,7 +18,7 @@ const Posts = () => {
 	const [showAddIcon, setShowAddIcon] = useState(false);
 	const [allPosts, setAllPosts] = useState([]);
 	const User = UseUser();
-
+	const Navigate = useNavigate();
 	// Pagination: Keep track of the current page and set a limitation of posts per page
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage] = useState(9);
@@ -29,7 +29,7 @@ const Posts = () => {
 	const showThesePosts = allPosts?.slice(indexOfFirstPost, indexOfLastPost);
 
 	const debounceValue = useDebounce(searchParam, 500);
-
+	console.log(currentPage, showNextBtn, showPrevBtn);
 	const handlePageChange = (direction) => {
 		// console.log(currentPage);
 		// If the user hits the previous btn
@@ -92,8 +92,7 @@ const Posts = () => {
 				});
 
 				if (!response.ok) {
-					// TODO: redirect to not found page.
-					return alert("Can't find category");
+					Navigate("/notfound");
 				}
 
 				setIsLoading(false);
@@ -204,6 +203,11 @@ const Posts = () => {
 								/>
 							)}
 							{!data && <LoadingIcon color="text-black" />}
+							{allPosts.length === 0 && (
+								<p className="w-full text-center font-medium text-gray-500">
+									There are no posts in this category!
+								</p>
+							)}
 						</section>
 						<section
 							className={`w-full justify-center flex flex-row gap-4 my-2 absolute bottom-0 ${
@@ -220,7 +224,9 @@ const Posts = () => {
 							</button>
 							<button
 								className={`bg-violet-500 px-2 py-1 text-white rounded-sm ${
-									showNextBtn ? "" : "hidden"
+									showNextBtn && allPosts?.length > 1
+										? ""
+										: "hidden"
 								}`}
 								onClick={nextPage}>
 								Next Page

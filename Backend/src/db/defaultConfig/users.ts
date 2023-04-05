@@ -6,6 +6,7 @@ import {
 	ADMIN_ROLE_ID,
 	ADMIN_USER_ID,
 	DEFAULT_ADMIN_PASSWORD,
+	DEFAULT_BANNER_ID,
 	DEFAULT_PROFILE_PICTURE,
 	DEFAULT_ROLE_ID,
 	DEFAULT_USER_ID,
@@ -33,6 +34,7 @@ const users = async () => {
 			instagram: "SomethingCool",
 			discord: "Snowine#3440",
 			mc_username: "Snowine",
+			bannerId: DEFAULT_BANNER_ID,
 		},
 	});
 
@@ -49,6 +51,7 @@ const users = async () => {
 			roleId: DEFAULT_ROLE_ID,
 			profilePicture: DEFAULT_PROFILE_PICTURE,
 			bio: "Default Admin user",
+			bannerId: DEFAULT_BANNER_ID,
 		},
 	});
 };

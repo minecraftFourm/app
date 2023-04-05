@@ -12,8 +12,10 @@ const main = async () => {
 		posts,
 		mainCategories,
 		settings,
+		banner,
 	} = controllers;
 
+	const defaultBanner = await banner();
 	const defaultGames = await games();
 	const defaultRoles = await roles();
 	const defaultMainCategories = await mainCategories();

@@ -25,3 +25,4 @@ export const DEFAULT_ADMIN_PASSWORD = "adminuser";
 
 export const ADMIN_USER_ID = "bc86519b-12b6-4dec-96f1-b6888ce023e3";
 export const DEFAULT_USER_ID = "07735f98-6f41-458e-b6b9-68755b747b09";
+export const DEFAULT_BANNER_ID = "0230347f-d36f-4301-b727-f4aab2837c52";

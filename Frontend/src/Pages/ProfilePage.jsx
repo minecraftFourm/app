@@ -23,6 +23,7 @@ const UserProfilePage = () => {
 	const [followingStatus, setFollowingStatus] = useState(false);
 	const [error, setError] = useState(null);
 	const [tab, setTab] = useState("postings");
+	const [bannerList, setBannerList] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const CustomFetch = useFetch();
 	const User = UseUser();
@@ -36,7 +37,7 @@ const UserProfilePage = () => {
 	//   Rectangle24,
 	//   Rectangle25,
 	// ];
-	const bannerList = [UserBackground1, UserBackground2, UserBackground3];
+	// const bannerList = [UserBackground1, UserBackground2, UserBackground3];
 
 	useEffect(() => {
 		(async () => {
@@ -52,6 +53,20 @@ const UserProfilePage = () => {
 			}
 		})();
 	}, [id]);
+
+	useEffect(() => {
+		(async () => {
+			const { response, data } = await CustomFetch({
+				url: "banner",
+				returnResponse: true,
+			});
+
+			if (!response.ok) {
+				// ! handle error
+			}
+			setBannerList(data.data);
+		})();
+	}, []);
 
 	const fetchData = async () => {
 		const userId = id ? id : User.id;
@@ -94,6 +109,33 @@ const UserProfilePage = () => {
 		setTab(() => newTab);
 	};
 
+	const updateBanner = async (bannerId) => {
+		const Request = CustomFetch({
+			url: `user/${id}`,
+			options: {
+				method: "PATCH",
+				body: JSON.stringify({
+					banner: bannerId,
+				}),
+			},
+			returnPromise: true,
+		});
+
+		toast.promise(Request, {
+			loading: "Updating banner...",
+			success: (data) => {
+				(async () => {
+					await fetchData();
+				})();
+				return `Sucessfully updated banner!`;
+			},
+			error: (err) => {
+				console.log(err);
+				return `An error occured while trying to update your banner!`;
+			},
+		});
+	};
+
 	const followUser = async () => {
 		const Request = CustomFetch({
 			url: "user/follow",
@@ -132,25 +174,26 @@ const UserProfilePage = () => {
 				<div className="pt-16 px-8 w-full flex flex-col">
 					<div className="relative h-[250px] w-full flex justify-end mb-2">
 						<img
-							src={banner}
+							src={user.banner.url && user.banner.url}
 							alt=""
 							className="w-full h-full object-cover"
 						/>
 						<Overlay title="" />
-						<div className="absolute top-0 right-0 flex flex-row gap-1">
+						<div className="absolute top-0 right-0 p-2 flex flex-row gap-1">
 							{/* Need to change the banner list to data pulled from DB - currently saved on FE */}
-							{bannerList.map((item) => {
-								return (
-									<img
-										key={item}
-										src={item}
-										onClick={() => {
-											setBanner(item);
-										}}
-										className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
-									/>
-								);
-							})}
+							{User.isAuthenticated &&
+								(User.id === user.id || User.role.isAdmin) &&
+								bannerList.map((item) => {
+									const { id, url } = item;
+									return (
+										<img
+											key={id}
+											src={url}
+											onClick={() => updateBanner(id)}
+											className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
+										/>
+									);
+								})}
 						</div>
 
 						<div className="absolute -bottom-32 sm:-bottom-0 w-full flex flex-row gap-0">
@@ -301,7 +344,7 @@ const UserProfilePage = () => {
 											<span className="font-medium">
 												Email:
 											</span>{" "}
-											<a mailto={user.email}>
+											<a href={`mailto:${user.email}`}>
 												{user.email}
 											</a>
 										</li>

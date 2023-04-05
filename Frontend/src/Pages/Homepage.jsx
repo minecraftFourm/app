@@ -164,7 +164,7 @@ const Homepage = () => {
 				{err && <ErrorComponent />}
 
 				{!isLoading && !err && (
-					<div className="flex flex-row gap-8 justify-between w-full h-full">
+					<div className="flex flex-row gap-8 w-full justify-between h-full">
 						<div className="w-full bg-white p-4 flex flex-col gap-4">
 							{data.announcement && (
 								<Announcement items={data.announcement} />
@@ -186,7 +186,7 @@ const Homepage = () => {
 								</div>
 							)}
 						</div>
-						<aside className="h-fit w-[450px] bg-white p-4 flex flex-col gap-4 lg:hidden">
+						<aside className="h-fit w-[500px]  bg-white p-4 flex flex-col gap-4 lg:hidden">
 							<div className="w-full h-fit outline outline-1 pb-2 outline-gray-400 shadow-md">
 								<p className="w-full bg-violet-500 text-white px-2 py-1 ">
 									Recent Updates

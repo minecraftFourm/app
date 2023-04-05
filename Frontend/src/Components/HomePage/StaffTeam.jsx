@@ -4,8 +4,16 @@ import github from "../../assets/github.svg";
 import { SwiperSlide } from "swiper/react";
 
 const StaffTeam = (props) => {
-	const { role, bio, email: userEmail, username, profilePicture } = props;
-
+	const {
+		role,
+		bio,
+		email: userEmail,
+		username,
+		profilePicture,
+		github,
+		showMail,
+	} = props;
+	console.log(props);
 	return (
 		<SwiperSlide>
 			<section className="flex flex-row md:flex-col w-full h-full md:p-0 rounded-sm">
@@ -29,18 +37,20 @@ const StaffTeam = (props) => {
 					</p>
 
 					<footer className="flex flex-row gap-2 flex-wrap justify-between px-4">
-						<a
+						{/* <a
 							href="https://www.github.com/ben"
 							className="flex flex-row gap-2 items-center ">
 							<img src={github} alt="" className="w-[24px]" />
-							<p>COMING SOON</p>
-						</a>
-						<a
-							href={`mailto:${userEmail}`}
-							className="flex flex-row gap-2 items-center">
-							<img src={email} alt="" className="w-[24px]" />
-							<p>{userEmail}</p>
-						</a>
+							<p>{github}</p>
+						</a> */}
+						{email && showMail && (
+							<a
+								href={`mailto:${userEmail}`}
+								className="flex flex-row gap-2 items-center">
+								<img src={email} alt="" className="w-[24px]" />
+								<p>{userEmail}</p>
+							</a>
+						)}
 					</footer>
 				</div>
 			</section>

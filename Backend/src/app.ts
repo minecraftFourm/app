@@ -17,6 +17,7 @@ import { StatusCodes } from "http-status-codes";
 import { gamesRouter } from "./routes/game.routes";
 import { settingRouter } from "./routes/setting.route";
 import { rulesRouter } from "./routes/rule.routes";
+import { bannerRouter } from "./routes/banner.routes";
 const morgan = require("morgan");
 const cors = require("cors");
 const cloudinary = require("cloudinary").v2;
@@ -52,11 +53,11 @@ app.use("/game", gamesRouter);
 app.use("/mainCategory", mainCategoryRouter);
 app.use("/setting", settingRouter);
 app.use("/rule", rulesRouter);
-
+app.use("/game", gamesRouter);
+app.use("/banner", bannerRouter);
 app.get("/protected", auth, async (req: Request, res: Response) => {
 	return res.send("Howdy!");
 });
-app.use("/game", gamesRouter);
 
 app.get("/protected", auth, async (req: Request, res: Response) => {
 	return res.send("Howdy!");

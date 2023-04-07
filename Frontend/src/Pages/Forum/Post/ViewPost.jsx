@@ -377,11 +377,13 @@ const ViewPost = () => {
 													? "Create a new comment"
 													: `Editing "${
 															mode.data.content
-																.length > 8
-																? `${mode.data.content.slice(
-																		0,
-																		8
-																  )}...`
+																.length > 48
+																? `${mode.data.content
+																		.trim()
+																		.slice(
+																			0,
+																			48
+																		)}...`
 																: mode.data
 																		.content
 													  }"`}

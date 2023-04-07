@@ -9,7 +9,8 @@ const ViewPost = lazy(() => import("./Pages/Forum/Post/ViewPost"));
 const Profile = lazy(() => import("./Pages/ProfilePage"));
 const Home = lazy(() => import("./Pages/Homepage"));
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"));
-const Rules = lazy(() => import("./Pages/Rulespage"));
+const Rules = lazy(() => import("./Pages/Rule/Rulespage"));
+const Rule = lazy(() => import("./Pages/Rule/Rule"));
 const Footer = lazy(() => import("./Components/Footer"));
 const Games = lazy(() => import("./Pages/Gamespage"));
 const Login = lazy(() => import("./Pages/Authentication/LoginPage"));
@@ -91,7 +92,7 @@ function App() {
 							<Route path="/" element={<Home />} />
 							<Route path="/rules" element={<Rules />} />
 							{/* TODO: Rules display page. */}
-							<Route path="/rules/:id" element={<Rules />} />
+							<Route path="/rules/:id" element={<Rule />} />
 							<Route path="/games" element={<Games />} />
 							<Route path="/forum" element={<Forum />} />
 							<Route path="/user/:id" element={<Profile />} />

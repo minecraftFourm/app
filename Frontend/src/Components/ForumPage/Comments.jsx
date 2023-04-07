@@ -8,7 +8,8 @@ import { useCopyToClipboard } from "usehooks-ts";
 import { DOMAIN_NAME } from "../../config";
 
 const Comments = (props) => {
-	const { comments, reloadComments } = props;
+	const { comments, reloadComments, setMode, commentTextField, commentBox } =
+		props;
 	const { role: UserRole, isAuthenticated, id: CurrentUserID } = UseUser();
 	const CustomFetch = useFetch();
 	const [value, copy] = useCopyToClipboard();
@@ -49,11 +50,24 @@ const Comments = (props) => {
 		});
 	};
 
+	const handleEdit = ({ id, content }) => {
+		commentBox.current.scrollIntoView();
+		setMode({
+			mode: "editComment",
+			data: {
+				id,
+				content,
+			},
+		});
+		commentTextField.current.value = content;
+	};
+
 	const Component = () => {
 		return comments.map((comment) => {
 			const {
 				id,
-				updated,
+				updated: commentUpdated,
+				created: commentCreated,
 				comment: commentContent,
 				user: {
 					username,
@@ -119,7 +133,11 @@ const Comments = (props) => {
 					<div className="w-full overflow-hidden px-2 py-2 outline outline-1 flex flex-col justify-between outline-gray-400 bg-gray-100">
 						<div className="pb-4 w-full">{commentContent}</div>
 						<div className="w-full justify-between flex flex-row text-gray-500">
-							<p className="text-sm">{format(updated)}</p>
+							<p className="text-sm">
+								{commentUpdated == commentCreated
+									? format(commentCreated)
+									: `Edited ${format(commentUpdated)}`}
+							</p>
 
 							<div className="flex flex-row gap-3">
 								{/* Delete Icon */}
@@ -155,7 +173,13 @@ const Comments = (props) => {
 											viewBox="0 0 24 24"
 											strokeWidth={1.5}
 											stroke="currentColor"
-											className="w-6 h-6 cursor-pointer">
+											className="w-6 h-6 cursor-pointer"
+											onClick={() =>
+												handleEdit({
+													id,
+													content: commentContent,
+												})
+											}>
 											<path
 												strokeLinecap="round"
 												strokeLinejoin="round"
@@ -178,7 +202,6 @@ const Comments = (props) => {
 										d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
 									/>
 								</svg>
-
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"

@@ -296,6 +296,7 @@ export const handleGetPost = async ({ id }: getPost) => {
 						select: generalUserSelect,
 					},
 				},
+				orderBy: { created: "asc" },
 			},
 			category: true,
 			reactions: true,

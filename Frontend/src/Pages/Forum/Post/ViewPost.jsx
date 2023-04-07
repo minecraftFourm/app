@@ -1,4 +1,3 @@
-import DOMPurify from "dompurify";
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import ForumHeader from "../../../Components/ForumHeader";
@@ -13,6 +12,7 @@ import { DOMAIN_NAME } from "../../../config";
 
 const ViewPost = () => {
 	const { id } = useParams();
+	const newCommentAnchor = useRef();
 	const CustomFetch = useFetch();
 	const [post, setPost] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +22,10 @@ const ViewPost = () => {
 	const Navigate = useNavigate();
 	const commentTextField = useRef();
 	const location = useLocation();
+	const [mode, setMode] = useState({
+		mode: "newComment",
+		data: {},
+	});
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -115,6 +119,48 @@ const ViewPost = () => {
 				return "An error occured while creating your comment!";
 			},
 		});
+	};
+
+	const handleSaveComment = () => {
+		const commentContent = commentTextField.current.value;
+		// If comment content is empty, then prompt the user asking if they're trying to delete the comment.
+		if (!commentContent) {
+			toast.error("You cannot save an empty comment.");
+			return;
+		}
+
+		const SubmitComment = CustomFetch({
+			url: `comment/${mode.data.id}`,
+			options: {
+				method: "PATCH",
+				body: JSON.stringify({
+					comment: commentContent,
+				}),
+			},
+			returnResponse: true,
+		});
+
+		toast.promise(SubmitComment, {
+			loading: "Saving comment...",
+			success: ({ data, response }) => {
+				if (!response.ok) {
+					throw new Error();
+				}
+				commentTextField.current.value = "";
+				fetchPostDetails();
+				setMode({ mode: "newComment", data: {} });
+				return "Sucessfully saved your comment!";
+			},
+			error: (err) => {
+				console.log(err);
+				return "An error occured while saving your comment!";
+			},
+		});
+	};
+
+	const cancelEdit = () => {
+		setMode({ mode: "newComment", data: {} });
+		commentTextField.current.value = "";
 	};
 
 	return (
@@ -309,7 +355,10 @@ const ViewPost = () => {
 							<div>
 								<Comments
 									comments={post.comments}
+									setMode={setMode}
+									commentTextField={commentTextField}
 									reloadComments={fetchPostDetails}
+									commentBox={newCommentAnchor}
 								/>
 								{post.comments.length === 0 && (
 									<p className="w-full text-center font-light text-gray-600">
@@ -320,10 +369,24 @@ const ViewPost = () => {
 									(UserRole.isAdmin ||
 										UserRole.canCreateComment) && (
 										<div
+											ref={newCommentAnchor}
 											className="flex flex-col gap-2 mt-16 my-4 border-t p-4"
 											id="newComment">
 											<h4 className="font-bold text-2xl text-violet-500">
-												Create a new comment
+												{mode.mode === "newComment"
+													? "Create a new comment"
+													: `Editing "${
+															mode.data.content
+																.length > 48
+																? `${mode.data.content
+																		.trim()
+																		.slice(
+																			0,
+																			48
+																		)}...`
+																: mode.data
+																		.content
+													  }"`}
 											</h4>
 											<textarea
 												name=""
@@ -332,12 +395,31 @@ const ViewPost = () => {
 												rows="10"
 												ref={commentTextField}
 												className="border w-full min-w-full p-2 border-gray-300"></textarea>
-											<button
-												type="submit"
-												onClick={handleSubmit}
-												className="bg-violet-500 text-white w-fit px-4 py-1 self-center rounded-sm">
-												Submit
-											</button>
+											{mode.mode === "newComment" && (
+												<button
+													type="submit"
+													onClick={handleSubmit}
+													className="bg-violet-500 text-white w-fit px-4 py-1 self-center rounded-sm">
+													Submit
+												</button>
+											)}
+
+											{mode.mode === "editComment" && (
+												<div className="flex w-full justify-center gap-4">
+													<button
+														onClick={
+															handleSaveComment
+														}
+														className="bg-violet-500 text-white w-fit px-4 py-1 self-center rounded-sm">
+														Save
+													</button>
+													<button
+														onClick={cancelEdit}
+														className="bg-violet-500 text-white w-fit px-4 py-1 self-center rounded-sm">
+														Cancel
+													</button>
+												</div>
+											)}
 										</div>
 									)}
 							</div>

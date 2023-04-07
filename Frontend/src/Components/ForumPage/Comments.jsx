@@ -8,7 +8,8 @@ import { useCopyToClipboard } from "usehooks-ts";
 import { DOMAIN_NAME } from "../../config";
 
 const Comments = (props) => {
-	const { comments, reloadComments } = props;
+	const { comments, reloadComments, setMode, commentTextField, commentBox } =
+		props;
 	const { role: UserRole, isAuthenticated, id: CurrentUserID } = UseUser();
 	const CustomFetch = useFetch();
 	const [value, copy] = useCopyToClipboard();
@@ -50,14 +51,23 @@ const Comments = (props) => {
 	};
 
 	const handleEdit = ({ id, content }) => {
-		console.log(id, content);
+		commentBox.current.scrollIntoView();
+		setMode({
+			mode: "editComment",
+			data: {
+				id,
+				content,
+			},
+		});
+		commentTextField.current.value = content;
 	};
 
 	const Component = () => {
 		return comments.map((comment) => {
 			const {
 				id,
-				updated,
+				updated: commentUpdated,
+				created: commentCreated,
 				comment: commentContent,
 				user: {
 					username,
@@ -123,7 +133,11 @@ const Comments = (props) => {
 					<div className="w-full overflow-hidden px-2 py-2 outline outline-1 flex flex-col justify-between outline-gray-400 bg-gray-100">
 						<div className="pb-4 w-full">{commentContent}</div>
 						<div className="w-full justify-between flex flex-row text-gray-500">
-							<p className="text-sm">{format(updated)}</p>
+							<p className="text-sm">
+								{commentUpdated == commentCreated
+									? format(commentCreated)
+									: `Edited ${format(commentUpdated)}`}
+							</p>
 
 							<div className="flex flex-row gap-3">
 								{/* Delete Icon */}

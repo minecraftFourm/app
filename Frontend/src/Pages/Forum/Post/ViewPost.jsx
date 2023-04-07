@@ -123,9 +123,18 @@ const ViewPost = () => {
 
 	const handleSaveComment = () => {
 		const commentContent = commentTextField.current.value;
-		// If comment content is empty, then prompt the user asking if they're trying to delete the comment.
+		// TODO: Check if the comment has been changed
+		if (commentContent === mode.data.content) {
+			setMode({ mode: "newComment", data: {} });
+			commentTextField.current.value = "";
+			return;
+		}
+
 		if (!commentContent) {
+			// If comment content is empty, then prompt the user asking if they're trying to delete the comment.
 			toast.error("You cannot save an empty comment.");
+			setMode({ mode: "newComment", data: {} });
+			commentTextField.current.value = "";
 			return;
 		}
 

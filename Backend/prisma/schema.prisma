@@ -23,7 +23,7 @@ model User {
   followersRefer   Follower[]  @relation(name: "followerRefer")
   followingRefer   Following[] @relation(name: "followingRefer")
   banner           Banner      @relation(fields: [bannerId], references: [id])
-  bannerId        String
+  bannerId         String
   following        Following[]
   bio              String      @default("")
   created          DateTime    @default(now())
@@ -198,8 +198,10 @@ model Setting {
 }
 
 model Rule {
-  id          String  @id @default(uuid())
-  title       String  @unique
+  id          String   @id @default(uuid())
+  title       String   @unique
   content     String?
   description String?
+  created     DateTime @default(now())
+  updated     DateTime @updatedAt
 }

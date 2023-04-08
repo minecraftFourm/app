@@ -58,7 +58,7 @@ const Rulespage = () => {
 
 	return (
 		<div className="bg-[#1B263B]">
-			<ForumHeader />
+			<ForumHeader title="Rules" />
 
 			{!rules ||
 				(rules && rules.length === 0 && (

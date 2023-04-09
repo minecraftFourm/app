@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UseUser } from "./UserContext";
@@ -6,14 +6,16 @@ import { UseUser } from "./UserContext";
 const RequireAuth = ({ children }) => {
 	const User = UseUser();
 	const Navigate = useNavigate();
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		if (!User.isAuthenticated && !User.isLoading) {
-			Navigate("../login");
+			Navigate("/login");
 		}
+		setIsLoading(false);
 	}, []);
 
-	return <>{User.isAuthenticated && children}</>;
+	return <>{!isLoading && User.isAuthenticated && children}</>;
 };
 
 export default RequireAuth;

@@ -77,12 +77,19 @@ function App() {
 					<Toaster toastOptions={toastOptions} />
 
 					<Routes>
-						<Route path="/dashboard" element={<Dashboard />}>
+						<Route
+							path="/dashboard"
+							element={
+								<RequireAuth>
+									<Dashboard />
+								</RequireAuth>
+							}>
 							<Route
 								element={<Announcements />}
 								path="announcement"
 							/>
 						</Route>
+
 						<Route
 							path="/maintenance"
 							element={<MaintenancePage />}

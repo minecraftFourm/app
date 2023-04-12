@@ -122,8 +122,8 @@ const Navbar = () => {
 				<ul
 					className={
 						nav
-							? "absolute right-4 sm:right-0 text-black top-4 mobile-nav-shadow max-w-[300px] w-full sm:w-full bg-white ease-in-out duration-500 z-50"
-							: "ease-in-out duration-500 top-6 absolute right-[-100%] bg-white"
+							? "fixed right-4 sm:right-0 text-black top-4 mobile-nav-shadow max-w-[300px] w-full sm:w-full bg-white ease-in-out duration-500 z-50"
+							: "ease-in-out duration-500 top-6 fixed right-[-100%] bg-white"
 					}>
 					<li
 						onClick={handleNav}

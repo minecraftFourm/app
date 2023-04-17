@@ -14,7 +14,6 @@ import Announcement from "../Components/HomePage/Announcement";
 import { toast } from "react-hot-toast";
 import DisplayActivities from "../Components/Users/DisplayActivities";
 import DisplayUsers from "../Components/Users/DisplayUsers";
-const EditUser = lazy(() => import("../Components/Users/EditUser"));
 
 const UserProfilePage = () => {
 	const { id } = useParams();
@@ -23,7 +22,7 @@ const UserProfilePage = () => {
 	const [followingStatus, setFollowingStatus] = useState(false);
 	const [error, setError] = useState(null);
 	const [tab, setTab] = useState("postings");
-	const [bannerList, setBannerList] = useState({});
+	const [bannerList, setBannerList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const CustomFetch = useFetch();
 	const User = UseUser();
@@ -61,9 +60,8 @@ const UserProfilePage = () => {
 				returnResponse: true,
 			});
 
-			if (!response.ok) {
-				// ! handle error
-			}
+			if (!response.ok) return;
+			// ! handle error
 			setBannerList(data.data);
 		})();
 	}, []);
@@ -167,9 +165,12 @@ const UserProfilePage = () => {
 		});
 	};
 
+	console.log(user);
+
 	return (
 		<div className="bg-[#1B263B]">
 			{isLoading && <LoadingIcon />}
+
 			{!isLoading && !error && (
 				<div className="pt-16 px-8 w-full flex flex-col">
 					<div className="relative h-[250px] w-full flex justify-end mb-2">
@@ -183,7 +184,7 @@ const UserProfilePage = () => {
 							{/* Need to change the banner list to data pulled from DB - currently saved on FE */}
 							{User.isAuthenticated &&
 								(User.id === user.id || User.role.isAdmin) &&
-								bannerList.map((item) => {
+								bannerList?.map((item) => {
 									const { id, url } = item;
 									return (
 										<img
@@ -263,7 +264,7 @@ const UserProfilePage = () => {
 							{/* User is authenticated, and the Active User's id is equal to the user's profile id meaning they're the owner of the profile. */}
 							{User.isAuthenticated && User.id === user.id && (
 								<p
-									onClick={() => updateTab("edit")}
+									onClick={() => Navigate("/edit-profile")}
 									className={`${
 										tab === "edit" ? "text-[#7F7EFF]" : ""
 									}cursor-pointer hover:text-[#7F7EFF] transition-colors duration-300 ml-auto`}>
@@ -304,7 +305,6 @@ const UserProfilePage = () => {
 								)}
 							</>
 						)}
-						{tab === "edit" && <EditUser user={User} />}
 						{tab === "about" && (
 							<div className="text-white my-2">
 								<h4 className="text-sm font-medium">Bio:</h4>
@@ -339,16 +339,19 @@ const UserProfilePage = () => {
 											{user.instagram}
 										</li>
 									)}
-									{user.email && user.showMail && (
-										<li>
-											<span className="font-medium">
-												Email:
-											</span>{" "}
-											<a href={`mailto:${user.email}`}>
-												{user.email}
-											</a>
-										</li>
-									)}
+									{(user.email && user.showMail) ||
+										((User.role.isAdmin ||
+											user.id === User.id) && (
+											<li>
+												<span className="font-medium">
+													Email:
+												</span>{" "}
+												<a
+													href={`mailto:${user.email}`}>
+													{user.email}
+												</a>
+											</li>
+										))}
 								</ul>
 
 								{user.following.length != 0 && (

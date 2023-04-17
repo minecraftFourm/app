@@ -15,7 +15,7 @@ const MaintenancePage = () => {
 		startCountdown();
 	}, []);
 
-  // * Reloads the page once the countdown is over.
+	// * Reloads the page once the countdown is over.
 	useEffect(() => {
 		if (count === 0) {
 			window.location.reload();

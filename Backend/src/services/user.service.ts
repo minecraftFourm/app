@@ -424,7 +424,11 @@ export const handleEditUser = async (req: Req) => {
 			profilePictureId: profilePictureInfo?.public_id,
 			roleId,
 			bannerId: banner ? banner : undefined,
-			showMail: showMail ? showMail : undefined,
+			showMail: showMail
+				? showMail == "true"
+					? true
+					: false
+				: undefined,
 			instagram: instagram ? instagram : undefined,
 			discord: discord ? discord : undefined,
 			mc_username: mc_username ? mc_username : undefined,

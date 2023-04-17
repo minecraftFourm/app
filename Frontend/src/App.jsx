@@ -96,7 +96,14 @@ function App() {
 							<Route path="/games" element={<Games />} />
 							<Route path="/forum" element={<Forum />} />
 							<Route path="/user/:id" element={<Profile />} />
-							<Route path="/edit-profile" element={<EditProfilePage />} />
+							<Route
+								path="/edit-profile"
+								element={
+									<RequireAuth>
+										<EditProfilePage />
+									</RequireAuth>
+								}
+							/>
 							<Route
 								path="/profile"
 								element={

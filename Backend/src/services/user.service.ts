@@ -321,6 +321,7 @@ export const handleEditUser = async (req: Req) => {
 			discord,
 			mc_username,
 			banner,
+			bannerId,
 		},
 		user: {
 			profilePictureId,
@@ -411,6 +412,7 @@ export const handleEditUser = async (req: Req) => {
 		};
 	}
 
+
 	// TODO: discord, mc_username, showMail, and instagram values should be editable.
 	const user = await prisma.user.update({
 		where: {
@@ -420,10 +422,14 @@ export const handleEditUser = async (req: Req) => {
 			bio,
 			email,
 			username,
-			profilePicture: profilePictureInfo.url,
-			profilePictureId: profilePictureInfo?.public_id,
+			profilePicture: profilePictureInfo?.url
+				? profilePictureInfo.url
+				: undefined,
+			profilePictureId: profilePictureInfo?.public_id
+				? profilePictureInfo.public_id
+				: undefined,
 			roleId,
-			bannerId: banner ? banner : undefined,
+			bannerId: bannerId.length > 1 ? bannerId : undefined,
 			showMail: showMail
 				? showMail == "true"
 					? true

@@ -340,18 +340,19 @@ const UserProfilePage = () => {
 										</li>
 									)}
 									{(user.email && user.showMail) ||
-										((User.role.isAdmin ||
-											user.id === User.id) && (
-											<li>
-												<span className="font-medium">
-													Email:
-												</span>{" "}
-												<a
-													href={`mailto:${user.email}`}>
-													{user.email}
-												</a>
-											</li>
-										))}
+										(User.isAuthenticated &&
+											(User.role.isAdmin ||
+												user.id === User.id) && (
+												<li>
+													<span className="font-medium">
+														Email:
+													</span>{" "}
+													<a
+														href={`mailto:${user.email}`}>
+														{user.email}
+													</a>
+												</li>
+											))}
 								</ul>
 
 								{user.following.length != 0 && (

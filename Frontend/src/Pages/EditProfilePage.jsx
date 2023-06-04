@@ -21,7 +21,7 @@ const EditProfilePage = () => {
 		mc_username: "",
 		showMail: "",
 		banner: "",
-		profilePicture: "",
+		// profilePicture: "",
 	});
 
 	useEffect(() => {
@@ -47,6 +47,7 @@ const EditProfilePage = () => {
 					showMail: data.data.showMail,
 					profilePicture: data.data.profilePicture,
 					banner: data.data.banner.url,
+					bannerId: data.data.banner.id,
 				};
 			});
 
@@ -62,8 +63,6 @@ const EditProfilePage = () => {
 				...newData,
 			};
 		});
-
-		console.log(data);
 	};
 
 	const Save = () => {
@@ -202,11 +201,12 @@ const EditProfilePage = () => {
 						</label>
 						<label className="font-bold text-slate-700 text-xl px-6 my-2">
 							Show Email:
+							{/* TODO: Fix the default checked value */}
 							<input
-								type="checkbox"
-								checked={
-									data.showMail == "false" ? false : true
+								defaultChecked={
+									data.showMail == "true" ? true : false
 								}
+								type="checkbox"
 								className="ml-2 w-4 h-4"
 								id="checkbox"
 								onChange={(e) => {

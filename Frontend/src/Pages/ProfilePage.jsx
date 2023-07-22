@@ -14,6 +14,7 @@ import Announcement from "../Components/HomePage/Announcement";
 import { toast } from "react-hot-toast";
 import DisplayActivities from "../Components/Users/DisplayActivities";
 import DisplayUsers from "../Components/Users/DisplayUsers";
+import EditProfilePage from "./EditProfilePage";
 
 const UserProfilePage = () => {
 	const { id } = useParams();
@@ -107,13 +108,14 @@ const UserProfilePage = () => {
 		setTab(() => newTab);
 	};
 
+	// TODO: Move banner to the edit profile page.
 	const updateBanner = async (bannerId) => {
 		const Request = CustomFetch({
 			url: `user/${id}`,
 			options: {
 				method: "PATCH",
 				body: JSON.stringify({
-					banner: bannerId,
+					bannerId: bannerId,
 				}),
 			},
 			returnPromise: true,
@@ -217,7 +219,7 @@ const UserProfilePage = () => {
 									</p>
 								</div>
 							</div>
-							<p className="text-gray-300 text-sm py-1 px-2 border border-gray-800 w-[85%] ml-auto h-fit line-clamp-2">
+							<p className="text-gray-300 text-sm py-1 px-2 mx-2 border border-gray-800 w-[85%] ml-auto h-fit line-clamp-2">
 								{user.bio}
 							</p>
 						</div>
@@ -260,14 +262,14 @@ const UserProfilePage = () => {
 								}`}>
 								About
 							</button>
-							{/* TODO: Add permission support */}
+
 							{/* User is authenticated, and the Active User's id is equal to the user's profile id meaning they're the owner of the profile. */}
 							{User.isAuthenticated && User.id === user.id && (
 								<p
-									onClick={() => Navigate("/edit-profile")}
+									onClick={() => updateTab("edit")}
 									className={`${
 										tab === "edit" ? "text-[#7F7EFF]" : ""
-									}cursor-pointer hover:text-[#7F7EFF] transition-colors duration-300 ml-auto`}>
+									} cursor-pointer hover:text-[#7F7EFF] transition-colors duration-300 ml-auto`}>
 									Edit
 								</p>
 							)}
@@ -288,6 +290,12 @@ const UserProfilePage = () => {
 									</h6>
 								)}
 							</div>
+						)}
+						{tab === "edit" && (
+							<EditProfilePage
+								updateTab={() => updateTab("postings")}
+								userDetails={user}
+							/>
 						)}
 						{tab === "activity" && (
 							<>

@@ -6,7 +6,8 @@ import { useFetch } from "../Contexts/Fetch";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
-const EditProfilePage = () => {
+const EditProfilePage = (props) => {
+	const { updateTab, userDetails } = props;
 	const User = UseUser();
 	const CustomFetch = useFetch();
 	const Navigate = useNavigate();
@@ -77,10 +78,11 @@ const EditProfilePage = () => {
 
 		toast.promise(SaveRequest, {
 			loading: "Saving data...",
-			success: () => {
-				Navigate(`/profile`, {
-					replace: true,
-				});
+			success: (response) => {
+				if (!response.ok) throw new Error();
+				// Scrolls back to the top of the page.
+				scrollTo(0, 0);
+				updateTab();
 				return "Sucessfully saved your profile!";
 			},
 			error: (err) => {
@@ -94,9 +96,15 @@ const EditProfilePage = () => {
 		<>
 			{!isLoading && (
 				<div className="bg-white">
-					<div className="h-[500px] w-full grid place-content-center relative">
+					<div className="h-[500px] grid place-content-center relative">
 						<div className="absolute bg-transparent grid place-content-center z-20 top-0 bottom-0 left-0 right-0">
-							<div className="bg-white w-[400px] h-[300px] rounded-sm"></div>
+							<div className="w-[250px] h-[250px] rounded-full hover:cursor-pointer">
+								<img
+									src={userDetails.profilePicture}
+									alt=""
+									className="rounded-full object-cover w-full h-full"
+								/>
+							</div>
 						</div>
 						<img
 							src={user.banner.url}
@@ -202,19 +210,31 @@ const EditProfilePage = () => {
 						<label className="font-bold text-slate-700 text-xl px-6 my-2">
 							Show Email:
 							{/* TODO: Fix the default checked value */}
-							<input
-								defaultChecked={
-									data.showMail == "true" ? true : false
-								}
-								type="checkbox"
-								className="ml-2 w-4 h-4"
-								id="checkbox"
-								onChange={(e) => {
-									updateData({
-										showMail: `${e.target.checked}`,
-									});
-								}}
-							/>
+							{!data.showMail && (
+								<input
+									type="checkbox"
+									className="ml-2 w-4 h-4"
+									id="checkbox"
+									onChange={(e) => {
+										updateData({
+											showMail: `${e.target.checked}`,
+										});
+									}}
+								/>
+							)}
+							{data.showMail && (
+								<input
+									defaultChecked
+									type="checkbox"
+									className="ml-2 w-4 h-4"
+									id="checkbox"
+									onChange={(e) => {
+										updateData({
+											showMail: `${e.target.checked}`,
+										});
+									}}
+								/>
+							)}
 						</label>
 						<div className="justify-center w-full flex">
 							<button

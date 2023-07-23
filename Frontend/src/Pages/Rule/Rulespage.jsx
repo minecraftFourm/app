@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ForumHeader from "../Components/ForumHeader";
-import { useFetch } from "../Contexts/Fetch";
+import ForumHeader from "../../Components/ForumHeader";
+import { useFetch } from "../../Contexts/Fetch";
 
 const Rulespage = () => {
 	const CustomFetch = useFetch();
@@ -29,6 +29,7 @@ const Rulespage = () => {
 			return (
 				<Link
 					to={`./${rule.id}`}
+					key={rule.id}
 					className="text-base hover:underline text-gray-500 cursor-pointer">
 					{rule.title}
 				</Link>
@@ -39,7 +40,9 @@ const Rulespage = () => {
 	const RulesComponent2 = () => {
 		return rules.map((rule) => {
 			return (
-				<div className="border border-gray-400 px-2 py-1 flex flex-col gap-1 rounded-md">
+				<div
+					key={rule.id}
+					className="border border-gray-400 px-2 py-1 flex flex-col gap-1 rounded-md">
 					<Link
 						to={`./${rule.id}`}
 						className="text-indigo-500 font-normal text-2xl cursor-pointer">
@@ -55,7 +58,7 @@ const Rulespage = () => {
 
 	return (
 		<div className="bg-[#1B263B]">
-			<ForumHeader />
+			<ForumHeader title="Rules" />
 
 			{!rules ||
 				(rules && rules.length === 0 && (

@@ -15,6 +15,6 @@ rulesRouter.route("/").get(wrapper(getRules)).post(auth, wrapper(createRule));
 
 rulesRouter
 	.route("/:id")
-	.get(auth, wrapper(getRule))
+	.get(wrapper(getRule))
 	.patch(auth, wrapper(editRule))
 	.delete(auth, wrapper(deleteRule));

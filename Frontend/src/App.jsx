@@ -9,7 +9,8 @@ const ViewPost = lazy(() => import("./Pages/Forum/Post/ViewPost"));
 const Profile = lazy(() => import("./Pages/ProfilePage"));
 const Home = lazy(() => import("./Pages/Homepage"));
 const Forum = lazy(() => import("./Pages/Forum/Forumpage"));
-const Rules = lazy(() => import("./Pages/Rulespage"));
+const Rules = lazy(() => import("./Pages/Rule/Rulespage"));
+const Rule = lazy(() => import("./Pages/Rule/Rule"));
 const Footer = lazy(() => import("./Components/Footer"));
 const Games = lazy(() => import("./Pages/Gamespage"));
 const Login = lazy(() => import("./Pages/Authentication/LoginPage"));
@@ -23,6 +24,8 @@ const NewPost = lazy(() => import("./Pages/Forum/Post/NewPost"));
 const EditPost = lazy(() => import("./Pages/Forum/Post/EditPost"));
 const MaintenancePage = lazy(() => import("./Pages/MaintenancePage"));
 const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
+const EditRule = lazy(() => import("./Pages/Rule/EditRule"));
+const NewRule = lazy(() => import("./Pages/Rule/NewRule"));
 
 // import InformationBar from "./Components/InformationBar";
 // import Navbar from "./Components/Navbar";
@@ -76,12 +79,19 @@ function App() {
 					<Toaster toastOptions={toastOptions} />
 
 					<Routes>
-						<Route path="/dashboard" element={<Dashboard />}>
+						<Route
+							path="/dashboard"
+							element={
+								<RequireAuth>
+									<Dashboard />
+								</RequireAuth>
+							}>
 							<Route
 								element={<Announcements />}
 								path="announcement"
 							/>
 						</Route>
+
 						<Route
 							path="/maintenance"
 							element={<MaintenancePage />}
@@ -91,7 +101,12 @@ function App() {
 							<Route path="/" element={<Home />} />
 							<Route path="/rules" element={<Rules />} />
 							{/* TODO: Rules display page. */}
-							<Route path="/rules/:id" element={<Rules />} />
+							<Route path="/rules/:id" element={<Rule />} />
+							<Route
+								path="/rules/edit/:id"
+								element={<EditRule />}
+							/>
+							<Route path="/rules/new" element={<NewRule />} />
 							<Route path="/games" element={<Games />} />
 							<Route path="/forum" element={<Forum />} />
 							<Route path="/user/:id" element={<Profile />} />

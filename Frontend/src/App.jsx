@@ -24,6 +24,7 @@ const NewPost = lazy(() => import("./Pages/Forum/Post/NewPost"));
 const EditPost = lazy(() => import("./Pages/Forum/Post/EditPost"));
 const MaintenancePage = lazy(() => import("./Pages/MaintenancePage"));
 const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
+const NewRule = lazy(() => import("./Pages/Rule/NewRule"));
 
 // import InformationBar from "./Components/InformationBar";
 // import Navbar from "./Components/Navbar";
@@ -100,6 +101,7 @@ function App() {
 							<Route path="/rules" element={<Rules />} />
 							{/* TODO: Rules display page. */}
 							<Route path="/rules/:id" element={<Rule />} />
+							<Route path="/rules/new" element={<NewRule />} />
 							<Route path="/games" element={<Games />} />
 							<Route path="/forum" element={<Forum />} />
 							<Route path="/user/:id" element={<Profile />} />

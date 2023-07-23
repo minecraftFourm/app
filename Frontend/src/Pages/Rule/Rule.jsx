@@ -121,7 +121,9 @@ const Rule = () => {
 											viewBox="0 0 24 24"
 											strokeWidth={1.5}
 											stroke="currentColor"
-											// onClick={deleteRule}
+											onClick={() =>
+												Navigate(`/rules/edit/${id}`)
+											}
 											className="w-6 h-6 cursor-pointer hover:text-gray-700 transition-colors duration-300">
 											<path
 												strokeLinecap="round"

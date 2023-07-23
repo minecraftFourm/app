@@ -3,9 +3,6 @@ import Rectangle26 from "../assets/Rectangle26.png";
 import Rectangle7 from "../assets/Rectangle7.png";
 // import pretty from '../assets/pretty.png'
 import { LoadingIcon } from "../Components/Icons";
-import UserBackground1 from "../assets/user-background-1.jpg";
-import UserBackground2 from "../assets/user-background-2.jpg";
-import UserBackground3 from "../assets/user-background-3.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFetch } from "../Contexts/Fetch";
 import { UseUser } from "../Contexts/UserContext";
@@ -29,15 +26,6 @@ const UserProfilePage = () => {
 	const User = UseUser();
 	const [banner, setBanner] = useState(null);
 	const Navigate = useNavigate();
-
-	// const bannerList = [
-	//   Rectangle21,
-	//   Rectangle22,
-	//   Rectangle23,
-	//   Rectangle24,
-	//   Rectangle25,
-	// ];
-	// const bannerList = [UserBackground1, UserBackground2, UserBackground3];
 
 	useEffect(() => {
 		(async () => {
@@ -108,34 +96,6 @@ const UserProfilePage = () => {
 		setTab(() => newTab);
 	};
 
-	// TODO: Move banner to the edit profile page.
-	const updateBanner = async (bannerId) => {
-		const Request = CustomFetch({
-			url: `user/${id}`,
-			options: {
-				method: "PATCH",
-				body: JSON.stringify({
-					bannerId: bannerId,
-				}),
-			},
-			returnPromise: true,
-		});
-
-		toast.promise(Request, {
-			loading: "Updating banner...",
-			success: (data) => {
-				(async () => {
-					await fetchData();
-				})();
-				return `Sucessfully updated banner!`;
-			},
-			error: (err) => {
-				console.log(err);
-				return `An error occured while trying to update your banner!`;
-			},
-		});
-	};
-
 	const followUser = async () => {
 		const Request = CustomFetch({
 			url: "user/follow",
@@ -182,22 +142,6 @@ const UserProfilePage = () => {
 							className="w-full h-full object-cover"
 						/>
 						<Overlay title="" />
-						<div className="absolute top-0 right-0 p-2 flex flex-row gap-1">
-							{/* Need to change the banner list to data pulled from DB - currently saved on FE */}
-							{User.isAuthenticated &&
-								(User.id === user.id || User.role.isAdmin) &&
-								bannerList?.map((item) => {
-									const { id, url } = item;
-									return (
-										<img
-											key={id}
-											src={url}
-											onClick={() => updateBanner(id)}
-											className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
-										/>
-									);
-								})}
-						</div>
 
 						<div className="absolute -bottom-32 sm:-bottom-0 w-full flex flex-row gap-0">
 							<div className="sm:w-full w-[250px] flex flex-col items-center">
@@ -295,6 +239,8 @@ const UserProfilePage = () => {
 							<EditProfilePage
 								updateTab={() => updateTab("postings")}
 								userDetails={user}
+								updatePage={fetchData}
+								profileOwner={id}
 							/>
 						)}
 						{tab === "activity" && (

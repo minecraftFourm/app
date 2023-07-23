@@ -75,7 +75,8 @@ const EditProfilePage = (props) => {
 		});
 	};
 
-	const Save = () => {
+	const Save = (e) => {
+		e.preventDefault();
 		const SaveRequest = CustomFetch({
 			url: `user/${User.id}`,
 			options: {
@@ -148,9 +149,6 @@ const EditProfilePage = (props) => {
 			{!isLoading && (
 				<div className="bg-white">
 					<div className="h-[500px] grid place-content-center relative">
-						<div className="bg-red-400 w-full h-[200px] fixed m-4 z-50">
-							One
-						</div>
 						<div className="absolute bg-transparent grid place-content-center z-20 top-0 bottom-0 left-0 right-0">
 							<div className="w-[250px] h-[250px] rounded-full hover:cursor-pointer">
 								<div className="absolute top-0 right-0 p-2 flex flex-row gap-1">
@@ -183,7 +181,6 @@ const EditProfilePage = (props) => {
 							src={user.banner.url}
 							alt={user.banner.name}
 							className="absolute w-full h-full cursor-pointer object-cover"
-							onClick={() => console.log("Banner")}
 						/>
 						<img
 							src={user.profilePicture}
@@ -192,7 +189,23 @@ const EditProfilePage = (props) => {
 							onClick={() => console.log("Profile Picture")}
 						/>
 					</div>
-					<div className="grid grid-cols-1 py-3">
+					<form
+						encType="multipart/form-data"
+						className="grid grid-cols-1 py-3">
+						<label
+							htmlFor="profilePicture"
+							className="font-bold text-slate-700 text-xl px-6 my-2">
+							Profile Picture:
+							<div>
+								<input
+									type="file"
+									name="profilePicture"
+									className="px-2 py-1 w-11/12 text-base font-light"
+									id=""
+									accept=".png,.jpg"
+								/>
+							</div>
+						</label>
 						<label className="font-bold text-slate-700 text-xl px-6 my-2">
 							Username:
 							<div>
@@ -313,11 +326,11 @@ const EditProfilePage = (props) => {
 							<button
 								className="hover:bg-indigo-700 cursor-pointer bg-indigo-500 text-white py-1 px-6 border border-indigo-600 transition-colors duration-300 rounded"
 								type="submit"
-								onClick={Save}>
+								onClick={(e) => Save(e)}>
 								Save
 							</button>
 						</div>
-					</div>
+					</form>
 				</div>
 			)}
 		</>

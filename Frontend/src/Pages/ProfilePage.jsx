@@ -3,9 +3,6 @@ import Rectangle26 from "../assets/Rectangle26.png";
 import Rectangle7 from "../assets/Rectangle7.png";
 // import pretty from '../assets/pretty.png'
 import { LoadingIcon } from "../Components/Icons";
-import UserBackground1 from "../assets/user-background-1.jpg";
-import UserBackground2 from "../assets/user-background-2.jpg";
-import UserBackground3 from "../assets/user-background-3.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFetch } from "../Contexts/Fetch";
 import { UseUser } from "../Contexts/UserContext";
@@ -14,7 +11,7 @@ import Announcement from "../Components/HomePage/Announcement";
 import { toast } from "react-hot-toast";
 import DisplayActivities from "../Components/Users/DisplayActivities";
 import DisplayUsers from "../Components/Users/DisplayUsers";
-const EditUser = lazy(() => import("../Components/Users/EditUser"));
+import EditProfilePage from "./EditProfilePage";
 
 const UserProfilePage = () => {
 	const { id } = useParams();
@@ -23,21 +20,12 @@ const UserProfilePage = () => {
 	const [followingStatus, setFollowingStatus] = useState(false);
 	const [error, setError] = useState(null);
 	const [tab, setTab] = useState("postings");
-	const [bannerList, setBannerList] = useState({});
+	const [bannerList, setBannerList] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const CustomFetch = useFetch();
 	const User = UseUser();
 	const [banner, setBanner] = useState(null);
 	const Navigate = useNavigate();
-
-	// const bannerList = [
-	//   Rectangle21,
-	//   Rectangle22,
-	//   Rectangle23,
-	//   Rectangle24,
-	//   Rectangle25,
-	// ];
-	// const bannerList = [UserBackground1, UserBackground2, UserBackground3];
 
 	useEffect(() => {
 		(async () => {
@@ -61,9 +49,8 @@ const UserProfilePage = () => {
 				returnResponse: true,
 			});
 
-			if (!response.ok) {
-				// ! handle error
-			}
+			if (!response.ok) return;
+			// ! handle error
 			setBannerList(data.data);
 		})();
 	}, []);
@@ -109,33 +96,6 @@ const UserProfilePage = () => {
 		setTab(() => newTab);
 	};
 
-	const updateBanner = async (bannerId) => {
-		const Request = CustomFetch({
-			url: `user/${id}`,
-			options: {
-				method: "PATCH",
-				body: JSON.stringify({
-					banner: bannerId,
-				}),
-			},
-			returnPromise: true,
-		});
-
-		toast.promise(Request, {
-			loading: "Updating banner...",
-			success: (data) => {
-				(async () => {
-					await fetchData();
-				})();
-				return `Sucessfully updated banner!`;
-			},
-			error: (err) => {
-				console.log(err);
-				return `An error occured while trying to update your banner!`;
-			},
-		});
-	};
-
 	const followUser = async () => {
 		const Request = CustomFetch({
 			url: "user/follow",
@@ -167,9 +127,12 @@ const UserProfilePage = () => {
 		});
 	};
 
+	console.log(user);
+
 	return (
 		<div className="bg-[#1B263B]">
 			{isLoading && <LoadingIcon />}
+
 			{!isLoading && !error && (
 				<div className="pt-16 px-8 w-full flex flex-col">
 					<div className="relative h-[250px] w-full flex justify-end mb-2">
@@ -179,22 +142,6 @@ const UserProfilePage = () => {
 							className="w-full h-full object-cover"
 						/>
 						<Overlay title="" />
-						<div className="absolute top-0 right-0 p-2 flex flex-row gap-1">
-							{/* Need to change the banner list to data pulled from DB - currently saved on FE */}
-							{User.isAuthenticated &&
-								(User.id === user.id || User.role.isAdmin) &&
-								bannerList.map((item) => {
-									const { id, url } = item;
-									return (
-										<img
-											key={id}
-											src={url}
-											onClick={() => updateBanner(id)}
-											className="w-[32px] h-[32px] cursor-pointer border border-gray-500"
-										/>
-									);
-								})}
-						</div>
 
 						<div className="absolute -bottom-32 sm:-bottom-0 w-full flex flex-row gap-0">
 							<div className="sm:w-full w-[250px] flex flex-col items-center">
@@ -216,7 +163,7 @@ const UserProfilePage = () => {
 									</p>
 								</div>
 							</div>
-							<p className="text-gray-300 text-sm py-1 px-2 border border-gray-800 w-[85%] ml-auto h-fit line-clamp-2">
+							<p className="text-gray-300 text-sm py-1 px-2 mx-2 border border-gray-800 w-[85%] ml-auto h-fit line-clamp-2">
 								{user.bio}
 							</p>
 						</div>
@@ -259,14 +206,14 @@ const UserProfilePage = () => {
 								}`}>
 								About
 							</button>
-							{/* TODO: Add permission support */}
+
 							{/* User is authenticated, and the Active User's id is equal to the user's profile id meaning they're the owner of the profile. */}
 							{User.isAuthenticated && User.id === user.id && (
 								<p
 									onClick={() => updateTab("edit")}
 									className={`${
 										tab === "edit" ? "text-[#7F7EFF]" : ""
-									}cursor-pointer hover:text-[#7F7EFF] transition-colors duration-300 ml-auto`}>
+									} cursor-pointer hover:text-[#7F7EFF] transition-colors duration-300 ml-auto`}>
 									Edit
 								</p>
 							)}
@@ -288,6 +235,14 @@ const UserProfilePage = () => {
 								)}
 							</div>
 						)}
+						{tab === "edit" && (
+							<EditProfilePage
+								updateTab={() => updateTab("postings")}
+								userDetails={user}
+								updatePage={fetchData}
+								profileOwner={id}
+							/>
+						)}
 						{tab === "activity" && (
 							<>
 								{activity && (
@@ -304,7 +259,6 @@ const UserProfilePage = () => {
 								)}
 							</>
 						)}
-						{tab === "edit" && <EditUser user={User} />}
 						{tab === "about" && (
 							<div className="text-white my-2">
 								<h4 className="text-sm font-medium">Bio:</h4>
@@ -339,16 +293,20 @@ const UserProfilePage = () => {
 											{user.instagram}
 										</li>
 									)}
-									{user.email && user.showMail && (
-										<li>
-											<span className="font-medium">
-												Email:
-											</span>{" "}
-											<a href={`mailto:${user.email}`}>
-												{user.email}
-											</a>
-										</li>
-									)}
+									{(user.email && user.showMail) ||
+										(User.isAuthenticated &&
+											(User.role.isAdmin ||
+												user.id === User.id) && (
+												<li>
+													<span className="font-medium">
+														Email:
+													</span>{" "}
+													<a
+														href={`mailto:${user.email}`}>
+														{user.email}
+													</a>
+												</li>
+											))}
 								</ul>
 
 								{user.following.length != 0 && (

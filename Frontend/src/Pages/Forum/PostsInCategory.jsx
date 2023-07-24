@@ -203,7 +203,7 @@ const Posts = () => {
 								/>
 							)}
 							{!data && <LoadingIcon color="text-black" />}
-							{allPosts.length === 0 && (
+							{data && allPosts.length === 0 && (
 								<p className="w-full text-center font-medium text-gray-500">
 									There are no posts in this category!
 								</p>

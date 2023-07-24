@@ -320,7 +320,7 @@ export const handleEditUser = async (req: Req) => {
 			instagram,
 			discord,
 			mc_username,
-			banner,
+			bannerId,
 		},
 		user: {
 			profilePictureId,
@@ -420,11 +420,19 @@ export const handleEditUser = async (req: Req) => {
 			bio,
 			email,
 			username,
-			profilePicture: profilePictureInfo.url,
-			profilePictureId: profilePictureInfo?.public_id,
+			profilePicture: profilePictureInfo?.url
+				? profilePictureInfo.url
+				: undefined,
+			profilePictureId: profilePictureInfo?.public_id
+				? profilePictureInfo.public_id
+				: undefined,
 			roleId,
-			bannerId: banner ? banner : undefined,
-			showMail: showMail ? showMail : undefined,
+			bannerId: bannerId.length > 1 ? bannerId : undefined,
+			showMail: showMail
+				? showMail == "true"
+					? true
+					: false
+				: undefined,
 			instagram: instagram ? instagram : undefined,
 			discord: discord ? discord : undefined,
 			mc_username: mc_username ? mc_username : undefined,

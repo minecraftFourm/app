@@ -192,20 +192,6 @@ const EditProfilePage = (props) => {
 					<form
 						encType="multipart/form-data"
 						className="grid grid-cols-1 py-3">
-						<label
-							htmlFor="profilePicture"
-							className="font-bold text-slate-700 text-xl px-6 my-2">
-							Profile Picture:
-							<div>
-								<input
-									type="file"
-									name="profilePicture"
-									className="px-2 py-1 w-11/12 text-base font-light"
-									id=""
-									accept=".png,.jpg"
-								/>
-							</div>
-						</label>
 						<label className="font-bold text-slate-700 text-xl px-6 my-2">
 							Username:
 							<div>

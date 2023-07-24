@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
@@ -9,8 +9,8 @@ import { Toaster } from "react-hot-toast";
 // const Profile = lazy(() => import("./Pages/ProfilePage"));
 // const Home = lazy(() => import("./Pages/Homepage"));
 // const Forum = lazy(() => import("./Pages/Forum/Forumpage"));
-// const Rules = lazy(() => import("./Pages/Rulespage"));
-// const Footer = lazy(() => import("./Components/Footer"));
+// const Rules = lazy(() => import("./Pages/Rule/Rulespage"));
+// const Rule = lazy(() => import("./Pages/Rule/Rule"));
 // const Games = lazy(() => import("./Pages/Gamespage"));
 // const Login = lazy(() => import("./Pages/Authentication/LoginPage"));
 // const Register = lazy(() => import("./Pages/Authentication/Registerpage"));
@@ -25,6 +25,7 @@ import { Toaster } from "react-hot-toast";
 // const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
 // const EditProfilePage = lazy(() => import("./Pages/EditProfilePage"));
 
+import Footer from "./Components/Footer";
 import InfoBar from "./Components/InformationBar";
 import Navbar from "./Components/Navbar";
 import CheckAuth from "./Contexts/CheckAuth";
@@ -32,7 +33,8 @@ import ViewPost from "./Pages/Forum/Post/ViewPost";
 import Profile from "./Pages/ProfilePage";
 import Home from "./Pages/Homepage";
 import Forum from "./Pages/Forum/Forumpage";
-import Rules from "./Pages/Rulespage";
+import Rules from "./Pages/Rule/Rulespage";
+import Rule from "./Pages/Rule/Rule";
 import Footer from "./Components/Footer";
 import Games from "./Pages/Gamespage";
 import Login from "./Pages/Authentication/LoginPage";
@@ -47,6 +49,8 @@ import EditPost from "./Pages/Forum/Post/EditPost";
 import MaintenancePage from "./Pages/MaintenancePage";
 import RequireAuth from "./Contexts/RequireAuth";
 import EditProfilePage from "./Pages/EditProfilePage";
+import EditRule from "./Pages/Rule/EditRule";
+import NewRule from "./Pages/Rule/NewRule";
 
 // import InformationBar from "./Components/InformationBar";
 // import Navbar from "./Components/Navbar";
@@ -100,12 +104,19 @@ function App() {
 					<Toaster toastOptions={toastOptions} />
 
 					<Routes>
-						<Route path="/dashboard" element={<Dashboard />}>
+						<Route
+							path="/dashboard"
+							element={
+								<RequireAuth>
+									<Dashboard />
+								</RequireAuth>
+							}>
 							<Route
 								element={<Announcements />}
 								path="announcement"
 							/>
 						</Route>
+
 						<Route
 							path="/maintenance"
 							element={<MaintenancePage />}
@@ -115,7 +126,12 @@ function App() {
 							<Route path="/" element={<Home />} />
 							<Route path="/rules" element={<Rules />} />
 							{/* TODO: Rules display page. */}
-							<Route path="/rules/:id" element={<Rules />} />
+							<Route path="/rules/:id" element={<Rule />} />
+							<Route
+								path="/rules/edit/:id"
+								element={<EditRule />}
+							/>
+							<Route path="/rules/new" element={<NewRule />} />
 							<Route path="/games" element={<Games />} />
 							<Route path="/forum" element={<Forum />} />
 							<Route path="/user/:id" element={<Profile />} />

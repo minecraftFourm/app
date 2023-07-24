@@ -2,7 +2,8 @@ import React from "react";
 import ForumBg from "../assets/fourmbg.jfif";
 import Overlay from "./Overlay";
 
-const ForumHeader = () => {
+const ForumHeader = (props) => {
+	const { title } = props;
 	return (
 		<section className="h-96 w-full relative">
 			<img
@@ -10,7 +11,7 @@ const ForumHeader = () => {
 				alt="Fourm Background"
 				className="h-full w-full"
 			/>
-			<Overlay title="Server Forum" />
+			<Overlay title={title ? title : "Server Forum"} />
 		</section>
 	);
 };

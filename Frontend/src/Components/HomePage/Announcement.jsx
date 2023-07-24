@@ -21,7 +21,7 @@ const Announcement = ({ ...props }) => {
 					className="w-full border border-gray-400 bg-white rounded-sm overflow-hidden"
 					key={id}>
 					<header className="w-full flex flex-row items-center justify-between bg-violet-500 text-white px-2 py-1">
-						<Link to={`forum/post/${id}`} className="font-medium">
+						<Link to={`/forum/post/${id}`} className="font-medium">
 							{title}
 						</Link>
 						<span className="font-light text-sm cursor-default">

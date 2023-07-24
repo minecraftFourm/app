@@ -25,7 +25,6 @@ import { Toaster } from "react-hot-toast";
 // const RequireAuth = lazy(() => import("./Contexts/RequireAuth"));
 // const EditProfilePage = lazy(() => import("./Pages/EditProfilePage"));
 
-import Footer from "./Components/Footer";
 import InfoBar from "./Components/InformationBar";
 import Navbar from "./Components/Navbar";
 import CheckAuth from "./Contexts/CheckAuth";

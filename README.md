@@ -5,6 +5,7 @@ This is a forum app built around the Minecraft theme. It's main purpose is to be
 ### Tech Stack
 
 Backend: Postgres, Node JS, ExpressJS, Cloudinary, Typescript, Prisma, and Jest
+
 Frontend: React, Tailwind
 
 #### Getting started

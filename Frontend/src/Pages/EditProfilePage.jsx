@@ -90,9 +90,12 @@ const EditProfilePage = (props) => {
 			loading: "Saving data...",
 			success: (response) => {
 				if (!response.ok) throw new Error();
+
+				(async () => await fetchData())();
 				// Scrolls back to the top of the page.
 				scrollTo(0, 0);
 				updateTab();
+
 				return "Sucessfully saved your profile!";
 			},
 			error: (err) => {
